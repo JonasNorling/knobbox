@@ -1,4 +1,4 @@
-update=Fri 06 Apr 2012 04:10:02 PM CEST
+update=Sun 08 Apr 2012 04:16:30 PM CEST
 last_client=eeschema
 [general]
 version=1
@@ -9,14 +9,14 @@ NetIExt=net
 EquName1=devcms
 [pcbnew]
 version=1
-PadDrlX=320
-PadDimH=600
-PadDimV=600
+PadDrlX=512
+PadDimH=669
+PadDimV=669
 BoardThickness=630
 TxtPcbV=800
 TxtPcbH=600
-TxtModV=600
-TxtModH=600
+TxtModV=400
+TxtModH=400
 TxtModW=120
 VEgarde=100
 DrawLar=150
@@ -37,6 +37,9 @@ LibName8=valves
 LibName9=led
 LibName10=dip_sockets
 LibName11=encoder
+LibName12=micro-usb
+LibName13=nhd-lcd
+LibName14=pin-array-50mil
 [eeschema]
 version=1
 LibDir=
@@ -101,3 +104,6 @@ LibName29=contrib
 LibName30=valves
 LibName31=bourns-encoder
 LibName32=stm32
+LibName33=spi-flash
+LibName34=nhd-lcd
+LibName35=r-network
