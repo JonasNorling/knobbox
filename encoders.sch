@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sun 08 Apr 2012 06:37:26 PM CEST
+EESchema Schematic File Version 2  date Mon 09 Apr 2012 10:40:34 AM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -41,7 +41,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 5 5
 Title ""
-Date "8 apr 2012"
+Date "9 apr 2012"
 Rev ""
 Comp ""
 Comment1 ""
@@ -49,19 +49,31 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L C C6
-U 1 1 4F81BBD2
-P 10300 5450
-F 0 "C6" H 10350 5550 50  0000 L CNN
-F 1 "C" H 10350 5350 50  0000 L CNN
-	1    10300 5450
-	1    0    0    -1  
-$EndComp
-Text Notes 5250 850  0    60   ~ 0
-FIXME: Actually use the right package!!!
 Wire Wire Line
-	5050 1450 5300 1450
+	10300 5650 10300 5800
+Connection ~ 1850 6400
+Wire Wire Line
+	1850 6400 1850 6550
+Connection ~ 1850 6000
+Wire Wire Line
+	1850 5900 1850 6000
+Wire Wire Line
+	1550 4500 1550 4700
+Connection ~ 4550 850 
+Wire Wire Line
+	4550 950  4550 850 
+Connection ~ 4350 850 
+Wire Wire Line
+	4350 950  4350 850 
+Connection ~ 4150 850 
+Wire Wire Line
+	4150 950  4150 850 
+Connection ~ 3950 850 
+Wire Wire Line
+	3950 950  3950 850 
+Connection ~ 3650 850 
+Wire Wire Line
+	3650 950  3650 850 
 Wire Wire Line
 	4550 1450 4550 1750
 Wire Wire Line
@@ -381,40 +393,238 @@ Wire Wire Line
 	6700 1650 4650 1650
 Wire Wire Line
 	4650 1650 4650 1450
+Wire Wire Line
+	3550 950  3550 850 
+Wire Wire Line
+	3550 850  4900 850 
+Wire Wire Line
+	3750 950  3750 850 
+Connection ~ 3750 850 
+Wire Wire Line
+	3850 850  3850 950 
+Connection ~ 3850 850 
+Wire Wire Line
+	4050 950  4050 850 
+Connection ~ 4050 850 
+Wire Wire Line
+	4250 950  4250 850 
+Connection ~ 4250 850 
+Wire Wire Line
+	4450 950  4450 850 
+Connection ~ 4450 850 
+Wire Wire Line
+	4650 950  4650 850 
+Connection ~ 4650 850 
+Wire Wire Line
+	2050 6000 1600 6000
+Wire Wire Line
+	1600 6400 2050 6400
+Wire Wire Line
+	10300 5100 10300 5250
 $Comp
-L 628B RN1
-U 1 1 4F819DEC
-P 4300 1050
-F 0 "RN1" H 4300 1950 60  0000 C CNN
-F 1 "628B103" H 4300 150 60  0000 C CNN
-	1    4300 1050
-	0    -1   -1   0   
+L +3.3V #PWR?
+U 1 1 4F829FD3
+P 10300 5100
+F 0 "#PWR?" H 10300 5060 30  0001 C CNN
+F 1 "+3.3V" H 10300 5210 30  0000 C CNN
+	1    10300 5100
+	1    0    0    -1  
 $EndComp
-Text Notes 900  1800 0    60   ~ 0
-Resistor pack BI Technologies 628A103\navailable in 220 mil chip (SO16N but slightly wider),\n0.56€ @ Mouser.\nType A is 8 parallel (0.07€ a pop),\ntype B is pullup/downs (0.037€ a pop).
 $Comp
-L +3.3V #PWR028
+L GND #PWR?
+U 1 1 4F829FCF
+P 10300 5800
+F 0 "#PWR?" H 10300 5800 30  0001 C CNN
+F 1 "GND" H 10300 5730 30  0001 C CNN
+	1    10300 5800
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR036
+U 1 1 4F829EA4
+P 1850 6550
+F 0 "#PWR036" H 1850 6550 30  0001 C CNN
+F 1 "GND" H 1850 6480 30  0001 C CNN
+	1    1850 6550
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR037
+U 1 1 4F829EA0
+P 1850 5900
+F 0 "#PWR037" H 1850 5990 20  0001 C CNN
+F 1 "+5V" H 1850 5990 30  0000 C CNN
+	1    1850 5900
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR038
+U 1 1 4F829DF8
+P 1550 4700
+F 0 "#PWR038" H 1550 4700 30  0001 C CNN
+F 1 "GND" H 1550 4630 30  0001 C CNN
+	1    1550 4700
+	1    0    0    -1  
+$EndComp
+Text Notes 1000 5650 0    60   ~ 0
+Dimension decoupling for shifting (MHz)\nplus LED power (64mA spikes)
+$Comp
+L CP1 C16
+U 1 1 4F829D57
+P 2050 6200
+F 0 "C16" H 2100 6300 50  0000 L CNN
+F 1 "CP1" H 2100 6100 50  0000 L CNN
+	1    2050 6200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU12
+U 1 1 4F828559
+P 4650 1200
+F 0 "RPU12" V 4730 1200 50  0000 C CNN
+F 1 "10k" V 4650 1200 50  0000 C CNN
+	1    4650 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU11
+U 1 1 4F828556
+P 4550 1200
+F 0 "RPU11" V 4630 1200 50  0000 C CNN
+F 1 "10k" V 4550 1200 50  0000 C CNN
+	1    4550 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU10
+U 1 1 4F828551
+P 4450 1200
+F 0 "RPU10" V 4530 1200 50  0000 C CNN
+F 1 "10k" V 4450 1200 50  0000 C CNN
+	1    4450 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU9
+U 1 1 4F82854F
+P 4350 1200
+F 0 "RPU9" V 4430 1200 50  0000 C CNN
+F 1 "10k" V 4350 1200 50  0000 C CNN
+	1    4350 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU8
+U 1 1 4F82854D
+P 4250 1200
+F 0 "RPU8" V 4330 1200 50  0000 C CNN
+F 1 "10k" V 4250 1200 50  0000 C CNN
+	1    4250 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU7
+U 1 1 4F82854B
+P 4150 1200
+F 0 "RPU7" V 4230 1200 50  0000 C CNN
+F 1 "10k" V 4150 1200 50  0000 C CNN
+	1    4150 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU6
+U 1 1 4F828544
+P 4050 1200
+F 0 "RPU6" V 4130 1200 50  0000 C CNN
+F 1 "10k" V 4050 1200 50  0000 C CNN
+	1    4050 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU5
+U 1 1 4F828493
+P 3950 1200
+F 0 "RPU5" V 4030 1200 50  0000 C CNN
+F 1 "10k" V 3950 1200 50  0000 C CNN
+	1    3950 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU1
+U 1 1 4F828486
+P 3850 1200
+AR Path="/4F7E05A5/4F82845B" Ref="RPU1"  Part="1" 
+AR Path="/4F7E05A5/4F828486" Ref="RPU4"  Part="1" 
+F 0 "RPU4" V 3930 1200 50  0000 C CNN
+F 1 "10k" V 3850 1200 50  0000 C CNN
+	1    3850 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU1
+U 1 1 4F828480
+P 3750 1200
+AR Path="/4F7E05A5/4F82845B" Ref="RPU1"  Part="1" 
+AR Path="/4F7E05A5/4F828480" Ref="RPU3"  Part="1" 
+F 0 "RPU3" V 3830 1200 50  0000 C CNN
+F 1 "10k" V 3750 1200 50  0000 C CNN
+	1    3750 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU1
+U 1 1 4F828479
+P 3650 1200
+AR Path="/4F7E05A5/4F82845B" Ref="RPU1"  Part="1" 
+AR Path="/4F7E05A5/4F828479" Ref="RPU2"  Part="1" 
+F 0 "RPU2" V 3730 1200 50  0000 C CNN
+F 1 "10k" V 3650 1200 50  0000 C CNN
+	1    3650 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R RPU1
+U 1 1 4F82845B
+P 3550 1200
+F 0 "RPU1" V 3630 1200 50  0000 C CNN
+F 1 "10k" V 3550 1200 50  0000 C CNN
+	1    3550 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C6
+U 1 1 4F81BBD2
+P 10300 5450
+F 0 "C6" H 10350 5550 50  0000 L CNN
+F 1 "C" H 10350 5350 50  0000 L CNN
+	1    10300 5450
+	1    0    0    -1  
+$EndComp
+Text Notes 500  1100 0    60   ~ 0
+Resistor pack BI Technologies 628A103\navailable in 220 mil chip (SO16N but slightly wider),\n0.56€ @ Mouser.\nType A is 8 parallel (0.07€ a pop),\ntype B is pullup/downs (0.037€ a pop).\nMouser 1206 resistors (667-ERJ-P08J103V) are 2€ for 100.\n0805 (667-ERJ-6GEYJ103V) are 1€ for 100.
+$Comp
+L +3.3V #PWR039
 U 1 1 4F8131F4
 P 8950 4750
-F 0 "#PWR028" H 8950 4710 30  0001 C CNN
+F 0 "#PWR039" H 8950 4710 30  0001 C CNN
 F 1 "+3.3V" H 8950 4860 30  0000 C CNN
 	1    8950 4750
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR029
+L +3.3V #PWR040
 U 1 1 4F8131EC
 P 9650 3800
-F 0 "#PWR029" H 9650 3760 30  0001 C CNN
+F 0 "#PWR040" H 9650 3760 30  0001 C CNN
 F 1 "+3.3V" H 9650 3910 30  0000 C CNN
 	1    9650 3800
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR030
+L GND #PWR041
 U 1 1 4F8131C7
 P 9650 5100
-F 0 "#PWR030" H 9650 5100 30  0001 C CNN
+F 0 "#PWR041" H 9650 5100 30  0001 C CNN
 F 1 "GND" H 9650 5030 30  0001 C CNN
 	1    9650 5100
 	1    0    0    -1  
@@ -433,24 +643,24 @@ $EndComp
 Text Notes 950  5200 0    60   ~ 0
 Needs to be 5V/3V compatible --> use HCT
 $Comp
-L GND #PWR031
+L GND #PWR042
 U 1 1 4F803213
 P 1000 4400
-F 0 "#PWR031" H 1000 4400 30  0001 C CNN
+F 0 "#PWR042" H 1000 4400 30  0001 C CNN
 F 1 "GND" H 1000 4330 30  0001 C CNN
 	1    1000 4400
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR032
+L GND #PWR043
 U 1 1 4F803206
 P 5150 5350
-F 0 "#PWR032" H 5150 5350 30  0001 C CNN
+F 0 "#PWR043" H 5150 5350 30  0001 C CNN
 F 1 "GND" H 5150 5280 30  0001 C CNN
 	1    5150 5350
 	1    0    0    -1  
 $EndComp
-Text GLabel 5300 1450 2    60   Input ~ 0
+Text GLabel 4900 850  2    60   Input ~ 0
 VPULLUP
 Text GLabel 10350 4600 2    60   3State ~ 0
 BUS_7
@@ -481,10 +691,10 @@ SW1
 $Comp
 L C C11
 U 1 1 4F7F1642
-P 1100 2900
-F 0 "C11" H 1150 3000 50  0000 L CNN
-F 1 "C" H 1150 2800 50  0000 L CNN
-	1    1100 2900
+P 1600 6200
+F 0 "C11" H 1650 6300 50  0000 L CNN
+F 1 "C" H 1650 6100 50  0000 L CNN
+	1    1600 6200
 	1    0    0    -1  
 $EndComp
 Text Notes 950  4900 0    60   ~ 0
@@ -516,10 +726,10 @@ F 1 "PEL12D" H 5800 2400 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR033
+L GND #PWR044
 U 1 1 4F7E098D
 P 5150 2450
-F 0 "#PWR033" H 5150 2450 30  0001 C CNN
+F 0 "#PWR044" H 5150 2450 30  0001 C CNN
 F 1 "GND" H 5150 2380 30  0001 C CNN
 	1    5150 2450
 	1    0    0    -1  
@@ -543,10 +753,10 @@ F 1 "R" V 4850 2200 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR034
+L GND #PWR045
 U 1 1 4F7E0987
 P 6600 2400
-F 0 "#PWR034" H 6600 2400 30  0001 C CNN
+F 0 "#PWR045" H 6600 2400 30  0001 C CNN
 F 1 "GND" H 6600 2330 30  0001 C CNN
 	1    6600 2400
 	1    0    0    -1  
@@ -588,19 +798,19 @@ F 1 "10n" H 7800 2400 50  0000 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR035
+L GND #PWR046
 U 1 1 4F7E0980
 P 7600 2750
-F 0 "#PWR035" H 7600 2750 30  0001 C CNN
+F 0 "#PWR046" H 7600 2750 30  0001 C CNN
 F 1 "GND" H 7600 2680 30  0001 C CNN
 	1    7600 2750
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR036
+L GND #PWR047
 U 1 1 4F7E097D
 P 7600 4200
-F 0 "#PWR036" H 7600 4200 30  0001 C CNN
+F 0 "#PWR047" H 7600 4200 30  0001 C CNN
 F 1 "GND" H 7600 4130 30  0001 C CNN
 	1    7600 4200
 	1    0    0    -1  
@@ -642,10 +852,10 @@ F 1 "10k" V 7050 3500 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR037
+L GND #PWR048
 U 1 1 4F7E0976
 P 6600 3850
-F 0 "#PWR037" H 6600 3850 30  0001 C CNN
+F 0 "#PWR048" H 6600 3850 30  0001 C CNN
 F 1 "GND" H 6600 3780 30  0001 C CNN
 	1    6600 3850
 	1    0    0    -1  
@@ -669,10 +879,10 @@ F 1 "R" V 4850 3550 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR038
+L GND #PWR049
 U 1 1 4F7E0970
 P 5150 3900
-F 0 "#PWR038" H 5150 3900 30  0001 C CNN
+F 0 "#PWR049" H 5150 3900 30  0001 C CNN
 F 1 "GND" H 5150 3830 30  0001 C CNN
 	1    5150 3900
 	1    0    0    -1  
@@ -696,10 +906,10 @@ F 1 "PEL12D" H 5800 5300 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR039
+L GND #PWR050
 U 1 1 4F7E096D
 P 5150 5350
-F 0 "#PWR039" H 5150 5350 30  0001 C CNN
+F 0 "#PWR050" H 5150 5350 30  0001 C CNN
 F 1 "GND" H 5150 5280 30  0001 C CNN
 	1    5150 5350
 	1    0    0    -1  
@@ -723,10 +933,10 @@ F 1 "R" V 4850 5100 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR040
+L GND #PWR051
 U 1 1 4F7E0967
 P 6600 5300
-F 0 "#PWR040" H 6600 5300 30  0001 C CNN
+F 0 "#PWR051" H 6600 5300 30  0001 C CNN
 F 1 "GND" H 6600 5230 30  0001 C CNN
 	1    6600 5300
 	1    0    0    -1  
@@ -768,19 +978,19 @@ F 1 "10n" H 7800 5300 50  0000 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR041
+L GND #PWR052
 U 1 1 4F7E0960
 P 7600 5650
-F 0 "#PWR041" H 7600 5650 30  0001 C CNN
+F 0 "#PWR052" H 7600 5650 30  0001 C CNN
 F 1 "GND" H 7600 5580 30  0001 C CNN
 	1    7600 5650
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR042
+L GND #PWR053
 U 1 1 4F7E095D
 P 7600 7150
-F 0 "#PWR042" H 7600 7150 30  0001 C CNN
+F 0 "#PWR053" H 7600 7150 30  0001 C CNN
 F 1 "GND" H 7600 7080 30  0001 C CNN
 	1    7600 7150
 	1    0    0    -1  
@@ -822,10 +1032,10 @@ F 1 "10k" V 7050 6450 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR043
+L GND #PWR054
 U 1 1 4F7E0956
 P 6600 6800
-F 0 "#PWR043" H 6600 6800 30  0001 C CNN
+F 0 "#PWR054" H 6600 6800 30  0001 C CNN
 F 1 "GND" H 6600 6730 30  0001 C CNN
 	1    6600 6800
 	1    0    0    -1  
@@ -849,10 +1059,10 @@ F 1 "R" V 4850 6500 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR044
+L GND #PWR055
 U 1 1 4F7E0950
 P 5150 6850
-F 0 "#PWR044" H 5150 6850 30  0001 C CNN
+F 0 "#PWR055" H 5150 6850 30  0001 C CNN
 F 1 "GND" H 5150 6780 30  0001 C CNN
 	1    5150 6850
 	1    0    0    -1  
@@ -867,10 +1077,10 @@ F 1 "PEL12D" H 5800 6800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR045
+L +5V #PWR056
 U 1 1 4F7DFC16
 P 1550 3100
-F 0 "#PWR045" H 1550 3190 20  0001 C CNN
+F 0 "#PWR056" H 1550 3190 20  0001 C CNN
 F 1 "+5V" H 1550 3190 30  0000 C CNN
 	1    1550 3100
 	1    0    0    -1  

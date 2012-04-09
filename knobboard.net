@@ -1,530 +1,597 @@
-# EESchema Netlist Version 1.1 created  Sun 08 Apr 2012 06:38:27 PM CEST
+# EESchema Netlist Version 1.1 created  Mon 09 Apr 2012 10:36:21 AM CEST
 (
- ( /4F7EF61F/4F804892 SM1206 C1 C
-  ( 1 GND )
-  ( 2 +3.3V )
- )
- ( /4F7EF61F/4F8046B1 SM1206 C2 pF
-  ( 1 GND )
-  ( 2 /stm32/OSCIN )
- )
- ( /4F81A858/4F81BBEC SM1206 C3 C
-  ( 1 ? )
-  ( 2 ? )
- )
- ( /4F7EF61F/4F81BB9C SM1206 C4 C
-  ( 1 ? )
-  ( 2 ? )
- )
- ( /4F7EF61F/4F81BBA4 SM1206POL C5 CP1
-  ( 1 ? )
-  ( 2 ? )
- )
- ( /4F7E05A5/4F81BBD2 SM1206 C6 C
-  ( 1 ? )
-  ( 2 ? )
- )
- ( /4F7EF61F/4F7F405D SM1206 C9 C
-  ( 1 +3.3V )
-  ( 2 GND )
- )
- ( /4F7EF61F/4F7F406E SM1206POL C10 CP1
-  ( 1 +3.3V )
-  ( 2 GND )
- )
- ( /4F7E05A5/4F7F1642 SM1206 C11 C
-  ( 1 ? )
-  ( 2 ? )
- )
- ( /4F7EF61F/4F8046B9 SM1206 C12 pF
-  ( 1 GND )
-  ( 2 /stm32/OSCOUT )
- )
- ( /4F7EF61F/4F8047E5 SM1206 C13 C
-  ( 1 +3.3V )
-  ( 2 GND )
- )
- ( /4F7EF61F/4F8047E3 SM1206 C14 C
-  ( 1 +3.3V )
-  ( 2 GND )
- )
- ( /4F7EF61F/4F8047E0 SM1206 C15 C
-  ( 1 +3.3V )
-  ( 2 GND )
- )
- ( /4F7EF61F/4F812A94 SM1206 C18 1u
-  ( 1 GND )
-  ( 2 N-000095 )
- )
- ( /4F7EF61F/4F812A98 SM1206 C19 1u
-  ( 1 GND )
-  ( 2 N-000110 )
- )
- ( /4F7EF61F/4F812A9B SM1206 C20 1u
-  ( 1 GND )
-  ( 2 N-000096 )
- )
- ( /4F7EF61F/4F812A9D SM1206 C21 1u
-  ( 1 GND )
-  ( 2 N-000109 )
- )
- ( /4F7EF61F/4F812A9F SM1206 C22 1u
-  ( 1 GND )
-  ( 2 N-000097 )
- )
- ( /4F7EF61F/4F812A4D SM1206 C23 1u
-  ( 1 N-000106 )
-  ( 2 N-000099 )
- )
- ( /4F7EF61F/4F812A4F SM1206 C24 1u
-  ( 1 N-000107 )
-  ( 2 N-000098 )
- )
- ( /4F7EF61F/4F812A84 SM1206 C25 1u
-  ( 1 N-000108 )
-  ( 2 GND )
- )
- ( /4F7E05A5/4F7E0982 SM1206 CK11 10n
-  ( 1 N-000050 )
-  ( 2 GND )
- )
- ( /4F7E05A5/4F7E0981 SM1206 CK12 10n
-  ( 1 N-000041 )
-  ( 2 GND )
- )
- ( /4F7E05A5/4F7E097B SM1206 CK21 10n
-  ( 1 N-000049 )
-  ( 2 GND )
- )
- ( /4F7E05A5/4F7E097C SM1206 CK22 10n
-  ( 1 N-000038 )
-  ( 2 GND )
- )
- ( /4F7E05A5/4F7E0962 SM1206 CK31 10n
-  ( 1 N-000059 )
-  ( 2 GND )
- )
- ( /4F7E05A5/4F7E0961 SM1206 CK32 10n
-  ( 1 N-000058 )
-  ( 2 GND )
- )
- ( /4F7E05A5/4F7E095B SM1206 CK41 10n
-  ( 1 N-000066 )
-  ( 2 GND )
- )
- ( /4F7E05A5/4F7E095C SM1206 CK42 10n
-  ( 1 N-000057 )
-  ( 2 GND )
- )
- ( /4F7E05A5/4F7E098E PEL12D ENC1 PEL12D
-  ( 1 GND )
-  ( 2 N-000042 )
-  ( 3 N-000034 )
-  ( 4 /switchbus/SW1 )
-  ( A N-000055 )
-  ( B N-000035 )
-  ( C GND )
- )
- ( /4F7E05A5/4F7E096F PEL12D ENC2 PEL12D
-  ( 1 GND )
-  ( 2 N-000040 )
-  ( 3 N-000062 )
-  ( 4 /switchbus/SW2 )
-  ( A N-000056 )
-  ( B N-000043 )
-  ( C GND )
- )
- ( /4F7E05A5/4F7E096E PEL12D ENC3 PEL12D
-  ( 1 GND )
-  ( 2 N-000060 )
-  ( 3 N-000061 )
-  ( 4 /encoders/SW3 )
-  ( A N-000044 )
-  ( B N-000046 )
-  ( C GND )
- )
- ( /4F7E05A5/4F7E094F PEL12D ENC4 PEL12D
-  ( 1 GND )
-  ( 2 N-000069 )
-  ( 3 N-000067 )
-  ( 4 /encoders/SW4 )
-  ( A N-000045 )
-  ( B N-000047 )
-  ( C GND )
- )
- ( /4F80537C/4F8053B5 micro-usb J1 USB_2
-  ( 1 ? )
-  ( 2 ? )
-  ( 3 ? )
-  ( 4 ? )
- )
- ( /4F7EF61F/4F8129BD NHD-C12832A1Z-FSW-FBW LCD1 NHD-LCD
-  ( 1 N-000095 )
-  ( 2 N-000110 )
-  ( 3 N-000096 )
-  ( 4 N-000109 )
-  ( 5 N-000097 )
-  ( 6 N-000106 )
-  ( 7 N-000099 )
-  ( 8 N-000107 )
-  ( 9 N-000098 )
-  ( 10 N-000108 )
-  ( 11 GND )
-  ( 12 +3.3V )
-  ( 13 /stm32/SPI_MOSI )
-  ( 14 /stm32/SPI_SCK )
-  ( 15 /stm32/LCD_A0 )
-  ( 16 +3.3V )
-  ( 17 /stm32/CS_LCD )
-  ( A ? )
-  ( K ? )
- )
- ( /4F7EF61F/4F817FD5 PIN_ARRAY_50MIL_5X2 P2 CONN_5X2
-  ( 1 +3.3V )
-  ( 2 /stm32/SWDIO )
-  ( 3 GND )
-  ( 4 /stm32/SWCLK )
-  ( 5 GND )
-  ( 6 ? )
-  ( 7 ? )
-  ( 8 ? )
-  ( 9 ? )
-  ( 10 /stm32/RST )
- )
- ( /4F80537C/4F8053D3 $noname$ P3 DIN_5
-  ( 1 ? )
-  ( 2 ? )
-  ( 3 ? )
-  ( 4 ? )
-  ( 5 ? )
- )
- ( /4F80537C/4F8053D7 $noname$ P4 DIN_5
-  ( 1 ? )
-  ( 2 ? )
-  ( 3 ? )
-  ( 4 ? )
-  ( 5 ? )
- )
- ( /4F80537C/4F8179DB PIN_ARRAY_5x1 P5 CONN_5
-  ( 1 ? )
-  ( 2 ? )
-  ( 3 ? )
-  ( 4 ? )
-  ( 5 ? )
- )
- ( /4F7EF61F/4F812AD6 TO92-EBC Q1 BC237
-  ( B ? )
-  ( C ? )
-  ( E ? )
- )
- ( /4F7EF61F/4F8057D6 SM1206 R1 10k
-  ( 1 /stm32/BACK )
-  ( 2 GND )
- )
- ( /4F7EF61F/4F8159DE SM1206 R2 10k
-  ( 1 /stm32/LEFT )
-  ( 2 GND )
- )
- ( /4F7EF61F/4F8159EC SM1206 R3 10k
-  ( 1 /stm32/RIGHT )
-  ( 2 GND )
- )
- ( /4F7EF61F/4F8159F2 SM1206 R4 10k
-  ( 1 /stm32/BOOT0 )
-  ( 2 ? )
- )
- ( /4F7EF61F/4F8046CA SM1206 R5 R
-  ( 1 +3.3V )
-  ( 2 /stm32/RST )
- )
- ( /4F7EF61F/4F8054CD SM1206 R6 100k
-  ( 1 +3.3V )
-  ( 2 /stm32/SWDIO )
- )
- ( /4F7EF61F/4F7F4598 SM1206 R29 R
-  ( 1 GND )
-  ( 2 BUS_2 )
- )
- ( /4F7EF61F/4F813810 $noname$ R31 R
-  ( 1 /encoders/BUF_OE )
-  ( 2 +3.3V )
- )
- ( /4F7EF61F/4F813820 $noname$ R32 R
-  ( 1 /stm32/BUF_OE2 )
-  ( 2 +3.3V )
- )
- ( /4F7EF61F/4F813823 $noname$ R33 R
-  ( 1 /stm32/BUF_OE3 )
-  ( 2 +3.3V )
- )
- ( /4F7EF61F/4F81382D $noname$ R34 R
-  ( 1 /stm32/BUF_OE4 )
-  ( 2 +3.3V )
- )
- ( /4F7EF61F/4F813832 $noname$ R35 R
-  ( 1 /stm32/BUF_OE5 )
-  ( 2 +3.3V )
- )
- ( /4F7EF61F/4F813834 $noname$ R36 R
-  ( 1 /stm32/BUF_OE6 )
-  ( 2 +3.3V )
- )
- ( /4F7E05A5/4F7E098B SM1206 RK12 R
-  ( 1 N-000034 )
-  ( 2 N-000065 )
- )
- ( /4F7E05A5/4F7E098A SM1206 RK13 R
-  ( 1 N-000042 )
-  ( 2 N-000032 )
- )
- ( /4F7E05A5/4F7E0984 SM1206 RK16 10k
-  ( 1 N-000041 )
-  ( 2 N-000055 )
- )
- ( /4F7E05A5/4F7E0983 SM1206 RK17 10k
-  ( 1 N-000050 )
-  ( 2 N-000035 )
- )
- ( /4F7E05A5/4F7E0972 SM1206 RK22 R
-  ( 1 N-000062 )
-  ( 2 N-000064 )
- )
- ( /4F7E05A5/4F7E0973 SM1206 RK23 R
-  ( 1 N-000040 )
-  ( 2 N-000033 )
- )
- ( /4F7E05A5/4F7E0979 SM1206 RK26 10k
-  ( 1 N-000038 )
-  ( 2 N-000056 )
- )
- ( /4F7E05A5/4F7E097A SM1206 RK27 10k
-  ( 1 N-000049 )
-  ( 2 N-000043 )
- )
- ( /4F7E05A5/4F7E096B SM1206 RK32 R
-  ( 1 N-000061 )
-  ( 2 N-000037 )
- )
- ( /4F7E05A5/4F7E096A SM1206 RK33 R
-  ( 1 N-000060 )
-  ( 2 N-000051 )
- )
- ( /4F7E05A5/4F7E0964 SM1206 RK36 10k
-  ( 1 N-000058 )
-  ( 2 N-000044 )
- )
- ( /4F7E05A5/4F7E0963 SM1206 RK37 10k
-  ( 1 N-000059 )
-  ( 2 N-000046 )
- )
- ( /4F7E05A5/4F7E0952 SM1206 RK42 R
-  ( 1 N-000067 )
-  ( 2 N-000036 )
- )
- ( /4F7E05A5/4F7E0953 SM1206 RK43 R
-  ( 1 N-000069 )
-  ( 2 N-000063 )
- )
- ( /4F7E05A5/4F7E0959 SM1206 RK46 10k
-  ( 1 N-000057 )
-  ( 2 N-000045 )
- )
- ( /4F7E05A5/4F7E095A SM1206 RK47 10k
-  ( 1 N-000066 )
-  ( 2 N-000047 )
- )
- ( /4F7E05A5/4F819DEC SO16N RN1 628B103
-  ( 1 /encoders/SW4 )
-  ( 2 N-000045 )
-  ( 3 N-000047 )
-  ( 4 /encoders/SW3 )
-  ( 5 N-000044 )
-  ( 6 N-000046 )
-  ( 7 /switchbus/SW2 )
-  ( 8 N-000056 )
-  ( 9 N-000043 )
-  ( 10 /switchbus/SW1 )
-  ( 11 N-000055 )
-  ( 12 N-000035 )
-  ( 13 ? )
-  ( 14 ? )
-  ( 15 ? )
-  ( 16 VPULLUP )
- )
- ( /4F7EF61F/4F805445 SW_PUSH_SMALL SW1 SW_PUSH
-  ( 1 /stm32/BACK )
-  ( 2 +3.3V )
- )
- ( /4F7EF61F/4F8159DF SW_PUSH_SMALL SW2 SW_PUSH
-  ( 1 /stm32/LEFT )
-  ( 2 +3.3V )
- )
- ( /4F7EF61F/4F8159EB SW_PUSH_SMALL SW3 SW_PUSH
-  ( 1 /stm32/RIGHT )
-  ( 2 +3.3V )
- )
- ( /4F7EF61F/4F8159F3 SW_PUSH_SMALL SW4 SW_PUSH
-  ( 1 /stm32/BOOT0 )
-  ( 2 +3.3V )
- )
- ( /4F7EF61F/4F8082AC SO8E U1 SPI-FLASH
-  ( 1 /stm32/CS_FLASH )
-  ( 2 /stm32/SPI_MISO )
-  ( 3 +3.3V )
-  ( 4 GND )
-  ( 5 /stm32/SPI_MOSI )
-  ( 6 /stm32/SPI_SCK )
-  ( 7 +3.3V )
-  ( 8 +3.3V )
- )
- ( /4F7EF61F/4F7F00D7 TQFP44 U2 STM32F102CX
-  ( 1 ? )
-  ( 2 /stm32/BACK )
-  ( 3 /stm32/LEFT )
-  ( 4 /stm32/RIGHT )
-  ( 5 /stm32/OSCIN )
-  ( 6 /stm32/OSCOUT )
-  ( 7 /stm32/RST )
-  ( 8 GND )
-  ( 9 +3.3V )
-  ( 10 /stm32/CS_LCD )
-  ( 11 /stm32/CS_FLASH )
-  ( 12 ? )
-  ( 13 ? )
-  ( 14 /stm32/LED_LATCH )
-  ( 15 /stm32/SPI_SCK )
-  ( 16 /stm32/SPI_MISO )
-  ( 17 /stm32/SPI_MOSI )
-  ( 18 BUS_0 )
-  ( 19 BUS_1 )
-  ( 20 BUS_2 )
-  ( 21 /stm32/BUF_OE3 )
-  ( 22 /stm32/BUF_OE4 )
-  ( 23 GND )
-  ( 24 +3.3V )
-  ( 25 /stm32/BUF_OE5 )
-  ( 26 /stm32/BUF_OE6 )
-  ( 27 /stm32/LCD_A0 )
-  ( 28 VPULLUP )
-  ( 29 /stm32/LED_CLK )
-  ( 30 /stm32/LED_DATA )
-  ( 31 ? )
-  ( 32 ? )
-  ( 33 ? )
-  ( 34 /stm32/SWDIO )
-  ( 35 GND )
-  ( 36 +3.3V )
-  ( 37 /stm32/SWCLK )
-  ( 38 /stm32/BOOT0 )
-  ( 39 BUS_3 )
-  ( 40 BUS_4 )
-  ( 41 BUS_5 )
-  ( 42 BUS_6 )
-  ( 43 BUS_7 )
-  ( 44 /stm32/BOOT0 )
-  ( 45 /encoders/BUF_OE )
-  ( 46 /stm32/BUF_OE2 )
-  ( 47 GND )
-  ( 48 +3.3V )
- )
- ( /4F7E05A5/4F7F091C SO16N U3 74HCT595
-  ( 1 N-000032 )
-  ( 2 N-000064 )
-  ( 3 N-000033 )
-  ( 4 N-000037 )
-  ( 5 N-000051 )
-  ( 6 N-000036 )
-  ( 7 N-000063 )
-  ( 8 GND )
-  ( 9 ? )
-  ( 10 +3.3V )
-  ( 11 /stm32/LED_CLK )
-  ( 12 /stm32/LED_LATCH )
-  ( 13 GND )
-  ( 14 /stm32/LED_DATA )
-  ( 15 N-000065 )
-  ( 16 +3.3V )
- )
- ( /4F81A858/4F81A8A5 SO20L U4 74HC245
-  ( 1 +3.3V )
-  ( 2 /switchbus/SW1 )
-  ( 3 /switchbus/SW2 )
-  ( 4 /encoders/SW3 )
-  ( 5 /encoders/SW4 )
-  ( 6 ? )
-  ( 7 ? )
-  ( 8 ? )
-  ( 9 ? )
-  ( 10 GND )
-  ( 11 BUS_7 )
-  ( 12 BUS_6 )
-  ( 13 BUS_5 )
-  ( 14 BUS_4 )
-  ( 15 BUS_3 )
-  ( 16 BUS_2 )
-  ( 17 BUS_1 )
-  ( 18 BUS_0 )
-  ( 19 /stm32/BUF_OE5 )
-  ( 20 +3.3V )
- )
- ( /4F80537C/4F805397 $noname$ U5 OPTO-TRANSISTOR4
-  ( 1 ? )
-  ( 2 ? )
-  ( 3 ? )
-  ( 4 ? )
- )
- ( /4F7EF61F/4F80534A SOT223 U6 LP2985LV
-  ( 1 ? )
-  ( 2 GND )
-  ( 3 ? )
-  ( 4 ? )
-  ( 5 +3.3V )
- )
- ( /4F7E05A5/4F812DEE SO20L U8 74HC245
-  ( 1 +3.3V )
-  ( 2 N-000041 )
-  ( 3 N-000050 )
-  ( 4 N-000038 )
-  ( 5 N-000049 )
-  ( 6 N-000058 )
-  ( 7 N-000059 )
-  ( 8 N-000057 )
-  ( 9 N-000066 )
-  ( 10 GND )
-  ( 11 BUS_7 )
-  ( 12 BUS_6 )
-  ( 13 BUS_5 )
-  ( 14 BUS_4 )
-  ( 15 BUS_3 )
-  ( 16 BUS_2 )
-  ( 17 BUS_1 )
-  ( 18 BUS_0 )
-  ( 19 /encoders/BUF_OE )
-  ( 20 +3.3V )
- )
- ( /4F7EF61F/4F8046A8 HC-18UV X1 CRYSTAL
-  ( 1 /stm32/OSCIN )
-  ( 2 /stm32/OSCOUT )
+ ( /4F81A858/4F81BBEC $noname  C3 C {Lib=C}
+  (    1 ? )
+  (    2 ? )
+ )
+ ( /4F81A858/4F81A8A5 $noname  U4 74HC245 {Lib=74LS245}
+  (    1 +3.3V )
+  (    2 /encoders/SW1 )
+  (    3 /encoders/SW2 )
+  (    4 /switchbus/SW3 )
+  (    5 /switchbus/SW4 )
+  (    6 ? )
+  (    7 ? )
+  (    8 ? )
+  (    9 ? )
+  (   10 GND )
+  (   11 BUS_7 )
+  (   12 BUS_6 )
+  (   13 BUS_5 )
+  (   14 BUS_4 )
+  (   15 BUS_3 )
+  (   16 BUS_2 )
+  (   17 BUS_1 )
+  (   18 BUS_0 )
+  (   19 /stm32/BUF_OE5 )
+  (   20 +3.3V )
+ )
+ ( /4F80537C/4F8179DB $noname  P5 CONN_5 {Lib=CONN_5}
+  (    1 ? )
+  (    2 ? )
+  (    3 ? )
+  (    4 ? )
+  (    5 ? )
+ )
+ ( /4F80537C/4F8053D7 $noname  P4 DIN_5 {Lib=DIN_5}
+  (    1 ? )
+  (    2 ? )
+  (    3 ? )
+  (    4 ? )
+  (    5 ? )
+ )
+ ( /4F80537C/4F8053D3 $noname  P3 DIN_5 {Lib=DIN_5}
+  (    1 ? )
+  (    2 ? )
+  (    3 ? )
+  (    4 ? )
+  (    5 ? )
+ )
+ ( /4F80537C/4F8053B5 $noname  J1 USB_2 {Lib=USB_2}
+  (    1 ? )
+  (    2 ? )
+  (    3 ? )
+  (    4 ? )
+ )
+ ( /4F80537C/4F805397 $noname  U5 OPTO-TRANSISTOR4 {Lib=OPTO-TRANSISTOR4}
+  (    1 ? )
+  (    2 ? )
+  (    3 ? )
+  (    4 ? )
+ )
+ ( /4F7EF61F/4F8290BC $noname  R9 R {Lib=R}
+  (    1 N-000115 )
+  (    2 /stm32/OSCOUT )
+ )
+ ( /4F7EF61F/4F828F04 $noname  R8 10k {Lib=R}
+  (    1 N-000100 )
+  (    2 VPULLUP )
+ )
+ ( /4F7EF61F/4F828D56 $noname  R7 DNP {Lib=R}
+  (    1 +3.3V )
+  (    2 BUS_2 )
+ )
+ ( /4F7EF61F/4F8288AD $noname  C7 1u {Lib=C}
+  (    1 +3.3V )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F82871D $noname  C8 100n {Lib=C}
+  (    1 +3.3V )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F81BBA4 $noname  C5 CP1 {Lib=CP1}
+  (    1 ? )
+  (    2 ? )
+ )
+ ( /4F7EF61F/4F81BB9C $noname  C4 C {Lib=C}
+  (    1 ? )
+  (    2 ? )
+ )
+ ( /4F7EF61F/4F817FD5 $noname  P2 CONN_5X2 {Lib=CONN_5X2}
+  (    1 +3.3V )
+  (    2 /stm32/SWDIO )
+  (    3 GND )
+  (    4 /stm32/SWCLK )
+  (    5 GND )
+  (    6 ? )
+  (    7 ? )
+  (    8 ? )
+  (    9 ? )
+  (   10 /stm32/RST )
+ )
+ ( /4F7EF61F/4F8159F3 $noname  SW4 SW_PUSH {Lib=SW_PUSH}
+  (    1 /stm32/ENTER )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F8159F2 $noname  R4 10k {Lib=R}
+  (    1 /stm32/ENTER )
+  (    2 ? )
+ )
+ ( /4F7EF61F/4F8159EC $noname  R3 10k {Lib=R}
+  (    1 /stm32/RIGHT )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F8159EB $noname  SW3 SW_PUSH {Lib=SW_PUSH}
+  (    1 /stm32/RIGHT )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F8159DF $noname  SW2 SW_PUSH {Lib=SW_PUSH}
+  (    1 /stm32/BOOT0 )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F8159DE $noname  R2 10k {Lib=R}
+  (    1 /stm32/BOOT0 )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F813834 $noname  R36 10k {Lib=R}
+  (    1 /stm32/BUF_OE6 )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F813832 $noname  R35 10k {Lib=R}
+  (    1 /stm32/BUF_OE5 )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F81382D $noname  R34 10k {Lib=R}
+  (    1 /stm32/BUF_OE4 )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F813823 $noname  R33 10k {Lib=R}
+  (    1 /stm32/BUF_OE3 )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F813820 $noname  R32 10k {Lib=R}
+  (    1 /stm32/BUF_OE2 )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F813810 $noname  R31 10k {Lib=R}
+  (    1 /encoders/BUF_OE )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F812AD6 TO92-EBC  Q1 BC237 {Lib=BC237}
+  (    B N-000100 )
+  (    C N-000101 )
+  (    E GND )
+ )
+ ( /4F7EF61F/4F812A9F $noname  C22 1u {Lib=C}
+  (    1 GND )
+  (    2 N-000104 )
+ )
+ ( /4F7EF61F/4F812A9D $noname  C21 1u {Lib=C}
+  (    1 GND )
+  (    2 N-000082 )
+ )
+ ( /4F7EF61F/4F812A9B $noname  C20 1u {Lib=C}
+  (    1 GND )
+  (    2 N-000105 )
+ )
+ ( /4F7EF61F/4F812A98 $noname  C19 1u {Lib=C}
+  (    1 GND )
+  (    2 N-000081 )
+ )
+ ( /4F7EF61F/4F812A94 $noname  C18 1u {Lib=C}
+  (    1 GND )
+  (    2 N-000106 )
+ )
+ ( /4F7EF61F/4F812A84 $noname  C25 1u {Lib=C}
+  (    1 N-000083 )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F812A4F $noname  C24 1u {Lib=C}
+  (    1 N-000087 )
+  (    2 N-000103 )
+ )
+ ( /4F7EF61F/4F812A4D $noname  C23 1u {Lib=C}
+  (    1 N-000099 )
+  (    2 N-000102 )
+ )
+ ( /4F7EF61F/4F8129BD $noname  LCD1 NHD-LCD {Lib=NHD-LCD}
+  (    1 N-000106 )
+  (    2 N-000081 )
+  (    3 N-000105 )
+  (    4 N-000082 )
+  (    5 N-000104 )
+  (    6 N-000099 )
+  (    7 N-000102 )
+  (    8 N-000087 )
+  (    9 N-000103 )
+  (   10 N-000083 )
+  (   11 GND )
+  (   12 +3.3V )
+  (   13 /stm32/SPI_MOSI )
+  (   14 /stm32/SPI_SCK )
+  (   15 /stm32/LCD_A0 )
+  (   16 +3.3V )
+  (   17 /stm32/CS_LCD )
+  (    A +3.3V )
+  (    K N-000101 )
+ )
+ ( /4F7EF61F/4F8082AC $noname  U1 SPI-FLASH {Lib=SPI-FLASH}
+  (    1 /stm32/CS_FLASH )
+  (    2 /stm32/SPI_MISO )
+  (    3 +3.3V )
+  (    4 GND )
+  (    5 /stm32/SPI_MOSI )
+  (    6 /stm32/SPI_SCK )
+  (    7 +3.3V )
+  (    8 +3.3V )
+ )
+ ( /4F7EF61F/4F8057D6 $noname  R1 10k {Lib=R}
+  (    1 /stm32/BACK )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F8054CD $noname  R6 100k {Lib=R}
+  (    1 +3.3V )
+  (    2 /stm32/SWDIO )
+ )
+ ( /4F7EF61F/4F805445 $noname  SW1 SW_PUSH {Lib=SW_PUSH}
+  (    1 /stm32/BACK )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F80534A $noname  U6 LP2985LV {Lib=LP2985LV}
+  (    1 ? )
+  (    2 GND )
+  (    3 ? )
+  (    4 ? )
+  (    5 +3.3V )
+ )
+ ( /4F7EF61F/4F804892 $noname  C1 C {Lib=C}
+  (    1 GND )
+  (    2 +3.3V )
+ )
+ ( /4F7EF61F/4F8047E5 $noname  C13 100n {Lib=C}
+  (    1 +3.3V )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F8047E3 $noname  C14 100n {Lib=C}
+  (    1 +3.3V )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F8047E0 $noname  C15 100n {Lib=C}
+  (    1 +3.3V )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F8046CA $noname  R5 10k {Lib=R}
+  (    1 +3.3V )
+  (    2 /stm32/RST )
+ )
+ ( /4F7EF61F/4F8046B9 $noname  C12 pF {Lib=C}
+  (    1 GND )
+  (    2 N-000115 )
+ )
+ ( /4F7EF61F/4F8046B1 $noname  C2 pF {Lib=C}
+  (    1 GND )
+  (    2 /stm32/OSCIN )
+ )
+ ( /4F7EF61F/4F8046A8 $noname  X1 CRYSTAL {Lib=CRYSTAL}
+  (    1 /stm32/OSCIN )
+  (    2 N-000115 )
+ )
+ ( /4F7EF61F/4F7F4598 $noname  R29 10k {Lib=R}
+  (    1 GND )
+  (    2 BUS_2 )
+ )
+ ( /4F7EF61F/4F7F406E $noname  C10 10u {Lib=CP1}
+  (    1 +3.3V )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F7F405D $noname  C9 100n {Lib=C}
+  (    1 +3.3V )
+  (    2 GND )
+ )
+ ( /4F7EF61F/4F7F00D7 $noname  U2 STM32F102CX {Lib=STM32F102CX}
+  (    1 +3.3V )
+  (    2 /stm32/BACK )
+  (    3 /stm32/BOOT0 )
+  (    4 /stm32/RIGHT )
+  (    5 /stm32/OSCIN )
+  (    6 /stm32/OSCOUT )
+  (    7 /stm32/RST )
+  (    8 GND )
+  (    9 +3.3V )
+  (   10 /stm32/CS_LCD )
+  (   11 /stm32/CS_FLASH )
+  (   12 ? )
+  (   13 ? )
+  (   14 /stm32/LED_LATCH )
+  (   15 /stm32/SPI_SCK )
+  (   16 /stm32/SPI_MISO )
+  (   17 /stm32/SPI_MOSI )
+  (   18 BUS_0 )
+  (   19 BUS_1 )
+  (   20 BUS_2 )
+  (   21 /stm32/BUF_OE3 )
+  (   22 /stm32/BUF_OE4 )
+  (   23 GND )
+  (   24 +3.3V )
+  (   25 /stm32/BUF_OE5 )
+  (   26 /stm32/BUF_OE6 )
+  (   27 /stm32/LCD_A0 )
+  (   28 VPULLUP )
+  (   29 /stm32/LED_CLK )
+  (   30 /stm32/LED_DATA )
+  (   31 ? )
+  (   32 ? )
+  (   33 ? )
+  (   34 /stm32/SWDIO )
+  (   35 GND )
+  (   36 +3.3V )
+  (   37 /stm32/SWCLK )
+  (   38 /stm32/ENTER )
+  (   39 BUS_3 )
+  (   40 BUS_4 )
+  (   41 BUS_5 )
+  (   42 BUS_6 )
+  (   43 BUS_7 )
+  (   44 /stm32/BOOT0 )
+  (   45 /encoders/BUF_OE )
+  (   46 /stm32/BUF_OE2 )
+  (   47 GND )
+  (   48 +3.3V )
+ )
+ ( /4F7E05A5/4F829D57 $noname  C16 CP1 {Lib=CP1}
+  (    1 +3.3V )
+  (    2 GND )
+ )
+ ( /4F7E05A5/4F828559 $noname  RPU12 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 N-000037 )
+ )
+ ( /4F7E05A5/4F828556 $noname  RPU11 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 N-000052 )
+ )
+ ( /4F7E05A5/4F828551 $noname  RPU10 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 /encoders/SW1 )
+ )
+ ( /4F7E05A5/4F82854F $noname  RPU9 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 N-000043 )
+ )
+ ( /4F7E05A5/4F82854D $noname  RPU8 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 N-000053 )
+ )
+ ( /4F7E05A5/4F82854B $noname  RPU7 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 /encoders/SW2 )
+ )
+ ( /4F7E05A5/4F828544 $noname  RPU6 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 N-000046 )
+ )
+ ( /4F7E05A5/4F828493 $noname  RPU5 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 N-000047 )
+ )
+ ( /4F7E05A5/4F828486 $noname  RPU4 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 /switchbus/SW3 )
+ )
+ ( /4F7E05A5/4F828480 $noname  RPU3 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 N-000045 )
+ )
+ ( /4F7E05A5/4F828479 $noname  RPU2 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 N-000049 )
+ )
+ ( /4F7E05A5/4F82845B $noname  RPU1 10k {Lib=R}
+  (    1 VPULLUP )
+  (    2 /switchbus/SW4 )
+ )
+ ( /4F7E05A5/4F81BBD2 $noname  C6 C {Lib=C}
+  (    1 ? )
+  (    2 ? )
+ )
+ ( /4F7E05A5/4F812DEE $noname  U8 74HC245 {Lib=74LS245}
+  (    1 +3.3V )
+  (    2 N-000041 )
+  (    3 N-000062 )
+  (    4 N-000038 )
+  (    5 N-000050 )
+  (    6 N-000056 )
+  (    7 N-000057 )
+  (    8 N-000055 )
+  (    9 N-000054 )
+  (   10 GND )
+  (   11 BUS_7 )
+  (   12 BUS_6 )
+  (   13 BUS_5 )
+  (   14 BUS_4 )
+  (   15 BUS_3 )
+  (   16 BUS_2 )
+  (   17 BUS_1 )
+  (   18 BUS_0 )
+  (   19 /encoders/BUF_OE )
+  (   20 +3.3V )
+ )
+ ( /4F7E05A5/4F7F1642 $noname  C11 C {Lib=C}
+  (    1 +3.3V )
+  (    2 GND )
+ )
+ ( /4F7E05A5/4F7F091C $noname  U3 74HCT595 {Lib=74HC595}
+  (    1 N-000032 )
+  (    2 N-000065 )
+  (    3 N-000033 )
+  (    4 N-000034 )
+  (    5 N-000063 )
+  (    6 N-000035 )
+  (    7 N-000064 )
+  (    8 GND )
+  (    9 ? )
+  (   10 +3.3V )
+  (   11 /stm32/LED_CLK )
+  (   12 /stm32/LED_LATCH )
+  (   13 GND )
+  (   14 /stm32/LED_DATA )
+  (   15 N-000044 )
+  (   16 +3.3V )
+ )
+ ( /4F7E05A5/4F7E098E $noname  ENC1 PEL12D {Lib=PEL12D}
+  (    1 GND )
+  (    2 N-000042 )
+  (    3 N-000036 )
+  (    4 /encoders/SW1 )
+  (    A N-000052 )
+  (    B N-000037 )
+  (    C GND )
+ )
+ ( /4F7E05A5/4F7E098B $noname  RK12 R {Lib=R}
+  (    1 N-000036 )
+  (    2 N-000044 )
+ )
+ ( /4F7E05A5/4F7E098A $noname  RK13 R {Lib=R}
+  (    1 N-000042 )
+  (    2 N-000032 )
+ )
+ ( /4F7E05A5/4F7E0984 $noname  RK16 10k {Lib=R}
+  (    1 N-000041 )
+  (    2 N-000052 )
+ )
+ ( /4F7E05A5/4F7E0983 $noname  RK17 10k {Lib=R}
+  (    1 N-000062 )
+  (    2 N-000037 )
+ )
+ ( /4F7E05A5/4F7E0982 $noname  CK11 10n {Lib=C}
+  (    1 N-000062 )
+  (    2 GND )
+ )
+ ( /4F7E05A5/4F7E0981 $noname  CK12 10n {Lib=C}
+  (    1 N-000041 )
+  (    2 GND )
+ )
+ ( /4F7E05A5/4F7E097C $noname  CK22 10n {Lib=C}
+  (    1 N-000038 )
+  (    2 GND )
+ )
+ ( /4F7E05A5/4F7E097B $noname  CK21 10n {Lib=C}
+  (    1 N-000050 )
+  (    2 GND )
+ )
+ ( /4F7E05A5/4F7E097A $noname  RK27 10k {Lib=R}
+  (    1 N-000050 )
+  (    2 N-000043 )
+ )
+ ( /4F7E05A5/4F7E0979 $noname  RK26 10k {Lib=R}
+  (    1 N-000038 )
+  (    2 N-000053 )
+ )
+ ( /4F7E05A5/4F7E0973 $noname  RK23 R {Lib=R}
+  (    1 N-000039 )
+  (    2 N-000033 )
+ )
+ ( /4F7E05A5/4F7E0972 $noname  RK22 R {Lib=R}
+  (    1 N-000061 )
+  (    2 N-000065 )
+ )
+ ( /4F7E05A5/4F7E096F $noname  ENC2 PEL12D {Lib=PEL12D}
+  (    1 GND )
+  (    2 N-000039 )
+  (    3 N-000061 )
+  (    4 /encoders/SW2 )
+  (    A N-000053 )
+  (    B N-000043 )
+  (    C GND )
+ )
+ ( /4F7E05A5/4F7E096E $noname  ENC3 PEL12D {Lib=PEL12D}
+  (    1 GND )
+  (    2 N-000058 )
+  (    3 N-000060 )
+  (    4 /switchbus/SW3 )
+  (    A N-000047 )
+  (    B N-000046 )
+  (    C GND )
+ )
+ ( /4F7E05A5/4F7E096B $noname  RK32 R {Lib=R}
+  (    1 N-000060 )
+  (    2 N-000034 )
+ )
+ ( /4F7E05A5/4F7E096A $noname  RK33 R {Lib=R}
+  (    1 N-000058 )
+  (    2 N-000063 )
+ )
+ ( /4F7E05A5/4F7E0964 $noname  RK36 10k {Lib=R}
+  (    1 N-000056 )
+  (    2 N-000047 )
+ )
+ ( /4F7E05A5/4F7E0963 $noname  RK37 10k {Lib=R}
+  (    1 N-000057 )
+  (    2 N-000046 )
+ )
+ ( /4F7E05A5/4F7E0962 $noname  CK31 10n {Lib=C}
+  (    1 N-000057 )
+  (    2 GND )
+ )
+ ( /4F7E05A5/4F7E0961 $noname  CK32 10n {Lib=C}
+  (    1 N-000056 )
+  (    2 GND )
+ )
+ ( /4F7E05A5/4F7E095C $noname  CK42 10n {Lib=C}
+  (    1 N-000055 )
+  (    2 GND )
+ )
+ ( /4F7E05A5/4F7E095B $noname  CK41 10n {Lib=C}
+  (    1 N-000054 )
+  (    2 GND )
+ )
+ ( /4F7E05A5/4F7E095A $noname  RK47 10k {Lib=R}
+  (    1 N-000054 )
+  (    2 N-000045 )
+ )
+ ( /4F7E05A5/4F7E0959 $noname  RK46 10k {Lib=R}
+  (    1 N-000055 )
+  (    2 N-000049 )
+ )
+ ( /4F7E05A5/4F7E0953 $noname  RK43 R {Lib=R}
+  (    1 N-000059 )
+  (    2 N-000064 )
+ )
+ ( /4F7E05A5/4F7E0952 $noname  RK42 R {Lib=R}
+  (    1 N-000066 )
+  (    2 N-000035 )
+ )
+ ( /4F7E05A5/4F7E094F $noname  ENC4 PEL12D {Lib=PEL12D}
+  (    1 GND )
+  (    2 N-000059 )
+  (    3 N-000066 )
+  (    4 /switchbus/SW4 )
+  (    A N-000049 )
+  (    B N-000045 )
+  (    C GND )
  )
 )
 *
 { Allowed footprints by component:
-$component C1
- SM*
- C?
- C1-1
-$endlist
-$component C2
- SM*
- C?
- C1-1
-$endlist
 $component C3
  SM*
  C?
  C1-1
 $endlist
-$component C4
+$component R9
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R8
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R7
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component C7
+ SM*
+ C?
+ C1-1
+$endlist
+$component C8
  SM*
  C?
  C1-1
@@ -533,26 +600,121 @@ $component C5
  CP*
  SM*
 $endlist
-$component C6
+$component C4
  SM*
  C?
  C1-1
 $endlist
-$component C9
+$component R4
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R3
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R2
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R36
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R35
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R34
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R33
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R32
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R31
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component Q1
+ TO92-EBC
+$endlist
+$component C22
  SM*
  C?
  C1-1
 $endlist
-$component C10
- CP*
- SM*
-$endlist
-$component C11
+$component C21
  SM*
  C?
  C1-1
 $endlist
-$component C12
+$component C20
+ SM*
+ C?
+ C1-1
+$endlist
+$component C19
+ SM*
+ C?
+ C1-1
+$endlist
+$component C18
+ SM*
+ C?
+ C1-1
+$endlist
+$component C25
+ SM*
+ C?
+ C1-1
+$endlist
+$component C24
+ SM*
+ C?
+ C1-1
+$endlist
+$component C23
+ SM*
+ C?
+ C1-1
+$endlist
+$component R1
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R6
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component C1
  SM*
  C?
  C1-1
@@ -572,124 +734,21 @@ $component C15
  C?
  C1-1
 $endlist
-$component C18
- SM*
- C?
- C1-1
-$endlist
-$component C19
- SM*
- C?
- C1-1
-$endlist
-$component C20
- SM*
- C?
- C1-1
-$endlist
-$component C21
- SM*
- C?
- C1-1
-$endlist
-$component C22
- SM*
- C?
- C1-1
-$endlist
-$component C23
- SM*
- C?
- C1-1
-$endlist
-$component C24
- SM*
- C?
- C1-1
-$endlist
-$component C25
- SM*
- C?
- C1-1
-$endlist
-$component CK11
- SM*
- C?
- C1-1
-$endlist
-$component CK12
- SM*
- C?
- C1-1
-$endlist
-$component CK21
- SM*
- C?
- C1-1
-$endlist
-$component CK22
- SM*
- C?
- C1-1
-$endlist
-$component CK31
- SM*
- C?
- C1-1
-$endlist
-$component CK32
- SM*
- C?
- C1-1
-$endlist
-$component CK41
- SM*
- C?
- C1-1
-$endlist
-$component CK42
- SM*
- C?
- C1-1
-$endlist
-$component Q1
- TO92-EBC
-$endlist
-$component R1
- R?
- SM0603
- SM0805
- R?-*
-$endlist
-$component R2
- R?
- SM0603
- SM0805
- R?-*
-$endlist
-$component R3
- R?
- SM0603
- SM0805
- R?-*
-$endlist
-$component R4
- R?
- SM0603
- SM0805
- R?-*
-$endlist
 $component R5
  R?
  SM0603
  SM0805
  R?-*
 $endlist
-$component R6
- R?
- SM0603
- SM0805
- R?-*
+$component C12
+ SM*
+ C?
+ C1-1
+$endlist
+$component C2
+ SM*
+ C?
+ C1-1
 $endlist
 $component R29
  R?
@@ -697,41 +756,100 @@ $component R29
  SM0805
  R?-*
 $endlist
-$component R31
+$component C10
+ CP*
+ SM*
+$endlist
+$component C9
+ SM*
+ C?
+ C1-1
+$endlist
+$component C16
+ CP*
+ SM*
+$endlist
+$component RPU12
  R?
  SM0603
  SM0805
  R?-*
 $endlist
-$component R32
+$component RPU11
  R?
  SM0603
  SM0805
  R?-*
 $endlist
-$component R33
+$component RPU10
  R?
  SM0603
  SM0805
  R?-*
 $endlist
-$component R34
+$component RPU9
  R?
  SM0603
  SM0805
  R?-*
 $endlist
-$component R35
+$component RPU8
  R?
  SM0603
  SM0805
  R?-*
 $endlist
-$component R36
+$component RPU7
  R?
  SM0603
  SM0805
  R?-*
+$endlist
+$component RPU6
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component RPU5
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component RPU4
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component RPU3
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component RPU2
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component RPU1
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component C6
+ SM*
+ C?
+ C1-1
+$endlist
+$component C11
+ SM*
+ C?
+ C1-1
 $endlist
 $component RK12
  R?
@@ -757,13 +875,27 @@ $component RK17
  SM0805
  R?-*
 $endlist
-$component RK22
- R?
- SM0603
- SM0805
- R?-*
+$component CK11
+ SM*
+ C?
+ C1-1
 $endlist
-$component RK23
+$component CK12
+ SM*
+ C?
+ C1-1
+$endlist
+$component CK22
+ SM*
+ C?
+ C1-1
+$endlist
+$component CK21
+ SM*
+ C?
+ C1-1
+$endlist
+$component RK27
  R?
  SM0603
  SM0805
@@ -775,7 +907,13 @@ $component RK26
  SM0805
  R?-*
 $endlist
-$component RK27
+$component RK23
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component RK22
  R?
  SM0603
  SM0805
@@ -805,13 +943,27 @@ $component RK37
  SM0805
  R?-*
 $endlist
-$component RK42
- R?
- SM0603
- SM0805
- R?-*
+$component CK31
+ SM*
+ C?
+ C1-1
 $endlist
-$component RK43
+$component CK32
+ SM*
+ C?
+ C1-1
+$endlist
+$component CK42
+ SM*
+ C?
+ C1-1
+$endlist
+$component CK41
+ SM*
+ C?
+ C1-1
+$endlist
+$component RK47
  R?
  SM0603
  SM0805
@@ -823,7 +975,13 @@ $component RK46
  SM0805
  R?-*
 $endlist
-$component RK47
+$component RK43
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component RK42
  R?
  SM0603
  SM0805
@@ -831,3 +989,403 @@ $component RK47
 $endlist
 $endfootprintlist
 }
+{ Pin List by Nets
+Net 1 "/stm32/BUF_OE2" "BUF_OE2"
+ U2 46
+ R32 1
+Net 2 "/stm32/BUF_OE3" "BUF_OE3"
+ U2 21
+ R33 1
+Net 3 "/stm32/BUF_OE4" "BUF_OE4"
+ R34 1
+ U2 22
+Net 4 "/stm32/BUF_OE5" "BUF_OE5"
+ U4 19
+ R35 1
+ U2 25
+Net 5 "/stm32/BUF_OE6" "BUF_OE6"
+ R36 1
+ U2 26
+Net 11 "/stm32/LED_DATA" "LED_DATA"
+ U2 30
+ U3 14
+Net 12 "/encoders/BUF_OE" "BUF_OE"
+ U8 19
+ U2 45
+ R31 1
+Net 13 "/switchbus/SW4" "SW4"
+ RPU1 2
+ ENC4 4
+ U4 5
+Net 14 "/switchbus/SW3" "SW3"
+ RPU4 2
+ U4 4
+ ENC3 4
+Net 15 "/encoders/SW2" "SW2"
+ U4 3
+ RPU7 2
+ ENC2 4
+Net 16 "/encoders/SW1" "SW1"
+ ENC1 4
+ U4 2
+ RPU10 2
+Net 17 "/stm32/LED_LATCH" "LED_LATCH"
+ U3 12
+ U2 14
+Net 18 "/stm32/LED_CLK" "LED_CLK"
+ U2 29
+ U3 11
+Net 32 "" ""
+ U3 1
+ RK13 2
+Net 33 "" ""
+ RK23 2
+ U3 3
+Net 34 "" ""
+ U3 4
+ RK32 2
+Net 35 "" ""
+ RK42 2
+ U3 6
+Net 36 "" ""
+ RK12 1
+ ENC1 3
+Net 37 "" ""
+ RK17 2
+ ENC1 B
+ RPU12 2
+Net 38 "" ""
+ CK22 1
+ RK26 1
+ U8 4
+Net 39 "" ""
+ RK23 1
+ ENC2 2
+Net 40 "GND" "GND"
+ U3 13
+ U3 8
+ C11 2
+ C16 2
+ P2 5
+ P2 3
+ C8 2
+ C7 2
+ C22 1
+ Q1 E
+ U1 4
+ C19 1
+ C18 1
+ C25 2
+ C21 1
+ LCD1 11
+ C1 1
+ C13 2
+ C14 2
+ C15 2
+ U4 10
+ U2 8
+ U2 23
+ C12 1
+ C2 1
+ R29 1
+ C10 2
+ C9 2
+ R3 2
+ R2 2
+ U2 35
+ U2 47
+ R1 2
+ U6 2
+ C20 1
+ ENC3 C
+ ENC2 1
+ ENC2 C
+ CK31 2
+ CK42 2
+ ENC4 1
+ CK12 2
+ CK11 2
+ ENC4 C
+ CK41 2
+ CK22 2
+ CK21 2
+ ENC1 1
+ U8 10
+ ENC3 1
+ CK32 2
+ ENC1 C
+Net 41 "" ""
+ U8 2
+ RK16 1
+ CK12 1
+Net 42 "" ""
+ ENC1 2
+ RK13 1
+Net 43 "" ""
+ ENC2 B
+ RK27 2
+ RPU9 2
+Net 44 "" ""
+ RK12 2
+ U3 15
+Net 45 "" ""
+ RPU3 2
+ ENC4 B
+ RK47 2
+Net 46 "" ""
+ RPU6 2
+ RK37 2
+ ENC3 B
+Net 47 "" ""
+ ENC3 A
+ RK36 2
+ RPU5 2
+Net 48 "+3.3V" "+3.3V"
+ U6 5
+ R6 1
+ U8 20
+ R32 2
+ C10 1
+ C9 1
+ R31 2
+ R33 2
+ R34 2
+ R35 2
+ R36 2
+ R5 1
+ SW2 2
+ U4 20
+ U4 1
+ SW3 2
+ U2 9
+ U2 1
+ U2 24
+ C14 1
+ LCD1 A
+ LCD1 12
+ C1 2
+ C13 1
+ C15 1
+ U1 7
+ U1 8
+ SW4 2
+ U2 36
+ U2 48
+ LCD1 16
+ SW1 2
+ U1 3
+ C7 1
+ C8 1
+ P2 1
+ U8 1
+ C16 1
+ C11 1
+ U3 10
+ U3 16
+ R7 1
+Net 49 "" ""
+ ENC4 A
+ RPU2 2
+ RK46 2
+Net 50 "" ""
+ U8 5
+ CK21 1
+ RK27 1
+Net 51 "VPULLUP" "VPULLUP"
+ RPU9 1
+ RPU4 1
+ RPU5 1
+ RPU7 1
+ R8 2
+ RPU8 1
+ RPU6 1
+ RPU2 1
+ RPU12 1
+ U2 28
+ RPU3 1
+ RPU11 1
+ RPU10 1
+ RPU1 1
+Net 52 "" ""
+ ENC1 A
+ RPU11 2
+ RK16 2
+Net 53 "" ""
+ ENC2 A
+ RPU8 2
+ RK26 2
+Net 54 "" ""
+ U8 9
+ CK41 1
+ RK47 1
+Net 55 "" ""
+ U8 8
+ CK42 1
+ RK46 1
+Net 56 "" ""
+ CK32 1
+ RK36 1
+ U8 6
+Net 57 "" ""
+ RK37 1
+ U8 7
+ CK31 1
+Net 58 "" ""
+ ENC3 2
+ RK33 1
+Net 59 "" ""
+ ENC4 2
+ RK43 1
+Net 60 "" ""
+ RK32 1
+ ENC3 3
+Net 61 "" ""
+ RK22 1
+ ENC2 3
+Net 62 "" ""
+ U8 3
+ RK17 1
+ CK11 1
+Net 63 "" ""
+ U3 5
+ RK33 2
+Net 64 "" ""
+ U3 7
+ RK43 2
+Net 65 "" ""
+ RK22 2
+ U3 2
+Net 66 "" ""
+ RK42 1
+ ENC4 3
+Net 69 "BUS_7" "BUS_7"
+ U4 11
+ U2 43
+ U8 11
+Net 70 "BUS_6" "BUS_6"
+ U4 12
+ U8 12
+ U2 42
+Net 71 "BUS_5" "BUS_5"
+ U8 13
+ U2 41
+ U4 13
+Net 72 "BUS_4" "BUS_4"
+ U4 14
+ U2 40
+ U8 14
+Net 73 "BUS_3" "BUS_3"
+ U8 15
+ U4 15
+ U2 39
+Net 74 "BUS_2" "BUS_2"
+ U8 16
+ U2 20
+ R7 2
+ U4 16
+ R29 2
+Net 75 "BUS_1" "BUS_1"
+ U2 19
+ U4 17
+ U8 17
+Net 76 "BUS_0" "BUS_0"
+ U4 18
+ U8 18
+ U2 18
+Net 78 "/stm32/SWDIO" "SWDIO"
+ U2 34
+ R6 2
+ P2 2
+Net 79 "/stm32/SWCLK" "SWCLK"
+ U2 37
+ P2 4
+Net 80 "/stm32/RST" "RST"
+ R5 2
+ U2 7
+ P2 10
+Net 81 "" ""
+ C19 2
+ LCD1 2
+Net 82 "" ""
+ LCD1 4
+ C21 2
+Net 83 "" ""
+ C25 1
+ LCD1 10
+Net 84 "/stm32/CS_FLASH" "CS_FLASH"
+ U1 1
+ U2 11
+Net 85 "/stm32/RIGHT" "RIGHT"
+ R3 1
+ SW3 1
+ U2 4
+Net 86 "/stm32/ENTER" "ENTER"
+ U2 38
+ SW4 1
+ R4 1
+Net 87 "" ""
+ LCD1 8
+ C24 1
+Net 88 "/stm32/BACK" "BACK"
+ R1 1
+ U2 2
+ SW1 1
+Net 89 "/stm32/SPI_SCK" "SPI_SCK"
+ U2 15
+ LCD1 14
+ U1 6
+Net 90 "/stm32/SPI_MOSI" "SPI_MOSI"
+ U1 5
+ LCD1 13
+ U2 17
+Net 99 "" ""
+ C23 1
+ LCD1 6
+Net 100 "" ""
+ Q1 B
+ R8 1
+Net 101 "" ""
+ LCD1 K
+ Q1 C
+Net 102 "" ""
+ LCD1 7
+ C23 2
+Net 103 "" ""
+ LCD1 9
+ C24 2
+Net 104 "" ""
+ LCD1 5
+ C22 2
+Net 105 "" ""
+ LCD1 3
+ C20 2
+Net 106 "" ""
+ LCD1 1
+ C18 2
+Net 107 "/stm32/SPI_MISO" "SPI_MISO"
+ U2 16
+ U1 2
+Net 108 "/stm32/LCD_A0" "LCD_A0"
+ LCD1 15
+ U2 27
+Net 109 "/stm32/BOOT0" "BOOT0"
+ U2 3
+ R2 1
+ U2 44
+ SW2 1
+Net 110 "/stm32/CS_LCD" "CS_LCD"
+ U2 10
+ LCD1 17
+Net 114 "/stm32/OSCOUT" "OSCOUT"
+ R9 2
+ U2 6
+Net 115 "" ""
+ R9 1
+ C12 2
+ X1 2
+Net 116 "/stm32/OSCIN" "OSCIN"
+ X1 1
+ C2 2
+ U2 5
+}
+#End

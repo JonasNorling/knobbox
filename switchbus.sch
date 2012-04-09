@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sun 08 Apr 2012 06:37:26 PM CEST
+EESchema Schematic File Version 2  date Mon 09 Apr 2012 10:40:34 AM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -41,7 +41,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 2 5
 Title ""
-Date "8 apr 2012"
+Date "9 apr 2012"
 Rev ""
 Comp ""
 Comment1 ""
@@ -49,15 +49,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L C C3
-U 1 1 4F81BBEC
-P 4250 2600
-F 0 "C3" H 4300 2700 50  0000 L CNN
-F 1 "C" H 4300 2500 50  0000 L CNN
-	1    4250 2600
-	1    0    0    -1  
-$EndComp
+Wire Wire Line
+	4250 2800 4250 3000
 Wire Wire Line
 	6350 2050 6350 2200
 Wire Wire Line
@@ -100,6 +93,35 @@ Wire Wire Line
 	5150 3250 5650 3250
 Wire Wire Line
 	6350 3300 6350 3450
+Wire Wire Line
+	4250 2250 4250 2400
+$Comp
+L GND #PWR?
+U 1 1 4F82A012
+P 4250 3000
+F 0 "#PWR?" H 4250 3000 30  0001 C CNN
+F 1 "GND" H 4250 2930 30  0001 C CNN
+	1    4250 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR?
+U 1 1 4F82A00E
+P 4250 2250
+F 0 "#PWR?" H 4250 2210 30  0001 C CNN
+F 1 "+3.3V" H 4250 2360 30  0000 C CNN
+	1    4250 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L C C3
+U 1 1 4F81BBEC
+P 4250 2600
+F 0 "C3" H 4300 2700 50  0000 L CNN
+F 1 "C" H 4300 2500 50  0000 L CNN
+	1    4250 2600
+	1    0    0    -1  
+$EndComp
 Text HLabel 5150 3250 0    60   Input ~ 0
 OE1
 $Comp
