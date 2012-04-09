@@ -1,4 +1,4 @@
-update=Sun 08 Apr 2012 04:16:30 PM CEST
+update=Mon 09 Apr 2012 10:58:57 PM CEST
 last_client=eeschema
 [general]
 version=1
@@ -40,6 +40,8 @@ LibName11=encoder
 LibName12=micro-usb
 LibName13=nhd-lcd
 LibName14=pin-array-50mil
+LibName15=oaa_smd_discret
+LibName16=lqfp
 [eeschema]
 version=1
 LibDir=
@@ -107,3 +109,5 @@ LibName32=stm32
 LibName33=spi-flash
 LibName34=nhd-lcd
 LibName35=r-network
+LibName36=lm1117
+LibName37=74hc

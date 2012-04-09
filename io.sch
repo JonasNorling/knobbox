@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon 09 Apr 2012 10:40:34 AM CEST
+EESchema Schematic File Version 2  date Mon 09 Apr 2012 11:08:00 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -34,6 +34,8 @@ LIBS:stm32
 LIBS:spi-flash
 LIBS:nhd-lcd
 LIBS:r-network
+LIBS:lm1117
+LIBS:74hc
 LIBS:knobboard-cache
 EELAYER 25  0
 EELAYER END

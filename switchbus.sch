@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon 09 Apr 2012 10:40:34 AM CEST
+EESchema Schematic File Version 2  date Mon 09 Apr 2012 11:08:00 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -34,6 +34,8 @@ LIBS:stm32
 LIBS:spi-flash
 LIBS:nhd-lcd
 LIBS:r-network
+LIBS:lm1117
+LIBS:74hc
 LIBS:knobboard-cache
 EELAYER 25  0
 EELAYER END
@@ -96,19 +98,19 @@ Wire Wire Line
 Wire Wire Line
 	4250 2250 4250 2400
 $Comp
-L GND #PWR?
+L GND #PWR01
 U 1 1 4F82A012
 P 4250 3000
-F 0 "#PWR?" H 4250 3000 30  0001 C CNN
+F 0 "#PWR01" H 4250 3000 30  0001 C CNN
 F 1 "GND" H 4250 2930 30  0001 C CNN
 	1    4250 3000
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR?
+L +3.3V #PWR02
 U 1 1 4F82A00E
 P 4250 2250
-F 0 "#PWR?" H 4250 2210 30  0001 C CNN
+F 0 "#PWR02" H 4250 2210 30  0001 C CNN
 F 1 "+3.3V" H 4250 2360 30  0000 C CNN
 	1    4250 2250
 	1    0    0    -1  
@@ -125,28 +127,28 @@ $EndComp
 Text HLabel 5150 3250 0    60   Input ~ 0
 OE1
 $Comp
-L GND #PWR01
+L GND #PWR03
 U 1 1 4F81A943
 P 6350 3450
-F 0 "#PWR01" H 6350 3450 30  0001 C CNN
+F 0 "#PWR03" H 6350 3450 30  0001 C CNN
 F 1 "GND" H 6350 3380 30  0001 C CNN
 	1    6350 3450
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR02
+L +3.3V #PWR04
 U 1 1 4F81A93C
 P 5550 3100
-F 0 "#PWR02" H 5550 3060 30  0001 C CNN
+F 0 "#PWR04" H 5550 3060 30  0001 C CNN
 F 1 "+3.3V" H 5550 3210 30  0000 C CNN
 	1    5550 3100
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR03
+L +3.3V #PWR05
 U 1 1 4F81A937
 P 6350 2050
-F 0 "#PWR03" H 6350 2010 30  0001 C CNN
+F 0 "#PWR05" H 6350 2010 30  0001 C CNN
 F 1 "+3.3V" H 6350 2160 30  0000 C CNN
 	1    6350 2050
 	1    0    0    -1  
