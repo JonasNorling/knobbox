@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon 09 Apr 2012 11:08:00 PM CEST
+EESchema Schematic File Version 2  date Tue 10 Apr 2012 09:01:04 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -797,8 +797,8 @@ F 1 "+3.3V" H 7000 1310 30  0000 C CNN
 $EndComp
 Text GLabel 6100 1600 0    60   Input ~ 0
 VPULLUP
-Text Notes 6950 600  0    60   ~ 0
-This display (NHD-C12832A1Z-FSW-FBW-3V3) isn't really SPI.\nCheck the data sheet for the controller (linked from the display\ndata sheet) to see if we've missed something.\nWhy is there only 16 pins on the module???
+Text Notes 6950 450  0    60   ~ 0
+This display (NHD-C12832A1Z-FSW-FBW-3V3) isn't really SPI.\nCheck the data sheet for the controller (linked from the display\ndata sheet) to see if we've missed something.\nWhy is there only 16 pins on the module???\n\nAlso consider the dogs displays: 790-EADOGS102W-6 
 Text Label 7850 2500 1    60   ~ 0
 LCD_A0
 Text Label 8050 2500 1    60   ~ 0

@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Mon 09 Apr 2012 11:09:44 PM CEST
+PCBNEW-BOARD Version 1 date Tue 10 Apr 2012 09:01:09 PM CEST
 
 # Created by Pcbnew(2011-05-25)-stable
 
@@ -9,8 +9,8 @@ Ly 1FFF8001
 EnabledLayers 1FFF8001
 Links 227
 NoConn 227
-Di 154 28510 159525 70412
-Ndraw 41
+Di -4418 28510 159525 70412
+Ndraw 42
 Ntrack 142
 Nzone 0
 BoardThickness 630
@@ -21,7 +21,7 @@ $EndGENERAL
 $SHEETDESCR
 Sheet A3 16535 11700
 Title ""
-Date "9 apr 2012"
+Date "10 apr 2012"
 Rev ""
 Comp ""
 Comment1 ""
@@ -53,11 +53,11 @@ MicroViaMinSize 200
 MicroViaMinDrill 50
 TextPcbWidth 120
 TextPcbSize 600 800
-EdgeModWidth 79
+EdgeModWidth 150
 TextModSize 400 400
 TextModWidth 120
-PadSize 118 472
-PadDrill 0
+PadSize 669 669
+PadDrill 512
 Pad2MaskClearance 100
 AuxiliaryAxisOrg 0 0
 PcbPlotParams (pcbplotparams (layerselection 3178497) (usegerberextensions true) (excludeedgelayer true) (linewidth 60) (plotframeref false) (viasonmask false) (mode 1) (useauxorigin false) (hpglpennumber 1) (hpglpenspeed 20) (hpglpendiameter 15) (hpglpenoverlay 0) (pscolor true) (psnegative false) (psa4output false) (plotreference true) (plotvalue true) (plotothertext true) (plotinvisibletext false) (padsonsilk false) (subtractmaskfromsilk false) (outputformat 1) (mirror false) (drillshape 1) (scaleselection 1) (outputdirectory ""))
@@ -4968,6 +4968,19 @@ Of 0.000000 0.000000 0.000000
 Ro 0.000000 0.000000 0.000000
 $EndSHAPE3D
 $EndMODULE  SMC0805
+$COTATION
+Ge 0 24 0
+Va 15000
+Te "38.100 mm"
+Po -1639 46500 600 800 120 2701 1
+Sb 0 -999 39000 -999 54000 120
+Sd 0 1000 54000 -2279 54000 120
+Sg 0 1000 39000 -2279 39000 120
+S1 0 -999 54000 -1229 53557 120
+S2 0 -999 54000 -769 53557 120
+S3 0 -999 39000 -1229 39443 120
+S4 0 -999 39000 -769 39443 120
+$endCOTATION
 $TEXTPCB
 Te "MIDI OUT"
 Po 76000 29250 600 800 120 0
