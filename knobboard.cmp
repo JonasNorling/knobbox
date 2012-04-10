@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Mon 09 Apr 2012 10:21:06 PM CEST
+Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Tue 10 Apr 2012 10:34:36 PM CEST
 
 BeginCmp
 TimeStamp = /4F7EF61F/4F804892;
@@ -113,62 +113,6 @@ IdModule  = C-AEC-0806-P;
 EndCmp
 
 BeginCmp
-TimeStamp = /4F7EF61F/4F812A94;
-Reference = C18;
-ValeurCmp = 1u;
-IdModule  = SMC1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F812A98;
-Reference = C19;
-ValeurCmp = 1u;
-IdModule  = SMC1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F812A9B;
-Reference = C20;
-ValeurCmp = 1u;
-IdModule  = SMC1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F812A9D;
-Reference = C21;
-ValeurCmp = 1u;
-IdModule  = SMC1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F812A9F;
-Reference = C22;
-ValeurCmp = 1u;
-IdModule  = SMC1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F812A4D;
-Reference = C23;
-ValeurCmp = 1u;
-IdModule  = SMC1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F812A4F;
-Reference = C24;
-ValeurCmp = 1u;
-IdModule  = SMC1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F812A84;
-Reference = C25;
-ValeurCmp = 1u;
-IdModule  = SMC1206;
-EndCmp
-
-BeginCmp
 TimeStamp = /4F7E05A5/4F7E0982;
 Reference = CK11;
 ValeurCmp = 10n;
@@ -260,10 +204,10 @@ IdModule  = micro-usb;
 EndCmp
 
 BeginCmp
-TimeStamp = /4F7EF61F/4F8129BD;
-Reference = LCD1;
-ValeurCmp = NHD-LCD;
-IdModule  = NHD-C12832A1Z-FSW-FBW;
+TimeStamp = /4F7EF61F/4F8492E5;
+Reference = LCD2;
+ValeurCmp = DOGS102-6;
+IdModule  = DOGS102-6;
 EndCmp
 
 BeginCmp
@@ -361,7 +305,7 @@ BeginCmp
 TimeStamp = /4F7EF61F/4F8290BC;
 Reference = R9;
 ValeurCmp = R;
-IdModule  = ;
+IdModule  = SM0805;
 EndCmp
 
 BeginCmp
@@ -652,9 +596,9 @@ IdModule  = LQFP48;
 EndCmp
 
 BeginCmp
-TimeStamp = /4F7E05A5/4F7F091C;
+TimeStamp = /4F7E05A5/4F834E72;
 Reference = U3;
-ValeurCmp = 74HCT595;
+ValeurCmp = 74HC595-PWR;
 IdModule  = SO16N;
 EndCmp
 
@@ -673,7 +617,7 @@ IdModule  = ;
 EndCmp
 
 BeginCmp
-TimeStamp = /4F7EF61F/4F83212C;
+TimeStamp = /4F7EF61F/4F8346B0;
 Reference = U6;
 ValeurCmp = LM1117;
 IdModule  = SOT223;
@@ -689,8 +633,8 @@ EndCmp
 BeginCmp
 TimeStamp = /4F7EF61F/4F8046A8;
 Reference = X1;
-ValeurCmp = CRYSTAL;
-IdModule  = HC-18UV;
+ValeurCmp = 8MHz;
+IdModule  = HC49/US;
 EndCmp
 
 EndListe

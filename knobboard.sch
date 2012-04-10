@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Tue 10 Apr 2012 09:01:04 PM CEST
+EESchema Schematic File Version 2  date Tue 10 Apr 2012 10:33:33 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -36,6 +36,7 @@ LIBS:nhd-lcd
 LIBS:r-network
 LIBS:lm1117
 LIBS:74hc
+LIBS:dogs102-6
 LIBS:knobboard-cache
 EELAYER 25  0
 EELAYER END
@@ -43,7 +44,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 1 5
 Title ""
-Date "9 apr 2012"
+Date "10 apr 2012"
 Rev ""
 Comp ""
 Comment1 ""

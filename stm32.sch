@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Tue 10 Apr 2012 09:01:04 PM CEST
+EESchema Schematic File Version 2  date Tue 10 Apr 2012 10:33:33 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -36,6 +36,7 @@ LIBS:nhd-lcd
 LIBS:r-network
 LIBS:lm1117
 LIBS:74hc
+LIBS:dogs102-6
 LIBS:knobboard-cache
 EELAYER 25  0
 EELAYER END
@@ -43,7 +44,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 4 5
 Title ""
-Date "9 apr 2012"
+Date "10 apr 2012"
 Rev ""
 Comp ""
 Comment1 ""
@@ -51,12 +52,23 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Notes 6450 3050 0    60   ~ 0
+ABLS-8.000MHZ-B2-T\nHC-49/US
+$Comp
+L DOGS102-6 LCD2
+U 1 1 4F8492E5
+P 8400 1450
+F 0 "LCD2" H 8700 1950 60  0000 C CNN
+F 1 "DOGS102-6" H 7700 1950 60  0000 C CNN
+	1    8400 1450
+	1    0    0    -1  
+$EndComp
 Connection ~ 1600 2500
 Wire Wire Line
 	1800 2500 1600 2500
 Connection ~ 9500 6350
 Wire Wire Line
-	9500 6350 9500 6450
+	9500 6450 9500 6350
 Wire Wire Line
 	9500 6450 9400 6450
 Wire Wire Line
@@ -83,11 +95,11 @@ Wire Wire Line
 Wire Wire Line
 	6000 3350 6000 3400
 Wire Wire Line
-	7000 1800 7000 1900
+	6550 1800 6550 1900
 Wire Wire Line
-	7000 1400 7250 1400
+	6550 1400 6800 1400
 Wire Wire Line
-	6650 1600 6700 1600
+	6200 1600 6250 1600
 Wire Wire Line
 	6150 3900 6150 4050
 Wire Wire Line
@@ -97,32 +109,6 @@ Wire Wire Line
 	2300 5650 2050 5650
 Wire Wire Line
 	2050 5550 2050 6250
-Connection ~ 10100 1300
-Wire Wire Line
-	10100 1300 9650 1300
-Connection ~ 10100 1500
-Wire Wire Line
-	10100 1500 9650 1500
-Wire Wire Line
-	8350 2500 8350 2650
-Wire Wire Line
-	8750 2500 8750 2550
-Wire Wire Line
-	8750 2550 8650 2550
-Wire Wire Line
-	8650 2550 8650 2050
-Wire Wire Line
-	8550 2500 8550 2550
-Wire Wire Line
-	8550 2550 8450 2550
-Wire Wire Line
-	8450 2550 8450 2050
-Wire Wire Line
-	9250 1500 9150 1500
-Wire Wire Line
-	9250 1300 9150 1300
-Wire Wire Line
-	9150 1100 9250 1100
 Wire Wire Line
 	4900 3550 5300 3550
 Wire Wire Line
@@ -147,7 +133,7 @@ Wire Wire Line
 	3550 1900 3300 1900
 Connection ~ 3550 2500
 Wire Wire Line
-	3300 2500 3550 2500
+	3550 2500 3300 2500
 Wire Wire Line
 	2700 2500 2300 2500
 Wire Wire Line
@@ -162,7 +148,7 @@ Wire Wire Line
 	6200 4300 6200 4350
 Connection ~ 5600 4300
 Wire Wire Line
-	6600 4350 6600 4300
+	6600 4300 6600 4350
 Wire Wire Line
 	6600 4300 5600 4300
 Connection ~ 6600 5450
@@ -186,8 +172,6 @@ Wire Wire Line
 	4900 5050 6650 5050
 Wire Wire Line
 	4900 4950 6650 4950
-Wire Wire Line
-	8250 2050 8250 2500
 Wire Wire Line
 	8050 2050 8050 2500
 Wire Wire Line
@@ -304,9 +288,9 @@ Wire Wire Line
 Connection ~ 5300 3550
 Connection ~ 5800 3100
 Wire Wire Line
-	5800 2550 5800 2350
+	5800 2350 5800 2550
 Wire Wire Line
-	5800 2350 6500 2350
+	6500 2350 5800 2350
 Connection ~ 2950 6650
 Wire Wire Line
 	3700 6650 3700 6600
@@ -351,8 +335,6 @@ Wire Wire Line
 Wire Wire Line
 	7950 2050 7950 2500
 Wire Wire Line
-	8150 2050 8150 2250
-Wire Wire Line
 	4900 5550 5300 5550
 Wire Wire Line
 	5600 4850 5600 4950
@@ -386,7 +368,7 @@ Wire Wire Line
 Wire Wire Line
 	5650 2650 2600 2650
 Wire Wire Line
-	3550 2500 3550 1350
+	3550 1350 3550 2500
 Wire Wire Line
 	5250 6900 5200 6900
 Wire Wire Line
@@ -400,26 +382,6 @@ Wire Wire Line
 	6050 7000 6500 7000
 Wire Wire Line
 	6050 7300 6500 7300
-Wire Wire Line
-	9150 1200 9600 1200
-Wire Wire Line
-	9150 1400 9600 1400
-Wire Wire Line
-	8350 2100 8350 2050
-Wire Wire Line
-	8550 2050 8550 2100
-Wire Wire Line
-	8750 2100 8750 2050
-Wire Wire Line
-	9650 1100 10100 1100
-Wire Wire Line
-	10100 1100 10100 1750
-Wire Wire Line
-	10100 1400 10000 1400
-Connection ~ 10100 1400
-Wire Wire Line
-	10100 1200 10000 1200
-Connection ~ 10100 1200
 Connection ~ 2050 5650
 Connection ~ 2450 6650
 Wire Wire Line
@@ -432,9 +394,9 @@ Wire Wire Line
 Wire Wire Line
 	6800 3900 6800 3850
 Wire Wire Line
-	6150 1600 6100 1600
+	5700 1600 5650 1600
 Wire Wire Line
-	7250 1200 7000 1200
+	6800 1200 6550 1200
 Wire Wire Line
 	6000 3900 6000 3950
 Wire Wire Line
@@ -514,19 +476,19 @@ $EndComp
 $Comp
 L GND #PWR08
 U 1 1 4F828F1E
-P 7000 1900
-F 0 "#PWR08" H 7000 1900 30  0001 C CNN
-F 1 "GND" H 7000 1830 30  0001 C CNN
-	1    7000 1900
+P 6550 1900
+F 0 "#PWR08" H 6550 1900 30  0001 C CNN
+F 1 "GND" H 6550 1830 30  0001 C CNN
+	1    6550 1900
 	1    0    0    -1  
 $EndComp
 $Comp
 L R R8
 U 1 1 4F828F04
-P 6400 1600
-F 0 "R8" V 6480 1600 50  0000 C CNN
-F 1 "10k" V 6400 1600 50  0000 C CNN
-	1    6400 1600
+P 5950 1600
+F 0 "R8" V 6030 1600 50  0000 C CNN
+F 1 "10k" V 5950 1600 50  0000 C CNN
+	1    5950 1600
 	0    1    1    0   
 $EndComp
 $Comp
@@ -578,36 +540,18 @@ Text Notes 1750 7250 0    60   ~ 0
 AN2586 recommends 100n on all power pins,\nplus one 10uF, plus another 1u on VDDA-VSSA.\nWe're ignoring the 100n on VDDA, because the 1u is in the\nsame package (0805) with the same impedance.\nPlace small caps (at least 0805) for smaller impedance.
 $Comp
 L GND #PWR012
-U 1 1 4F81BEBF
-P 10100 1750
-F 0 "#PWR012" H 10100 1750 30  0001 C CNN
-F 1 "GND" H 10100 1680 30  0001 C CNN
-	1    10100 1750
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR013
-U 1 1 4F81BDA7
-P 8350 2650
-F 0 "#PWR013" H 8350 2650 30  0001 C CNN
-F 1 "GND" H 8350 2580 30  0001 C CNN
-	1    8350 2650
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR014
 U 1 1 4F81BD7A
 P 10650 3700
-F 0 "#PWR014" H 10650 3700 30  0001 C CNN
+F 0 "#PWR012" H 10650 3700 30  0001 C CNN
 F 1 "GND" H 10650 3630 30  0001 C CNN
 	1    10650 3700
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR015
+L +3.3V #PWR013
 U 1 1 4F81BD79
 P 10650 3050
-F 0 "#PWR015" H 10650 3010 30  0001 C CNN
+F 0 "#PWR013" H 10650 3010 30  0001 C CNN
 F 1 "+3.3V" H 10650 3160 30  0000 C CNN
 	1    10650 3050
 	1    0    0    -1  
@@ -625,7 +569,7 @@ F 1 "10u" H 8150 6450 50  0000 L CNN
 	1    8100 6550
 	1    0    0    -1  
 $EndComp
-Text Notes 6600 1100 2    60   ~ 0
+Text Notes 6150 1100 2    60   ~ 0
 Needs current limiting resistor for LED?\nDiscreet NPN (is 10k small enough on the base)?\n...or a SOT23 NPN with built-in biasing.
 Text Notes 5400 7550 0    60   ~ 0
 Cortex Debug
@@ -644,19 +588,19 @@ $EndComp
 Text Notes 5700 5650 0    60   ~ 0
 Pullup current enough to drive\n* transistor for LCD backlight\n* 48 10k resistors to ground worst case (=15.84mA)\nConsider a transistor here, or weaker pullups.
 $Comp
-L +3.3V #PWR016
+L +3.3V #PWR014
 U 1 1 4F815B34
 P 3550 1350
-F 0 "#PWR016" H 3550 1310 30  0001 C CNN
+F 0 "#PWR014" H 3550 1310 30  0001 C CNN
 F 1 "+3.3V" H 3550 1460 30  0000 C CNN
 	1    3550 1350
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR017
+L GND #PWR015
 U 1 1 4F815A86
 P 1600 2700
-F 0 "#PWR017" H 1600 2700 30  0001 C CNN
+F 0 "#PWR015" H 1600 2700 30  0001 C CNN
 F 1 "GND" H 1600 2630 30  0001 C CNN
 	1    1600 2700
 	1    0    0    -1  
@@ -722,10 +666,10 @@ $EndComp
 Text Label 2300 1900 0    60   ~ 0
 LEFT
 $Comp
-L +3.3V #PWR018
+L +3.3V #PWR016
 U 1 1 4F81385D
 P 5600 4250
-F 0 "#PWR018" H 5600 4210 30  0001 C CNN
+F 0 "#PWR016" H 5600 4210 30  0001 C CNN
 F 1 "+3.3V" H 5600 4360 30  0000 C CNN
 	1    5600 4250
 	1    0    0    -1  
@@ -787,17 +731,17 @@ $EndComp
 Text Label 5300 5550 2    60   ~ 0
 LCD_A0
 $Comp
-L +3.3V #PWR019
+L +3.3V #PWR017
 U 1 1 4F812CAF
-P 7000 1200
-F 0 "#PWR019" H 7000 1160 30  0001 C CNN
-F 1 "+3.3V" H 7000 1310 30  0000 C CNN
-	1    7000 1200
+P 6550 1200
+F 0 "#PWR017" H 6550 1160 30  0001 C CNN
+F 1 "+3.3V" H 6550 1310 30  0000 C CNN
+	1    6550 1200
 	0    -1   -1   0   
 $EndComp
-Text GLabel 6100 1600 0    60   Input ~ 0
+Text GLabel 5650 1600 0    60   Input ~ 0
 VPULLUP
-Text Notes 6950 450  0    60   ~ 0
+Text Notes 7400 -550 0    60   ~ 0
 This display (NHD-C12832A1Z-FSW-FBW-3V3) isn't really SPI.\nCheck the data sheet for the controller (linked from the display\ndata sheet) to see if we've missed something.\nWhy is there only 16 pins on the module???\n\nAlso consider the dogs displays: 790-EADOGS102W-6 
 Text Label 7850 2500 1    60   ~ 0
 LCD_A0
@@ -810,120 +754,21 @@ CS_LCD
 $Comp
 L BC237 Q1
 U 1 1 4F812AD6
-P 6900 1600
-F 0 "Q1" H 7100 1500 50  0000 C CNN
-F 1 "BC237" H 7150 1750 50  0000 C CNN
-F 2 "TO92-EBC" H 7090 1600 30  0001 C CNN
-	1    6900 1600
+P 6450 1600
+F 0 "Q1" H 6650 1500 50  0000 C CNN
+F 1 "BC237" H 6700 1750 50  0000 C CNN
+F 2 "TO92-EBC" H 6640 1600 30  0001 C CNN
+	1    6450 1600
 	1    0    0    -1  
 $EndComp
 $Comp
-L C C22
-U 1 1 4F812A9F
-P 9450 1500
-F 0 "C22" H 9500 1600 50  0000 L CNN
-F 1 "1u" H 9500 1400 50  0000 L CNN
-	1    9450 1500
-	0    1    1    0   
-$EndComp
-$Comp
-L C C21
-U 1 1 4F812A9D
-P 9800 1400
-F 0 "C21" H 9850 1500 50  0000 L CNN
-F 1 "1u" H 9850 1300 50  0000 L CNN
-	1    9800 1400
-	0    1    1    0   
-$EndComp
-$Comp
-L C C20
-U 1 1 4F812A9B
-P 9450 1300
-F 0 "C20" H 9500 1400 50  0000 L CNN
-F 1 "1u" H 9500 1200 50  0000 L CNN
-	1    9450 1300
-	0    1    1    0   
-$EndComp
-$Comp
-L C C19
-U 1 1 4F812A98
-P 9800 1200
-F 0 "C19" H 9850 1300 50  0000 L CNN
-F 1 "1u" H 9850 1100 50  0000 L CNN
-	1    9800 1200
-	0    1    1    0   
-$EndComp
-$Comp
-L C C18
-U 1 1 4F812A94
-P 9450 1100
-F 0 "C18" H 9500 1200 50  0000 L CNN
-F 1 "1u" H 9500 1000 50  0000 L CNN
-	1    9450 1100
-	0    1    1    0   
-$EndComp
-$Comp
-L C C25
-U 1 1 4F812A84
-P 8350 2300
-F 0 "C25" H 8400 2400 50  0000 L CNN
-F 1 "1u" H 8400 2200 50  0000 L CNN
-	1    8350 2300
-	1    0    0    -1  
-$EndComp
-$Comp
-L C C24
-U 1 1 4F812A4F
-P 8550 2300
-F 0 "C24" H 8600 2400 50  0000 L CNN
-F 1 "1u" H 8600 2200 50  0000 L CNN
-	1    8550 2300
-	1    0    0    -1  
-$EndComp
-$Comp
-L C C23
-U 1 1 4F812A4D
-P 8750 2300
-F 0 "C23" H 8800 2400 50  0000 L CNN
-F 1 "1u" H 8800 2200 50  0000 L CNN
-	1    8750 2300
-	1    0    0    -1  
-$EndComp
-$Comp
-L GND #PWR020
-U 1 1 4F812A3E
-P 8250 2500
-F 0 "#PWR020" H 8250 2500 30  0001 C CNN
-F 1 "GND" H 8250 2430 30  0001 C CNN
-	1    8250 2500
-	1    0    0    -1  
-$EndComp
-$Comp
-L +3.3V #PWR021
-U 1 1 4F812A3B
-P 8150 2250
-F 0 "#PWR021" H 8150 2210 30  0001 C CNN
-F 1 "+3.3V" H 8150 2360 30  0000 C CNN
-	1    8150 2250
-	-1   0    0    1   
-$EndComp
-$Comp
-L +3.3V #PWR022
+L +3.3V #PWR018
 U 1 1 4F812A01
 P 7750 2500
-F 0 "#PWR022" H 7750 2460 30  0001 C CNN
+F 0 "#PWR018" H 7750 2460 30  0001 C CNN
 F 1 "+3.3V" H 7750 2610 30  0000 C CNN
 	1    7750 2500
 	-1   0    0    1   
-$EndComp
-$Comp
-L NHD-LCD LCD1
-U 1 1 4F8129BD
-P 8500 1450
-F 0 "LCD1" H 8800 1950 60  0000 C CNN
-F 1 "NHD-LCD" H 7750 1950 60  0000 C CNN
-	1    8500 1450
-	1    0    0    -1  
 $EndComp
 Text GLabel 5050 4850 2    60   Input ~ 0
 BUS_7
@@ -942,37 +787,37 @@ BUS_1
 Text GLabel 5050 4150 2    60   Input ~ 0
 BUS_0
 $Comp
-L +3.3V #PWR023
+L +3.3V #PWR019
 U 1 1 4F80ADE5
 P 10050 3100
-F 0 "#PWR023" H 10050 3060 30  0001 C CNN
+F 0 "#PWR019" H 10050 3060 30  0001 C CNN
 F 1 "+3.3V" H 10050 3210 30  0000 C CNN
 	1    10050 3100
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR024
+L +3.3V #PWR020
 U 1 1 4F80ADC6
 P 8600 3100
-F 0 "#PWR024" H 8600 3060 30  0001 C CNN
+F 0 "#PWR020" H 8600 3060 30  0001 C CNN
 F 1 "+3.3V" H 8600 3210 30  0000 C CNN
 	1    8600 3100
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR025
+L +3.3V #PWR021
 U 1 1 4F80ADAB
 P 9900 3100
-F 0 "#PWR025" H 9900 3060 30  0001 C CNN
+F 0 "#PWR021" H 9900 3060 30  0001 C CNN
 F 1 "+3.3V" H 9900 3210 30  0000 C CNN
 	1    9900 3100
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR026
+L GND #PWR022
 U 1 1 4F80AD99
 P 8450 3750
-F 0 "#PWR026" H 8450 3750 30  0001 C CNN
+F 0 "#PWR022" H 8450 3750 30  0001 C CNN
 F 1 "GND" H 8450 3680 30  0001 C CNN
 	1    8450 3750
 	1    0    0    -1  
@@ -995,10 +840,10 @@ F 1 "SPI-FLASH" H 9250 3200 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR027
+L +3.3V #PWR023
 U 1 1 4F805934
 P 9650 6150
-F 0 "#PWR027" H 9650 6110 30  0001 C CNN
+F 0 "#PWR023" H 9650 6110 30  0001 C CNN
 F 1 "+3.3V" H 9650 6260 30  0000 C CNN
 	1    9650 6150
 	1    0    0    -1  
@@ -1017,10 +862,10 @@ $EndComp
 Text GLabel 5200 5650 2    60   Output ~ 0
 VPULLUP
 $Comp
-L +3.3V #PWR028
+L +3.3V #PWR024
 U 1 1 4F8054E6
 P 800 5200
-F 0 "#PWR028" H 800 5160 30  0001 C CNN
+F 0 "#PWR024" H 800 5160 30  0001 C CNN
 F 1 "+3.3V" H 800 5310 30  0000 C CNN
 	1    800  5200
 	1    0    0    -1  
@@ -1044,28 +889,28 @@ F 1 "SW_PUSH" H 3000 1520 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR029
+L GND #PWR025
 U 1 1 4F8052CB
 P 6800 4050
-F 0 "#PWR029" H 6800 4050 30  0001 C CNN
+F 0 "#PWR025" H 6800 4050 30  0001 C CNN
 F 1 "GND" H 6800 3980 30  0001 C CNN
 	1    6800 4050
 	0    -1   -1   0   
 $EndComp
 $Comp
-L GND #PWR030
+L GND #PWR026
 U 1 1 4F805118
 P 5150 7450
-F 0 "#PWR030" H 5150 7450 30  0001 C CNN
+F 0 "#PWR026" H 5150 7450 30  0001 C CNN
 F 1 "GND" H 5150 7380 30  0001 C CNN
 	1    5150 7450
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR031
+L +3.3V #PWR027
 U 1 1 4F80510E
 P 5200 6800
-F 0 "#PWR031" H 5200 6760 30  0001 C CNN
+F 0 "#PWR027" H 5200 6760 30  0001 C CNN
 F 1 "+3.3V" H 5200 6910 30  0000 C CNN
 	1    5200 6800
 	1    0    0    -1  
@@ -1116,19 +961,19 @@ F 1 "C" H 10700 3250 50  0000 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR032
+L +3.3V #PWR028
 U 1 1 4F804819
 P 3700 6600
-F 0 "#PWR032" H 3700 6560 30  0001 C CNN
+F 0 "#PWR028" H 3700 6560 30  0001 C CNN
 F 1 "+3.3V" H 3700 6710 30  0000 C CNN
 	1    3700 6600
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR033
+L GND #PWR029
 U 1 1 4F804810
 P 3700 7150
-F 0 "#PWR033" H 3700 7150 30  0001 C CNN
+F 0 "#PWR029" H 3700 7150 30  0001 C CNN
 F 1 "GND" H 3700 7080 30  0001 C CNN
 	1    3700 7150
 	1    0    0    -1  
@@ -1169,19 +1014,19 @@ BOOT0
 Text Label 4950 3550 0    60   ~ 0
 RST
 $Comp
-L GND #PWR034
+L GND #PWR030
 U 1 1 4F804740
 P 6500 2350
-F 0 "#PWR034" H 6500 2350 30  0001 C CNN
+F 0 "#PWR030" H 6500 2350 30  0001 C CNN
 F 1 "GND" H 6500 2280 30  0001 C CNN
 	1    6500 2350
 	0    -1   -1   0   
 $EndComp
 $Comp
-L +3.3V #PWR035
+L +3.3V #PWR031
 U 1 1 4F804716
 P 5300 2950
-F 0 "#PWR035" H 5300 2910 30  0001 C CNN
+F 0 "#PWR031" H 5300 2910 30  0001 C CNN
 F 1 "+3.3V" H 5300 3060 30  0000 C CNN
 	1    5300 2950
 	1    0    0    -1  
@@ -1218,7 +1063,7 @@ L CRYSTAL X1
 U 1 1 4F8046A8
 P 6100 3100
 F 0 "X1" H 6100 3250 60  0000 C CNN
-F 1 "CRYSTAL" H 6100 2950 60  0000 C CNN
+F 1 "8MHz" H 6100 2950 60  0000 C CNN
 	1    6100 3100
 	1    0    0    -1  
 $EndComp
@@ -1235,19 +1080,19 @@ PGM_RX
 Text HLabel 1050 4850 0    60   Output ~ 0
 PGM_TX
 $Comp
-L +3.3V #PWR036
+L +3.3V #PWR032
 U 1 1 4F802EBD
 P 2050 5550
-F 0 "#PWR036" H 2050 5510 30  0001 C CNN
+F 0 "#PWR032" H 2050 5510 30  0001 C CNN
 F 1 "+3.3V" H 2050 5660 30  0000 C CNN
 	1    2050 5550
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR037
+L GND #PWR033
 U 1 1 4F802EA6
 P 5300 6450
-F 0 "#PWR037" H 5300 6450 30  0001 C CNN
+F 0 "#PWR033" H 5300 6450 30  0001 C CNN
 F 1 "GND" H 5300 6380 30  0001 C CNN
 	1    5300 6450
 	1    0    0    -1  
