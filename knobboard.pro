@@ -1,4 +1,4 @@
-update=Tue 10 Apr 2012 10:32:19 PM CEST
+update=Sat 14 Apr 2012 04:26:23 PM CEST
 last_client=pcbnew
 [general]
 version=1
@@ -77,11 +77,12 @@ LibName35=r-network
 LibName36=lm1117
 LibName37=74hc
 LibName38=dogs102-6
+LibName39=pdt-transistor
 [pcbnew]
 version=1
 PadDrlX=0
-PadDimH=2205
-PadDimV=827
+PadDimH=354
+PadDimV=709
 BoardThickness=630
 TxtPcbV=800
 TxtPcbH=600
@@ -114,3 +115,7 @@ LibName15=oaa_smd_discret
 LibName16=lqfp
 LibName17=DOGS102-6
 LibName18=crystal
+LibName19=bc817
+LibName20=SO8-hybrid
+LibName21=din
+LibName22=SOP-4L
