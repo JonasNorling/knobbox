@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sat 14 Apr 2012 04:28:33 PM CEST
+EESchema Schematic File Version 2  date Sat 14 Apr 2012 07:12:50 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -38,6 +38,7 @@ LIBS:lm1117
 LIBS:74hc
 LIBS:dogs102-6
 LIBS:pdt-transistor
+LIBS:tact
 LIBS:knobboard-cache
 EELAYER 25  0
 EELAYER END
