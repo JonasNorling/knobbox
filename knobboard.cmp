@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Sat 14 Apr 2012 07:43:15 PM CEST
+Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Sun 15 Apr 2012 11:00:41 AM CEST
 
 BeginCmp
 TimeStamp = /4F7EF61F/4F804892;
@@ -148,6 +148,13 @@ IdModule  = SMC1206;
 EndCmp
 
 BeginCmp
+TimeStamp = /4F7EF61F/4F8A80A9;
+Reference = C22;
+ValeurCmp = 100n;
+IdModule  = SMC0805;
+EndCmp
+
+BeginCmp
 TimeStamp = /4F7E05A5/4F7E0982;
 Reference = CK11;
 ValeurCmp = 10n;
@@ -281,6 +288,13 @@ IdModule  = SIL-5;
 EndCmp
 
 BeginCmp
+TimeStamp = /4F80537C/4F8A6AE1;
+Reference = P7;
+ValeurCmp = CONN_2;
+IdModule  = SIL-2;
+EndCmp
+
+BeginCmp
 TimeStamp = /4F80537C/4F898311;
 Reference = Q1;
 ValeurCmp = PDTA124X;
@@ -361,6 +375,13 @@ BeginCmp
 TimeStamp = /4F7EF61F/4F8290BC;
 Reference = R9;
 ValeurCmp = R;
+IdModule  = SM0805;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F80537C/4F8A6AAA;
+Reference = R10;
+ValeurCmp = 0;
 IdModule  = SM0805;
 EndCmp
 

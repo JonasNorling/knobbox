@@ -1,4 +1,4 @@
-# EESchema Netlist Version 1.1 created  Sat 14 Apr 2012 07:43:15 PM CEST
+# EESchema Netlist Version 1.1 created  Sun 15 Apr 2012 11:00:41 AM CEST
 (
  ( /4F7EF61F/4F804892 SMC0805 C1 100n
   ( 1 +3.3V )
@@ -46,7 +46,7 @@
  )
  ( /4F7EF61F/4F8046B9 SMC0805 C12 pF
   ( 1 GND )
-  ( 2 N-000108 )
+  ( 2 N-000080 )
  )
  ( /4F7EF61F/4F8047E5 SMC0805 C13 100n
   ( 1 +3.3V )
@@ -69,18 +69,22 @@
   ( 2 GND )
  )
  ( /4F7EF61F/4F892B26 SMC0805 C18 1u
-  ( 1 N-000100 )
-  ( 2 N-000089 )
+  ( 1 N-000092 )
+  ( 2 N-000086 )
  )
  ( /4F7EF61F/4F892B16 SMC0805 C19 1u
-  ( 1 N-000091 )
-  ( 2 N-000090 )
+  ( 1 N-000094 )
+  ( 2 N-000087 )
  )
  ( /4F7EF61F/4F892B08 SMC0805 C20 1u
-  ( 1 N-000092 )
+  ( 1 N-000093 )
   ( 2 GND )
  )
  ( /4F7EF61F/4F892EAC SMC1206 C21 DNP
+  ( 1 +3.3V )
+  ( 2 GND )
+ )
+ ( /4F7EF61F/4F8A80A9 SMC0805 C22 100n
   ( 1 +3.3V )
   ( 2 GND )
  )
@@ -120,7 +124,7 @@
   ( 1 GND )
   ( 2 N-000032 )
   ( 3 N-000036 )
-  ( 4 /encoders/SW1 )
+  ( 4 /switchbus/SW1 )
   ( A N-000047 )
   ( B N-000035 )
   ( C GND )
@@ -129,7 +133,7 @@
   ( 1 GND )
   ( 2 N-000041 )
   ( 3 N-000040 )
-  ( 4 /encoders/SW2 )
+  ( 4 /switchbus/SW2 )
   ( A N-000048 )
   ( B N-000042 )
   ( C GND )
@@ -138,7 +142,7 @@
   ( 1 GND )
   ( 2 N-000061 )
   ( 3 N-000038 )
-  ( 4 /switchbus/SW3 )
+  ( 4 /encoders/SW3 )
   ( A N-000043 )
   ( B N-000037 )
   ( C GND )
@@ -147,21 +151,21 @@
   ( 1 GND )
   ( 2 N-000058 )
   ( 3 N-000057 )
-  ( 4 /encoders/SW4 )
+  ( 4 /switchbus/SW4 )
   ( A N-000060 )
   ( B N-000044 )
   ( C GND )
  )
  ( /4F7EF61F/4F8492E5 DOGS102-6 LCD2 DOGS102-6
-  ( 1 N-000093 )
-  ( 2 N-000094 )
-  ( 13 N-000094 )
-  ( 14 N-000093 )
-  ( 15 N-000092 )
-  ( 16 N-000091 )
-  ( 17 N-000100 )
-  ( 18 N-000089 )
-  ( 19 N-000090 )
+  ( 1 N-000090 )
+  ( 2 N-000091 )
+  ( 13 N-000091 )
+  ( 14 N-000090 )
+  ( 15 N-000093 )
+  ( 16 N-000094 )
+  ( 17 N-000092 )
+  ( 18 N-000086 )
+  ( 19 N-000087 )
   ( 20 GND )
   ( 21 GND )
   ( 22 +3.3V )
@@ -173,10 +177,10 @@
   ( 28 /stm32/CS_LCD )
  )
  ( /4F80537C/4F894357 micro-usb P1 CONN_5
-  ( 1 +5V )
-  ( 2 /io/USB_DM )
+  ( 1 /io/USB_5V )
+  ( 2 /stm32/USB_DM )
   ( 3 /stm32/USB_DP )
-  ( 4 N-000118 )
+  ( 4 /io/USB_ID )
   ( 5 GND )
  )
  ( /4F7EF61F/4F817FD5 PIN_ARRAY_50MIL_5X2 P2 CONN_5X2
@@ -195,42 +199,46 @@
   ( 1 ? )
   ( 2 ? )
   ( 3 ? )
-  ( 4 N-000114 )
-  ( 5 N-000111 )
+  ( 4 N-000112 )
+  ( 5 /io/MIDIIN- )
  )
  ( /4F80537C/4F896A1A kobiconn-0504-e P4 CONN_5
   ( 1 ? )
   ( 2 GND )
   ( 3 ? )
-  ( 4 N-000113 )
-  ( 5 N-000117 )
+  ( 4 /io/MIDIOUT+ )
+  ( 5 /io/MIDIOUT- )
  )
  ( /4F80537C/4F898BCF SIL-4 P5 CONN_4
   ( 1 +3.3V )
-  ( 2 /io/PGM_RX )
+  ( 2 /stm32/PGM_RX )
   ( 3 /stm32/LED_DATA )
   ( 4 GND )
  )
  ( /4F80537C/4F896A9E SIL-5 P6 CONN_5
   ( 1 GND )
-  ( 2 N-000117 )
-  ( 3 N-000113 )
-  ( 4 N-000114 )
-  ( 5 N-000111 )
+  ( 2 /io/MIDIOUT- )
+  ( 3 /io/MIDIOUT+ )
+  ( 4 N-000112 )
+  ( 5 /io/MIDIIN- )
+ )
+ ( /4F80537C/4F8A6AE1 SIL-2 P7 CONN_2
+  ( 1 /io/USB_5V )
+  ( 2 +5V )
  )
  ( /4F80537C/4F898311 SOT23-3 Q1 PDTA124X
   ( 1 /io/MIDI_TX )
-  ( 2 N-000115 )
+  ( 2 N-000111 )
   ( 3 +3.3V )
  )
  ( /4F80537C/4F898308 SOT23-3 Q2 PDTC123Y
-  ( 1 N-000115 )
-  ( 2 N-000112 )
+  ( 1 N-000111 )
+  ( 2 N-000117 )
   ( 3 GND )
  )
  ( /4F7EF61F/4F897A9C SOT23-3 Q3 PDTC123Y
   ( 1 VPULLUP )
-  ( 2 N-000094 )
+  ( 2 N-000091 )
   ( 3 GND )
  )
  ( /4F7EF61F/4F8057D6 SM1206 R1 20k
@@ -266,11 +274,15 @@
   ( 2 +3.3V )
  )
  ( /4F7EF61F/4F8290BC SM0805 R9 R
-  ( 1 N-000108 )
+  ( 1 N-000080 )
   ( 2 /stm32/OSCOUT )
  )
+ ( /4F80537C/4F8A6AAA SM0805 R10 0
+  ( 1 +5V )
+  ( 2 /io/USB_5V )
+ )
  ( /4F7EF61F/4F89239F SM1206 R11 35
-  ( 1 N-000093 )
+  ( 1 N-000090 )
   ( 2 +5V )
  )
  ( /4F80537C/4F894443 SM1206 R12 1.5k
@@ -278,23 +290,23 @@
   ( 2 /stm32/USB_DP )
  )
  ( /4F80537C/4F894AC7 SM1206 R13 DNP
-  ( 1 N-000118 )
+  ( 1 /io/USB_ID )
   ( 2 GND )
  )
  ( /4F80537C/4F894686 SM1206 R14 DNP
   ( 1 +3.3V )
-  ( 2 /io/USB_DM )
+  ( 2 /stm32/USB_DM )
  )
  ( /4F80537C/4F896930 SM1206 R15 220
-  ( 1 N-000117 )
-  ( 2 N-000112 )
+  ( 1 /io/MIDIOUT- )
+  ( 2 N-000117 )
  )
  ( /4F80537C/4F896ACC SM1206 R16 220
-  ( 1 N-000114 )
-  ( 2 N-000116 )
+  ( 1 N-000112 )
+  ( 2 /io/MIDIIN+ )
  )
  ( /4F80537C/4F896936 SM1206 R17 220
-  ( 1 N-000113 )
+  ( 1 /io/MIDIOUT+ )
   ( 2 +5V )
  )
  ( /4F7EF61F/4F7F4598 SM1206 R29 20k
@@ -391,7 +403,7 @@
  )
  ( /4F7E05A5/4F82845B SM1206 RPU1 20k
   ( 1 VPULLUP )
-  ( 2 /encoders/SW4 )
+  ( 2 /switchbus/SW4 )
  )
  ( /4F7E05A5/4F828479 SM1206 RPU2 20k
   ( 1 VPULLUP )
@@ -403,7 +415,7 @@
  )
  ( /4F7E05A5/4F828486 SM1206 RPU4 20k
   ( 1 VPULLUP )
-  ( 2 /switchbus/SW3 )
+  ( 2 /encoders/SW3 )
  )
  ( /4F7E05A5/4F828493 SM1206 RPU5 20k
   ( 1 VPULLUP )
@@ -415,7 +427,7 @@
  )
  ( /4F7E05A5/4F82854B SM1206 RPU7 20k
   ( 1 VPULLUP )
-  ( 2 /encoders/SW2 )
+  ( 2 /switchbus/SW2 )
  )
  ( /4F7E05A5/4F82854D SM1206 RPU8 20k
   ( 1 VPULLUP )
@@ -427,7 +439,7 @@
  )
  ( /4F7E05A5/4F828551 SM1206 RPU10 20k
   ( 1 VPULLUP )
-  ( 2 /encoders/SW1 )
+  ( 2 /switchbus/SW1 )
  )
  ( /4F7E05A5/4F828556 SM1206 RPU11 20k
   ( 1 VPULLUP )
@@ -502,8 +514,8 @@
   ( 28 VPULLUP )
   ( 29 /stm32/LED_CLK )
   ( 30 /stm32/LED_DATA )
-  ( 31 /io/PGM_RX )
-  ( 32 /io/USB_DM )
+  ( 31 /stm32/PGM_RX )
+  ( 32 /stm32/USB_DM )
   ( 33 /stm32/USB_DP )
   ( 34 /stm32/SWDIO )
   ( 35 GND )
@@ -541,10 +553,10 @@
  )
  ( /4F81A858/4F81A8A5 SO20L U4 74HC245
   ( 1 +3.3V )
-  ( 2 /encoders/SW1 )
-  ( 3 /encoders/SW2 )
-  ( 4 /switchbus/SW3 )
-  ( 5 /encoders/SW4 )
+  ( 2 /switchbus/SW1 )
+  ( 3 /switchbus/SW2 )
+  ( 4 /encoders/SW3 )
+  ( 5 /switchbus/SW4 )
   ( 6 ? )
   ( 7 ? )
   ( 8 ? )
@@ -562,8 +574,8 @@
   ( 20 +3.3V )
  )
  ( /4F80537C/4F805397 SOP-4L U5 VOL617A
-  ( 1 N-000116 )
-  ( 2 N-000111 )
+  ( 1 /io/MIDIIN+ )
+  ( 2 /io/MIDIIN- )
   ( 3 GND )
   ( 4 /stm32/MIDI_RX )
  )
@@ -597,7 +609,7 @@
  )
  ( /4F7EF61F/4F8046A8 HC49/US X1 8MHz
   ( 1 /stm32/OSCIN )
-  ( 2 N-000108 )
+  ( 2 N-000080 )
  )
 )
 *
@@ -704,6 +716,11 @@ $component C21
  C?
  C1-1
 $endlist
+$component C22
+ SM*
+ C?
+ C1-1
+$endlist
 $component CK11
  SM*
  C?
@@ -802,6 +819,12 @@ $component R8
  R?-*
 $endlist
 $component R9
+ R?
+ SM0603
+ SM0805
+ R?-*
+$endlist
+$component R10
  R?
  SM0603
  SM0805
