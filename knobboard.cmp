@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Sun 15 Apr 2012 11:00:41 AM CEST
+Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Sun 15 Apr 2012 01:41:39 PM CEST
 
 BeginCmp
 TimeStamp = /4F7EF61F/4F804892;
@@ -403,7 +403,7 @@ BeginCmp
 TimeStamp = /4F80537C/4F894AC7;
 Reference = R13;
 ValeurCmp = DNP;
-IdModule  = SM1206;
+IdModule  = SM0805;
 EndCmp
 
 BeginCmp
