@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Sun 15 Apr 2012 01:41:39 PM CEST
+Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Tue 17 Apr 2012 07:27:04 PM CEST
 
 BeginCmp
 TimeStamp = /4F7EF61F/4F804892;
@@ -435,50 +435,15 @@ IdModule  = SM1206;
 EndCmp
 
 BeginCmp
+TimeStamp = /4F8DA3D4;
+Reference = R18;
+ValeurCmp = DNP;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
 TimeStamp = /4F7EF61F/4F7F4598;
 Reference = R29;
-ValeurCmp = 20k;
-IdModule  = SM1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F813810;
-Reference = R31;
-ValeurCmp = 20k;
-IdModule  = SM1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F813820;
-Reference = R32;
-ValeurCmp = 20k;
-IdModule  = SM1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F813823;
-Reference = R33;
-ValeurCmp = 20k;
-IdModule  = SM1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F81382D;
-Reference = R34;
-ValeurCmp = 20k;
-IdModule  = SM1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F813832;
-Reference = R35;
-ValeurCmp = 20k;
-IdModule  = SM1206;
-EndCmp
-
-BeginCmp
-TimeStamp = /4F7EF61F/4F813834;
-Reference = R36;
 ValeurCmp = 20k;
 IdModule  = SM1206;
 EndCmp
@@ -729,10 +694,10 @@ IdModule  = SO16N;
 EndCmp
 
 BeginCmp
-TimeStamp = /4F81A858/4F81A8A5;
+TimeStamp = /4F81A858/4F8DA66D;
 Reference = U4;
-ValeurCmp = 74HC245;
-IdModule  = SO20L;
+ValeurCmp = 74HC165;
+IdModule  = SO16N;
 EndCmp
 
 BeginCmp
@@ -750,10 +715,10 @@ IdModule  = SOT223;
 EndCmp
 
 BeginCmp
-TimeStamp = /4F7E05A5/4F812DEE;
+TimeStamp = /4F7E05A5/4F8D976D;
 Reference = U8;
-ValeurCmp = 74HC245;
-IdModule  = SO20L;
+ValeurCmp = 74HC165;
+IdModule  = SO16N;
 EndCmp
 
 BeginCmp
