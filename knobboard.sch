@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Tue 17 Apr 2012 08:42:54 PM CEST
+EESchema Schematic File Version 2  date Thu 19 Apr 2012 08:23:14 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -46,7 +46,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 1 5
 Title ""
-Date "17 apr 2012"
+Date "19 apr 2012"
 Rev ""
 Comp ""
 Comment1 ""
@@ -55,70 +55,74 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Wire Wire Line
-	5600 2500 5900 2500
+	6700 2000 6150 2000
 Wire Wire Line
-	5900 2500 5900 850 
+	6150 2000 6150 800 
 Wire Wire Line
-	5900 850  10350 850 
+	6150 800  10350 800 
 Wire Wire Line
-	10350 850  10350 3050
+	10350 800  10350 3050
 Wire Wire Line
-	10350 3050 10200 3050
-Connection ~ 6450 1900
+	5900 2650 5900 2500
 Wire Wire Line
-	6450 1900 6450 1350
+	5900 2650 8600 2650
 Wire Wire Line
-	6450 1350 8800 1350
+	8600 2650 8600 2250
 Wire Wire Line
-	6250 4700 6250 1150
+	8600 2250 8200 2250
 Wire Wire Line
-	6250 1150 8800 1150
+	8200 2350 8400 2350
+Connection ~ 6350 1800
 Wire Wire Line
-	6550 2450 6550 2000
+	6350 1800 6350 1250
 Wire Wire Line
-	6550 2000 6700 2000
+	6350 1250 8800 1250
+Connection ~ 6250 1700
 Wire Wire Line
-	5600 2200 6700 2200
-Wire Wire Line
-	5600 1900 6700 1900
-Wire Wire Line
-	5600 1700 6700 1700
-Wire Wire Line
-	8200 1900 8800 1900
-Wire Wire Line
-	8200 2100 8800 2100
-Wire Wire Line
-	3000 2300 3600 2300
-Wire Wire Line
-	3000 2000 3600 2000
-Wire Wire Line
-	3000 1700 3600 1700
-Wire Wire Line
-	3600 1800 3000 1800
-Wire Wire Line
-	3600 2100 3000 2100
-Wire Wire Line
-	3600 2400 3000 2400
-Wire Wire Line
-	8200 2000 8800 2000
-Wire Wire Line
-	8200 1800 8800 1800
-Wire Wire Line
-	6700 2300 5600 2300
+	6700 2100 5600 2100
 Wire Wire Line
 	6700 1800 5600 1800
 Wire Wire Line
-	6700 2100 5600 2100
-Connection ~ 6250 1700
+	6700 2300 5600 2300
 Wire Wire Line
-	8200 2250 8800 2250
+	8200 1800 8800 1800
 Wire Wire Line
-	8800 1250 6350 1250
+	8200 2000 8800 2000
 Wire Wire Line
-	6350 1250 6350 1800
-Connection ~ 6350 1800
+	3600 2400 3000 2400
 Wire Wire Line
-	8200 2350 8400 2350
+	3600 2100 3000 2100
+Wire Wire Line
+	3600 1800 3000 1800
+Wire Wire Line
+	3000 1700 3600 1700
+Wire Wire Line
+	3000 2000 3600 2000
+Wire Wire Line
+	3000 2300 3600 2300
+Wire Wire Line
+	8200 2100 8800 2100
+Wire Wire Line
+	8200 1900 8800 1900
+Wire Wire Line
+	5600 1700 6700 1700
+Wire Wire Line
+	5600 1900 6700 1900
+Wire Wire Line
+	5600 2200 6700 2200
+Wire Wire Line
+	8800 1150 6250 1150
+Wire Wire Line
+	6250 1150 6250 4700
+Wire Wire Line
+	8800 1350 6450 1350
+Wire Wire Line
+	6450 1350 6450 1900
+Connection ~ 6450 1900
+Wire Wire Line
+	10350 3050 10200 3050
+Wire Wire Line
+	5900 2500 5600 2500
 Wire Wire Line
 	8400 2350 8400 5150
 NoConn ~ 8400 5150
@@ -152,10 +156,10 @@ $EndSheet
 $Comp
 L GND #PWR01
 U 1 1 4F8DA5D4
-P 6550 2450
-F 0 "#PWR01" H 6550 2450 30  0001 C CNN
-F 1 "GND" H 6550 2380 30  0001 C CNN
-	1    6550 2450
+P 7550 4250
+F 0 "#PWR01" H 7550 4250 30  0001 C CNN
+F 1 "GND" H 7550 4180 30  0001 C CNN
+	1    7550 4250
 	1    0    0    -1  
 $EndComp
 Text Notes 6450 4550 3    60   ~ 0

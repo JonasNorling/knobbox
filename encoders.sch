@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Tue 17 Apr 2012 08:42:54 PM CEST
+EESchema Schematic File Version 2  date Thu 19 Apr 2012 08:23:14 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -46,7 +46,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 3 5
 Title ""
-Date "17 apr 2012"
+Date "19 apr 2012"
 Rev ""
 Comp ""
 Comment1 ""
@@ -551,8 +551,6 @@ F 1 "+5V" H 1850 6590 30  0000 C CNN
 	1    1850 6500
 	1    0    0    -1  
 $EndComp
-Text Notes 1000 6250 0    60   ~ 0
-Dimension decoupling for shifting (MHz)\nplus LED power (64mA spikes)
 $Comp
 L R RPU12
 U 1 1 4F828559
@@ -676,8 +674,6 @@ F 1 "100n" H 10350 5800 50  0000 L CNN
 	1    10300 5900
 	1    0    0    -1  
 $EndComp
-Text Notes 5800 900  0    60   ~ 0
-Resistor pack BI Technologies 628A103\navailable in 220 mil chip (SO16N but slightly wider),\n0.56€ @ Mouser.\nType A is 8 parallel (0.07€ a pop),\ntype B is pullup/downs (0.037€ a pop).\nMouser 1206 resistors (667-ERJ-P08J103V) are 2€ for 100.\n0805 (667-ERJ-6GEYJ103V) are 1€ for 100.
 $Comp
 L +3.3V #PWR012
 U 1 1 4F8131EC
