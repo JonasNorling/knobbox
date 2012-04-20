@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Thu 19 Apr 2012 10:08:52 PM CEST
+EESchema Schematic File Version 2  date Fri 20 Apr 2012 08:02:00 AM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -46,7 +46,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 1 6
 Title ""
-Date "19 apr 2012"
+Date "20 apr 2012"
 Rev ""
 Comp ""
 Comment1 ""
@@ -54,6 +54,98 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+$Comp
+L CONN_1 H10
+U 1 1 4F90F9F5
+P 2200 6800
+F 0 "H10" H 2280 6800 40  0000 L CNN
+F 1 "CONN_1" H 2200 6855 30  0001 C CNN
+	1    2200 6800
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_1 H9
+U 1 1 4F90F9F3
+P 2200 6700
+F 0 "H9" H 2280 6700 40  0000 L CNN
+F 1 "CONN_1" H 2200 6755 30  0001 C CNN
+	1    2200 6700
+	1    0    0    -1  
+$EndComp
+Text Notes 2500 6600 1    60   ~ 0
+Mounting holes
+$Comp
+L CONN_1 H8
+U 1 1 4F90F606
+P 2200 6600
+F 0 "H8" H 2280 6600 40  0000 L CNN
+F 1 "CONN_1" H 2200 6655 30  0001 C CNN
+	1    2200 6600
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_1 H7
+U 1 1 4F90F605
+P 2200 6500
+F 0 "H7" H 2280 6500 40  0000 L CNN
+F 1 "CONN_1" H 2200 6555 30  0001 C CNN
+	1    2200 6500
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_1 H6
+U 1 1 4F90F604
+P 2200 6400
+F 0 "H6" H 2280 6400 40  0000 L CNN
+F 1 "CONN_1" H 2200 6455 30  0001 C CNN
+	1    2200 6400
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_1 H5
+U 1 1 4F90F602
+P 2200 6300
+F 0 "H5" H 2280 6300 40  0000 L CNN
+F 1 "CONN_1" H 2200 6355 30  0001 C CNN
+	1    2200 6300
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_1 H4
+U 1 1 4F90F601
+P 2200 6200
+F 0 "H4" H 2280 6200 40  0000 L CNN
+F 1 "CONN_1" H 2200 6255 30  0001 C CNN
+	1    2200 6200
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_1 H3
+U 1 1 4F90F5FF
+P 2200 6100
+F 0 "H3" H 2280 6100 40  0000 L CNN
+F 1 "CONN_1" H 2200 6155 30  0001 C CNN
+	1    2200 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_1 H2
+U 1 1 4F90F5FD
+P 2200 6000
+F 0 "H2" H 2280 6000 40  0000 L CNN
+F 1 "CONN_1" H 2200 6055 30  0001 C CNN
+	1    2200 6000
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_1 H1
+U 1 1 4F90F5D6
+P 2200 5900
+F 0 "H1" H 2280 5900 40  0000 L CNN
+F 1 "CONN_1" H 2200 5955 30  0001 C CNN
+	1    2200 5900
+	1    0    0    -1  
+$EndComp
 Connection ~ 6050 2200
 Wire Wire Line
 	6050 2200 6050 3400
@@ -288,6 +380,6 @@ F12 "BTN_LOAD" O R 5600 1800 60
 F13 "BTN_SHIFT" I R 5600 2500 60 
 F14 "SHIFT_CLK" O R 5600 1700 60 
 $EndSheet
-Text Notes 1500 4500 0    60   ~ 0
+Text Notes 1500 4050 0    60   ~ 0
 STM32\n3V3 vreg\nMIDI I/O -- needs 5V\nmicro-USB\npins for USART1 programming\nencoders -- 2 LEDs, button, gray output\n   -- needs filter circuit 4R+2C?\n   -- blue and green LEDs have Vf up to 4V\n   -- so I need a level-changing buffer to drive the anode at 5V\n   -- use a latch instead of buffer, so the LEDs can be kept on all the time\nLCD COG or OLED display, on SPI\n2 buttons, at least\n   -- mode/power, ok, plypause, back\nunpopulated CV output circuitry?\nSPI EEPROM 8mbit\n"soft" power button -- keep idle power at uA levels\nSPI LCD display NHD-C12832A1Z-FSW-FBW-3V3 (Newhaven Display, 8.68€ @ Mouser)
 $EndSCHEMATC

@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Thu 19 Apr 2012 08:50:03 PM CEST
+Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Fri 20 Apr 2012 07:54:25 AM CEST
 
 BeginCmp
 TimeStamp = /4F7EF61F/4F804892;
@@ -351,6 +351,90 @@ IdModule  = PEL12D;
 EndCmp
 
 BeginCmp
+TimeStamp = /4F90F5D6;
+Reference = H1;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F5FD;
+Reference = H2;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F5FF;
+Reference = H3;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F601;
+Reference = H4;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F602;
+Reference = H5;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F604;
+Reference = H6;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F605;
+Reference = H7;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F606;
+Reference = H8;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F9F3;
+Reference = H9;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F9F5;
+Reference = H10;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F9F6;
+Reference = H11;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F90F9F7;
+Reference = H12;
+ValeurCmp = CONN_1;
+IdModule  = hole;
+EndCmp
+
+BeginCmp
 TimeStamp = /4F7EF61F/4F8492E5;
 Reference = LCD2;
 ValeurCmp = DOGS102-6;
@@ -676,14 +760,14 @@ BeginCmp
 TimeStamp = /4F905A24/4F905A64;
 Reference = RK52;
 ValeurCmp = 390;
-IdModule  = ;
+IdModule  = SM1206;
 EndCmp
 
 BeginCmp
 TimeStamp = /4F905A24/4F7E098A;
 Reference = RK53;
 ValeurCmp = 240;
-IdModule  = ;
+IdModule  = SM1206;
 EndCmp
 
 BeginCmp
@@ -704,14 +788,14 @@ BeginCmp
 TimeStamp = /4F905A24/4F905A55;
 Reference = RK62;
 ValeurCmp = 390;
-IdModule  = ;
+IdModule  = SM1206;
 EndCmp
 
 BeginCmp
 TimeStamp = /4F905A24/4F905A56;
 Reference = RK63;
 ValeurCmp = 240;
-IdModule  = ;
+IdModule  = SM1206;
 EndCmp
 
 BeginCmp
@@ -732,14 +816,14 @@ BeginCmp
 TimeStamp = /4F905A24/4F7E096B;
 Reference = RK72;
 ValeurCmp = 390;
-IdModule  = ;
+IdModule  = SM1206;
 EndCmp
 
 BeginCmp
 TimeStamp = /4F905A24/4F905A4F;
 Reference = RK73;
 ValeurCmp = 240;
-IdModule  = ;
+IdModule  = SM1206;
 EndCmp
 
 BeginCmp
@@ -760,14 +844,14 @@ BeginCmp
 TimeStamp = /4F905A24/4F905A41;
 Reference = RK82;
 ValeurCmp = 390;
-IdModule  = ;
+IdModule  = SM1206;
 EndCmp
 
 BeginCmp
 TimeStamp = /4F905A24/4F7E0953;
 Reference = RK83;
 ValeurCmp = 240;
-IdModule  = ;
+IdModule  = SM1206;
 EndCmp
 
 BeginCmp
