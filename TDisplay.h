@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include "TSpiDmaJob.h"
 #include <cstdint>
 #include <cstddef>
 #include <cstdlib>
@@ -39,33 +40,6 @@ private:
 
   uint8_t* Data;
   uint8_t Length;
-};
-
-class IDmaCallback
-{
-public:
-  virtual void DmaFinished(void* context) = 0;
-};
-
-class TSpiDmaJob
-{
-public:
-  enum TChip {
-    CS_FLASH,
-    CS_LCD
-  };
-  enum TLcdCd {
-    LCD_CONTROL = 0,
-    LCD_DATA = 1
-  };
-  TSpiDmaJob(const TBuffer& data,
-	     TChip chip,
-	     TLcdCd lcdCd,
-	     IDmaCallback* callback = 0,
-	     void* context = 0)
-  {
-    callback->DmaFinished(context);
-  }
 };
 
 class TDisplay : public IDmaCallback
@@ -98,7 +72,7 @@ public:
   bool Power(bool on);
 
   TPageBuffer* GetBuffer();
-  void OutputBuffer(const TPageBuffer* buffer, uint8_t length,
+  void OutputBuffer(TPageBuffer* buffer, uint8_t length,
 		    uint8_t page, uint8_t col);
 
   /* IDmaCallback */
@@ -112,12 +86,11 @@ private:
     if (true /* DMA queue space is available */) {
       uint8_t bufferid = (pageBuffer - &Buffers[0]) /
 	sizeof(Buffers[0]);
-      TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
-		 TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL);
-      TSpiDmaJob(TBuffer(pageBuffer->Data, len),
-		 TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_DATA,
-		 this, reinterpret_cast<void*>(bufferid));
-      // Enqueue
+      SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
+				     TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL));
+      SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Data, len),
+				     TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_DATA,
+				     this, reinterpret_cast<void*>(bufferid)));
       return true;
     } else {
       return false;
@@ -133,3 +106,5 @@ private:
   // or...
   //TObjectPool<TPageBuffer, 3> Buffers;
 };
+
+extern TDisplay Display;

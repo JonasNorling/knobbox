@@ -1,10 +1,16 @@
 #include "TDisplay.h"
+#include "TBitmask.h"
 #include "stm32.h"
+#include "logging.h"
+#ifdef HOST
+#include <cassert>
+#else
 #define assert(x)
+#endif
 #include "liquid-2.0/fontliqsting.inc"
 
 TDisplay::TDisplay()
-  : BufferAllocMask(0)
+  : BufferAllocMask(TBitmask::Init(BufferCount))
 { }
 
 void TDisplay::Init()
@@ -19,27 +25,37 @@ void TDisplay::Init()
 
 TDisplay::TPageBuffer* TDisplay::GetBuffer()
 {
-  // Check BufferAllocMask for an unused buffer
-  for (uint8_t i = 0; i < BufferCount; i++) {
-    const uint8_t bit = 1 << i;
-    if ((BufferAllocMask & bit) == 0) {
-      BufferAllocMask |= bit;
-      return &Buffers[i];
-    }
+  int8_t bit = TBitmask::FindFree(BufferAllocMask, BufferCount);
+  if (bit == -1) {
+    return 0;
+  } else {
+    return &Buffers[bit];
   }
-  return 0;
 }
 
-void TDisplay::OutputBuffer(const TPageBuffer* buffer, uint8_t length,
+void TDisplay::OutputBuffer(TPageBuffer* buffer, uint8_t length,
 			    uint8_t page, uint8_t col)
 {
+#ifdef HOST
+  for (int line = 0; line < 8; line++) {
+    char s[1024] = {};
+    for (int i = 0; i < length; i++) {
+      s[i] = buffer->Data[i] & (1 << line) ? 'X' : ' ';
+    }
+    LOG("LCD: %s\n", s);
+  }
+#endif
+  buffer->Control[0] = 0x00; // FIXME: page command
+  buffer->Control[1] = 0x00; // FIXME: high col command
+  buffer->Control[2] = 0x00; // FIXME: low col command
+  EnqueueDmaJob(buffer, length, 3);
 }
 
 void TDisplay::DmaFinished(void* context)
 {
-  // Clear the right bit in BufferAllocMask
-  const uint8_t bufferid = reinterpret_cast<uint32_t>(context);
-  BufferAllocMask &= ~(1 << bufferid);
+  LOG("DMA finished\n");
+  const uint8_t bufferid = reinterpret_cast<intptr_t>(context);
+  TBitmask::Release(BufferAllocMask, bufferid);
 }
 
 bool TDisplay::Power(bool on)
@@ -74,7 +90,6 @@ uint8_t TDisplay::TPageBuffer::DrawText(const char* text, uint8_t offset)
 	Data[offset++] = 0xff;
       }
     }
-    Data[offset++] = 0x00;
   }
 
   return offset;

@@ -8,6 +8,8 @@
 
 #define UU __attribute__((unused))
 
+#ifndef HOST
+
 void _exit(UU int status)
 {
   while (1);
@@ -59,3 +61,4 @@ ssize_t _read(UU int fd, UU void *buf, UU size_t count)
   return 0;
 }
 
+#endif // HOST
