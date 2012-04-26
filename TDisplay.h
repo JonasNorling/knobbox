@@ -1,0 +1,134 @@
+/* -*- c++ -*-
+ *
+ * Device driver for EA DOGS102W-6 LCD display on SPI.  The display is
+ * 102x64 pixels and is controlled by a UC1701x driver chip (capable
+ * of driving a 132x65 pixel display). The display isn't mapped as a
+ * regular framebuffer, but as horizontal bands ("pages") 8 pixels
+ * high and 132 pixels wide (of which 102 pixels actually exist on
+ * this particular display, of course). Each byte in the display RAM
+ * corresponds to 8 vertical pixels in the page. This arrangement
+ * makes it easy to draw text with a 8-pixel font (that could be
+ * variable width), but a bit fiddly to draw graphics.
+ *
+ * The display is mainly treated as if it's a 17x8 character display,
+ * and a 6x8 font (with empty space top and right) is used to render
+ * text. Each character is thus 6 bytes in size.
+ */
+#pragma once
+
+#include <cstdint>
+#include <cstddef>
+#include <cstdlib>
+#include <functional>
+
+typedef uint8_t TCharacter[6];
+
+class TBuffer
+{
+public:
+  TBuffer(uint8_t* data, uint8_t len) :
+    Data(data), Length(len) {}
+
+  //start, end
+  //xor, slice
+
+private:
+  TBuffer();
+  TBuffer(const TBuffer&);
+  const TBuffer& operator=(const TBuffer&);
+
+  uint8_t* Data;
+  uint8_t Length;
+};
+
+class IDmaCallback
+{
+public:
+  virtual void DmaFinished(void* context) = 0;
+};
+
+class TSpiDmaJob
+{
+public:
+  enum TChip {
+    CS_FLASH,
+    CS_LCD
+  };
+  enum TLcdCd {
+    LCD_CONTROL = 0,
+    LCD_DATA = 1
+  };
+  TSpiDmaJob(const TBuffer& data,
+	     TChip chip,
+	     TLcdCd lcdCd,
+	     IDmaCallback* callback = 0,
+	     void* context = 0)
+  {
+    callback->DmaFinished(context);
+  }
+};
+
+class TDisplay : public IDmaCallback
+{
+private:
+  static const int Width = 102;
+  static const int Height = 64;
+  static const int WidthChars = 17;
+  static const int HeightChars = 8;
+  static const int BufferCount = 2;
+
+public:
+  class TPageBuffer {
+  public:
+    friend class TDisplay;
+    uint8_t DrawText(const char* text);
+  private:
+    TPageBuffer() {}
+    const TPageBuffer& operator=(const TPageBuffer&);    
+    uint8_t Data[Width];
+    uint8_t Control[3];
+  };
+
+  TDisplay();
+
+  uint8_t GetWidthChars() { return WidthChars; }
+  uint8_t GetHeightChars() { return HeightChars; }
+
+  void Power(bool on);
+
+  TPageBuffer* GetBuffer();
+  void OutputBuffer(const TPageBuffer* buffer, uint8_t length,
+		    uint8_t page, uint8_t col);
+
+  /* IDmaCallback */
+
+  virtual void DmaFinished(void* context);
+
+private:
+  bool EnqueueDmaJob(TPageBuffer* pageBuffer,
+		     uint8_t len, uint8_t ctrllen = 3)
+  {
+    if (true /* DMA queue space is available */) {
+      uint8_t bufferid = (pageBuffer - &Buffers[0]) /
+	sizeof(Buffers[0]);
+      TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
+		 TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL);
+      TSpiDmaJob(TBuffer(pageBuffer->Data, len),
+		 TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_DATA,
+		 this, reinterpret_cast<void*>(bufferid));
+      // Enqueue
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /* We keep a little memory pool here that can be used to store data
+     for DMA jobs. It's a bit wasteful to use [Width] bytes when
+     sending a little command, but whatever. */
+  TPageBuffer Buffers[BufferCount];
+  uint8_t BufferAllocMask;
+
+  // or...
+  //TObjectPool<TPageBuffer, 3> Buffers;
+};
