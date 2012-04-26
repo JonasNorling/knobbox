@@ -33,11 +33,17 @@ CXXFLAGS += -std=c++0x -fno-exceptions -fno-rtti
 all: $(PROJECT).bin $(PROJECT).asm
 	@size $(PROJECT).elf
 
+liquid-2.0: external/liquid-2.0.tgz external/liquid.patch Makefile
+	tar xf $<
+	@patch -d $@ < external/liquid.patch
+
+liquid-2.0/fontliqsting.inc: liquid-2.0
+
 %.o: %.c Makefile
 	@echo CC $< --\> $@
 	@$(CC) -MD $(COMMONFLAGS) $(CFLAGS) -c -o $@ $<
 
-%.o: %.cpp Makefile
+%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc
 	@echo CC $< --\> $@
 	@$(CC) -MD $(COMMONFLAGS) $(CXXFLAGS) -c -o $@ $<
 

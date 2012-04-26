@@ -81,7 +81,7 @@ public:
   class TPageBuffer {
   public:
     friend class TDisplay;
-    uint8_t DrawText(const char* text);
+    uint8_t DrawText(const char* text, uint8_t offset = 0);
   private:
     TPageBuffer() {}
     const TPageBuffer& operator=(const TPageBuffer&);    
@@ -90,11 +90,12 @@ public:
   };
 
   TDisplay();
+  void Init();
 
   uint8_t GetWidthChars() { return WidthChars; }
   uint8_t GetHeightChars() { return HeightChars; }
 
-  void Power(bool on);
+  bool Power(bool on);
 
   TPageBuffer* GetBuffer();
   void OutputBuffer(const TPageBuffer* buffer, uint8_t length,
