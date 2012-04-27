@@ -7,7 +7,15 @@
 #else
 #define assert(x)
 #endif
-#include "liquid-2.0/fontliqsting.inc"
+
+static const uint8_t DOGM_SYSTEM_RESET = 0xe2;
+static const uint8_t DOGM_DISABLE_DISPLAY = 0xae;
+static const uint8_t DOGM_ENABLE_DISPLAY = 0xaf;
+static const uint8_t DOGM_ALL_PIXELS_OFF = 0xa4;
+static const uint8_t DOGM_ALL_PIXELS_ON = 0xa5;
+static const uint8_t DOGM_SET_PAGE = 0xb0;
+static const uint8_t DOGM_SET_COL_HIGH = 0x10; // FIXME
+static const uint8_t DOGM_SET_COL_LOW = 0x00; // FIXME
 
 TDisplay::TDisplay()
   : BufferAllocMask(TBitmask::Init(BufferCount))
@@ -17,8 +25,8 @@ void TDisplay::Init()
 {
   TPageBuffer* buffer(GetBuffer());
   if (buffer) {
-    buffer->Control[0] = 0xe2; // System reset
-    buffer->Control[1] = 0xae; // Disable display
+    buffer->Control[0] = DOGM_SYSTEM_RESET;
+    buffer->Control[1] = DOGM_DISABLE_DISPLAY;
     EnqueueDmaJob(buffer, 0, 2);
   }
 }
@@ -45,15 +53,14 @@ void TDisplay::OutputBuffer(TPageBuffer* buffer, uint8_t length,
     LOG("LCD: %s\n", s);
   }
 #endif
-  buffer->Control[0] = 0x00; // FIXME: page command
-  buffer->Control[1] = 0x00; // FIXME: high col command
-  buffer->Control[2] = 0x00; // FIXME: low col command
+  buffer->Control[0] = DOGM_SET_PAGE | page;
+  buffer->Control[1] = DOGM_SET_COL_HIGH | col >> 4;
+  buffer->Control[2] = DOGM_SET_COL_LOW | (col & 0x0f);
   EnqueueDmaJob(buffer, length, 3);
 }
 
 void TDisplay::DmaFinished(void* context)
 {
-  LOG("DMA finished\n");
   const uint8_t bufferid = reinterpret_cast<intptr_t>(context);
   TBitmask::Release(BufferAllocMask, bufferid);
 }
@@ -66,30 +73,49 @@ bool TDisplay::Power(bool on)
   }
   if (on) {
     // Leave sleep mode
-    buffer->Control[0] = 0xa4; // All pixels off
-    buffer->Control[1] = 0xaf; // Enable on
+    buffer->Control[0] = DOGM_ALL_PIXELS_OFF;
+    buffer->Control[1] = DOGM_ENABLE_DISPLAY;
   } else {
     // Enter sleep mode
-    buffer->Control[0] = 0xae; // Enable off
-    buffer->Control[1] = 0xa5; // All pixels on
+    buffer->Control[0] = DOGM_DISABLE_DISPLAY;
+    buffer->Control[1] = DOGM_ALL_PIXELS_ON;
   }
   EnqueueDmaJob(buffer, 0, 2);
   return true;
 }
 
+
+//#define FONT_LIQUID
+#ifdef FONT_LIQUID
+#include "liquid-2.0/fontliqsting.inc"
+#else
+#include "font.h"
+#endif
+
 uint8_t TDisplay::TPageBuffer::DrawText(const char* text, uint8_t offset)
 {
   for (const char* pt = text; *pt != '\0'; pt++) {
-    glyph_id_t glyph = fontliqstingmono_obj.first_glyph(*pt);
+#ifdef FONT_LIQUID
+    glyph_id_t glyph = fontliqstingmono_obj.first_glyph((uint8_t)*pt);
     if (glyph) {
       for (int c = 0; c < 6; c++) {
-	Data[offset++] = fontliqstingmono_obj.glyph_data(glyph, c);
+	Data[offset++] |= fontliqstingmono_obj.glyph_data(glyph, c);
       }
-    } else {
+    }
+#else
+    if ((uint8_t)*pt < FONT_GLYPHS) {
+      for (int c = 0; c < 6; c++) {
+	Data[offset++] |= Font[(uint8_t)*pt][c];
+      }
+    }
+#endif
+
+    else {
       for (int c = 0; c < 6; c++) {
 	Data[offset++] = 0xff;
       }
     }
+    assert(offset < Width);
   }
 
   return offset;

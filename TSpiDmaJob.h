@@ -2,6 +2,7 @@
  */
 #pragma once
 #include <cstdint>
+#include "stm32.h"
 #include "TCircularBuffer.h"
 
 class TBuffer;
@@ -55,16 +56,37 @@ class TSpiDmaQueue
 {
 public:
   TSpiDmaQueue()
-  {}
+  {
+#ifndef HOST
+    dma_channel_reset(DMA1, DMA_CHANNEL7);
+#endif
+  }
   
   bool Enqueue(const TSpiDmaJob& job)
   {
-    job.Finished(); // FIXME: Call when interrupt is received
-    return Jobs.Put(job);
-    // FIXME: If no job is under way, start the DMA engine.  Think
-    // about race conditions. What if the interrupt happens when we
-    // have decided not to start a job, but before it's put on the
-    // queue. The solution is to enqueue it first, always?
+    if (Jobs.Add(job)) {
+      // FIXME: If no job is under way, start the DMA engine.  Think
+      // about race conditions. What if the interrupt happens when we
+      // have decided not to start a job, but before it's put on the
+      // queue. The solution is to enqueue it first, always?
+
+      Jobs.First();
+
+#ifdef HOST
+      dma1_channel7_isr();
+#else
+#endif
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /** Called when interrupt is received. */
+  void Finished()
+  {
+    Jobs.First().Finished();
+    Jobs.Remove();
   }
 
 private:

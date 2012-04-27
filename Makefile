@@ -2,6 +2,7 @@ PROJECT = knobbox
 OBJS += main.o
 OBJS += syscalls.o
 OBJS += TDisplay.o
+OBJS += TGui.o
 
 # -------------------------------------
 # Assuming a toolchain from summon-arm-toolchain.
@@ -27,7 +28,7 @@ HOST_LDFLAGS +=
 ARM_COMMONFLAGS += -Os -fno-common -g
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
 ARM_COMMONFLAGS += -Wall -Wextra
-ARM_COMMONFLAGS += -I$(TOOLCHAIN)/arm-none-eabi/include/libopencm3/stm32/f1
+ARM_COMMONFLAGS += -I$(TOOLCHAIN)/arm-none-eabi/include/libopencm3/stm32
 HOST_COMMONFLAGS += -O0 -fno-common -g -Wall -Wextra -DHOST
 
 CFLAGS += -std=c99 -Werror-implicit-function-declaration

@@ -3,6 +3,12 @@
 #pragma once
 #include "logging.h"
 
+#ifdef HOST
+#include <cassert>
+#else
+#define assert(x)
+#endif
+
 template<typename T, int size>
 class TCircularBuffer
 {
@@ -11,16 +17,30 @@ public:
     Read(0), Count(0)
   { }
 
-  bool Put(const T& t)
+  bool Add(const T& t)
   {
+    LOG("TCircularBuffer::Add\n");
     if (Count >= size) {
-      LOG("No DMA space\n");
+      LOG("TCircularBuffer::Add: no space left\n");
       return false;
     }
     Data[(Read + Count) % size] = t;
     Count++;
-    LOG("Put DMA job\n");
     return true;
+  }
+
+  void Remove()
+  {
+    LOG("TCircularBuffer::Remove\n");
+    assert(Count > 0);
+    Read = (Read + 1) % size;
+    Count--;
+  }
+
+  const T& First()
+  {
+    assert(Count > 0);
+    return Data[Read];
   }
 
 private:

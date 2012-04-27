@@ -56,6 +56,7 @@ public:
   public:
     friend class TDisplay;
     uint8_t DrawText(const char* text, uint8_t offset = 0);
+    void Clear() { for (int i=0; i<Width; i++) Data[i] = 0; } // Fixme: Is this optimised to 32-bit?
   private:
     TPageBuffer() {}
     const TPageBuffer& operator=(const TPageBuffer&);    
