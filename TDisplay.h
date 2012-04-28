@@ -56,7 +56,17 @@ public:
   public:
     friend class TDisplay;
     uint8_t DrawText(const char* text, uint8_t offset = 0);
-    void Clear() { for (int i=0; i<Width; i++) Data[i] = 0; } // Fixme: Is this optimised to 32-bit?
+    void Clear()
+    {
+      // Fixme: Is this optimised to 32-bit?
+      for (int i=0; i<Width; i++) Data[i] = 0;
+    }
+    void Invert(uint8_t start, uint8_t end)
+    {
+      // Fixme: Is this optimised to 32-bit?
+      for (int i=start; i<end; i++) Data[i] = ~Data[i];
+    }
+    uint8_t GetLength() const { return Width; }
   private:
     TPageBuffer() {}
     const TPageBuffer& operator=(const TPageBuffer&);    
@@ -75,6 +85,10 @@ public:
   TPageBuffer* GetBuffer();
   void OutputBuffer(TPageBuffer* buffer, uint8_t length,
 		    uint8_t page, uint8_t col);
+
+#ifdef HOST
+  void DumpPixels();
+#endif
 
   /* IDmaCallback */
 
@@ -104,8 +118,9 @@ private:
   TPageBuffer Buffers[BufferCount];
   uint8_t BufferAllocMask;
 
-  // or...
-  //TObjectPool<TPageBuffer, 3> Buffers;
+#ifdef HOST
+  uint8_t Framebuffer[Width][Height];
+#endif
 };
 
 extern TDisplay Display;

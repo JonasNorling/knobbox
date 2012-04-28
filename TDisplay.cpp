@@ -45,12 +45,10 @@ void TDisplay::OutputBuffer(TPageBuffer* buffer, uint8_t length,
 			    uint8_t page, uint8_t col)
 {
 #ifdef HOST
-  for (int line = 0; line < 8; line++) {
-    char s[1024] = {};
+  for (int y = 0; y < 8; y++) {
     for (int i = 0; i < length; i++) {
-      s[i] = buffer->Data[i] & (1 << line) ? 'X' : ' ';
+      Framebuffer[col + i][8*page + y] = !!(buffer->Data[i] & (1 << y));
     }
-    LOG("LCD: %s\n", s);
   }
 #endif
   buffer->Control[0] = DOGM_SET_PAGE | page;
@@ -84,6 +82,29 @@ bool TDisplay::Power(bool on)
   return true;
 }
 
+#ifdef HOST
+void TDisplay::DumpPixels()
+{
+  FILE* fd = ::fopen("display.pbm", "w");
+  if (fd) {
+    ::fprintf(fd, "P1\n");
+    ::fprintf(fd, "# Display dump\n");
+    ::fprintf(fd, "%d %d\n", Width*5, Height*5);
+    for (int y = 0; y < Height; y++) {
+      for (int repeat = 0; repeat < 5; repeat++) {
+	for (int x = 0; x < Width; x++) {
+	  uint8_t v = (repeat < 4) ? Framebuffer[x][y] : 0;
+	  ::fprintf(fd, "%d %d %d %d %d", v, v, v, v, 0);
+	}
+	::fprintf(fd, "\n");
+      }
+    }
+    ::fclose(fd);
+  } else {
+    LOG("Failed to open display.pbm");
+  }
+}
+#endif
 
 //#define FONT_LIQUID
 #ifdef FONT_LIQUID
@@ -99,24 +120,28 @@ uint8_t TDisplay::TPageBuffer::DrawText(const char* text, uint8_t offset)
     glyph_id_t glyph = fontliqstingmono_obj.first_glyph((uint8_t)*pt);
     if (glyph) {
       for (int c = 0; c < 6; c++) {
-	Data[offset++] |= fontliqstingmono_obj.glyph_data(glyph, c);
+	if (offset >= Width-1) goto out;
+	Data[offset++] = fontliqstingmono_obj.glyph_data(glyph, c);
       }
     }
 #else
     if ((uint8_t)*pt < FONT_GLYPHS) {
       for (int c = 0; c < 6; c++) {
-	Data[offset++] |= Font[(uint8_t)*pt][c];
+	if (offset >= Width-1) goto out;
+	Data[offset++] = Font[(uint8_t)*pt][c];
       }
     }
 #endif
 
     else {
       for (int c = 0; c < 6; c++) {
+	if (offset >= Width-1) goto out;
 	Data[offset++] = 0xff;
       }
     }
     assert(offset < Width);
   }
 
+ out:
   return offset;
 }

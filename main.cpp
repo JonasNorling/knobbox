@@ -49,6 +49,9 @@ int main(void)
       DmaEvents--;
       SpiDmaQueue.Finished();
     } else {
+#ifdef HOST
+      Display.DumpPixels();
+#endif
       return 0;
     }
     Gui.Process();

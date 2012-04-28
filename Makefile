@@ -23,7 +23,6 @@ ARM_LDFLAGS += -lopencm3_stm32f1
 ARM_LDFLAGS += -lc -lnosys -nostartfiles -Wl,--gc-sections -lstdc++
 ARM_LDFLAGS += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
 ARM_LDFLAGS += -Tstm32vl-discovery.ld
-HOST_LDFLAGS +=
 
 ARM_COMMONFLAGS += -Os -fno-common -g
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
@@ -89,7 +88,7 @@ $(HOSTBUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc
 
 $(HOSTBUILDDIR)/$(PROJECT).elf: $(HOST_OBJS)
 	@echo LD $@
-	$(CXX) -o $@ $(HOST_OBJS) $(HOST_LDFLAGS)
+	@$(CXX) -o $@ $(HOST_OBJS) $(HOST_LDFLAGS)
 
 # -------------------------------------
 
