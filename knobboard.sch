@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sat 21 Apr 2012 03:25:21 PM CEST
+EESchema Schematic File Version 2  date Sat 28 Apr 2012 08:49:51 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -46,7 +46,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 1 8
 Title ""
-Date "21 apr 2012"
+Date "28 apr 2012"
 Rev ""
 Comp ""
 Comment1 ""
@@ -257,7 +257,7 @@ $Sheet
 S 6700 5250 1500 1000
 U 4F92B0F3
 F0 "encoders4" 60
-F1 "encoders4.sch" 0
+F1 "encoders4.sch" 60
 F2 "SHIFT_CLK" I L 6700 5400 60 
 F3 "BTN_LOAD" I L 6700 5500 60 
 F4 "BTN_CE" I L 6700 5600 60 
@@ -276,7 +276,7 @@ $Sheet
 S 6700 3950 1500 1000
 U 4F92A9C4
 F0 "encoders3" 60
-F1 "encoders3.sch" 0
+F1 "encoders3.sch" 60
 F2 "SHIFT_CLK" I L 6700 4100 60 
 F3 "BTN_LOAD" I L 6700 4200 60 
 F4 "BTN_CE" I L 6700 4300 60 
@@ -432,10 +432,10 @@ F23 "BTNSHIFT_OUT1" O R 10200 5000 60
 F24 "BTNSHIFT_IN1" I L 8800 6000 60 
 $EndSheet
 $Comp
-L GND #PWR2
+L GND #PWR01
 U 1 1 4F8DA5D4
 P 6650 6400
-F 0 "#PWR2" H 6650 6400 30  0001 C CNN
+F 0 "#PWR01" H 6650 6400 30  0001 C CNN
 F 1 "GND" H 6650 6330 30  0001 C CNN
 	1    6650 6400
 	1    0    0    -1  
@@ -443,10 +443,10 @@ $EndComp
 Text Notes 6150 6200 3    60   ~ 0
 Place at end of line
 $Comp
-L GND #PWR1
+L GND #PWR02
 U 1 1 4F8DA3E0
 P 6250 6750
-F 0 "#PWR1" H 6250 6750 30  0001 C CNN
+F 0 "#PWR02" H 6250 6750 30  0001 C CNN
 F 1 "GND" H 6250 6680 30  0001 C CNN
 	1    6250 6750
 	1    0    0    -1  

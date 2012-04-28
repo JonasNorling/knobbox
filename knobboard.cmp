@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Sat 21 Apr 2012 04:30:35 PM CEST
+Cmp-Mod V01 Created by CvPCB (2011-05-25)-stable date = Sat 28 Apr 2012 04:11:59 PM CEST
 
 BeginCmp
 TimeStamp = /4F7EF61F/4F804892;
@@ -640,28 +640,28 @@ EndCmp
 BeginCmp
 TimeStamp = /4F80537C/4F894357;
 Reference = P1;
-ValeurCmp = CONN_5;
+ValeurCmp = MICROUSB;
 IdModule  = micro-usb;
 EndCmp
 
 BeginCmp
 TimeStamp = /4F7EF61F/4F817FD5;
 Reference = P2;
-ValeurCmp = CONN_5X2;
+ValeurCmp = 50MIL_5X2;
 IdModule  = PIN_ARRAY_50MIL_5X2;
 EndCmp
 
 BeginCmp
 TimeStamp = /4F80537C/4F8969FD;
 Reference = P3;
-ValeurCmp = CONN_5;
+ValeurCmp = DIN5;
 IdModule  = kobiconn-0504-e;
 EndCmp
 
 BeginCmp
 TimeStamp = /4F80537C/4F896A1A;
 Reference = P4;
-ValeurCmp = CONN_5;
+ValeurCmp = DIN5;
 IdModule  = kobiconn-0504-e;
 EndCmp
 
@@ -830,6 +830,13 @@ BeginCmp
 TimeStamp = /4F8DA3D4;
 Reference = R18;
 ValeurCmp = DNP;
+IdModule  = SM1206;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F7EF61F/4F9BF8B1;
+Reference = R19;
+ValeurCmp = 20k;
 IdModule  = SM1206;
 EndCmp
 

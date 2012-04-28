@@ -1,18 +1,18 @@
-PCBNEW-LibModule-V1  Sun 15 Apr 2012 01:29:48 PM CEST
+PCBNEW-LibModule-V1  Sat 28 Apr 2012 07:23:41 PM CEST
 # encoding utf-8
 $INDEX
 hole
 $EndINDEX
 $MODULE hole
-Po 0 0 0 15 4F8AB0DC 4F8AB092 ~~
+Po 0 0 0 15 4F9C2796 00000000 ~~
 Li hole
 Cd module 1 pin (ou trou mecanique de percage)
 Kw DEV
-Sc 4F8AB092
-AR 
+Sc 00000000
+AR /4F90F602
 Op 0 0 0
-T0 0 -394 400 400 0 100 N V 21 N "hole"
-T1 0 394 400 400 0 100 N I 21 N "P***"
+T0 0 0 400 400 0 100 N I 21 N "H5"
+T1 0 394 400 400 0 100 N I 21 N "CONN_1"
 $PAD
 Sh "1" C 1600 1600 0 0 0
 Dr 1200 0 0
