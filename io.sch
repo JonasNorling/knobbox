@@ -1,0 +1,434 @@
+EESchema Schematic File Version 2  date Sun 29 Apr 2012 10:27:51 AM CEST
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:bourns-encoder
+LIBS:stm32
+LIBS:spi-flash
+LIBS:nhd-lcd
+LIBS:r-network
+LIBS:lm1117
+LIBS:74hc
+LIBS:dogs102-6
+LIBS:pdt-transistor
+LIBS:tact
+LIBS:knobboard-cache
+EELAYER 25  0
+EELAYER END
+$Descr A4 11700 8267
+encoding utf-8
+Sheet 7 5
+Title ""
+Date "29 apr 2012"
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text Notes 6150 5950 0    60   ~ 0
+Programming with bootloader (USART1)
+Text Label 5850 4500 0    60   ~ 0
+MIDIOUT+
+Text Label 5850 4400 0    60   ~ 0
+MIDIOUT-
+Wire Wire Line
+	5550 4400 6800 4400
+Wire Wire Line
+	5250 1300 5950 1300
+Wire Wire Line
+	6150 1450 6150 1500
+Wire Wire Line
+	5500 6000 5200 6000
+Wire Wire Line
+	5500 5800 5400 5800
+Wire Wire Line
+	5400 5800 5400 5750
+Connection ~ 4000 3000
+Wire Wire Line
+	4000 2900 4000 3000
+Wire Wire Line
+	3200 4400 3350 4400
+Wire Wire Line
+	4800 4400 5050 4400
+Connection ~ 6650 2900
+Wire Wire Line
+	7450 3650 6650 3650
+Wire Wire Line
+	6650 3650 6650 2900
+Wire Wire Line
+	6750 2900 6450 2900
+Wire Wire Line
+	6450 2900 6450 3300
+Wire Wire Line
+	6450 3300 5450 3300
+Wire Wire Line
+	6350 3000 6750 3000
+Connection ~ 6700 4500
+Wire Wire Line
+	6700 4500 6700 3850
+Wire Wire Line
+	6700 3850 7450 3850
+Wire Wire Line
+	5300 1800 6600 1800
+Connection ~ 6600 1700
+Wire Wire Line
+	6600 1450 6600 1700
+Wire Wire Line
+	6950 1600 5300 1600
+Wire Wire Line
+	6150 1500 5300 1500
+Wire Wire Line
+	5300 1900 6150 1900
+Wire Wire Line
+	6150 1900 6150 2100
+Wire Wire Line
+	6950 1700 5300 1700
+Wire Wire Line
+	6800 1450 6800 1600
+Connection ~ 6800 1600
+Wire Wire Line
+	6800 4400 6800 3950
+Wire Wire Line
+	6800 3950 7450 3950
+Wire Wire Line
+	7450 4050 7350 4050
+Wire Wire Line
+	7350 4050 7350 4200
+Wire Wire Line
+	5850 3000 5450 3000
+Wire Wire Line
+	5700 4250 5700 4500
+Wire Wire Line
+	5700 4500 6800 4500
+Wire Wire Line
+	7450 3750 6550 3750
+Wire Wire Line
+	6550 3750 6550 3000
+Connection ~ 6550 3000
+Wire Wire Line
+	4250 4750 3900 4750
+Wire Wire Line
+	4200 3000 3800 3000
+Wire Wire Line
+	4200 3300 4000 3300
+Wire Wire Line
+	4000 3300 4000 3450
+Wire Wire Line
+	5200 5900 5500 5900
+Wire Wire Line
+	5500 6100 5400 6100
+Wire Wire Line
+	5400 6100 5400 6350
+Wire Wire Line
+	5250 1100 5250 950 
+Wire Wire Line
+	5250 950  6150 950 
+Wire Wire Line
+	5950 1300 5950 1500
+Connection ~ 5950 1500
+Text Label 5500 3300 0    60   ~ 0
+MIDIIN-
+Text Label 5500 3000 0    60   ~ 0
+MIDIIN+
+Text Label 5350 1800 0    60   ~ 0
+USB_ID
+Text Label 5350 1500 0    60   ~ 0
+USB_5V
+Text Notes 4450 1550 1    60   ~ 0
+USB
+$Comp
+L CONN_2 P7
+U 1 1 4F8A6AE1
+P 4900 1200
+F 0 "P7" V 4850 1200 40  0000 C CNN
+F 1 "CONN_2" V 4950 1200 40  0000 C CNN
+	1    4900 1200
+	-1   0    0    1   
+$EndComp
+$Comp
+L R R10
+U 1 1 4F8A6AAA
+P 6150 1200
+F 0 "R10" V 6230 1200 50  0000 C CNN
+F 1 "0" V 6150 1200 50  0000 C CNN
+	1    6150 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_4 P5
+U 1 1 4F898BCF
+P 5850 5950
+F 0 "P5" V 5800 5950 50  0000 C CNN
+F 1 "CONN_4" V 5900 5950 50  0000 C CNN
+	1    5850 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR093
+U 1 1 4F898B55
+P 5400 6350
+F 0 "#PWR093" H 5400 6350 30  0001 C CNN
+F 1 "GND" H 5400 6280 30  0001 C CNN
+	1    5400 6350
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR094
+U 1 1 4F898B22
+P 5400 5750
+F 0 "#PWR094" H 5400 5710 30  0001 C CNN
+F 1 "+3.3V" H 5400 5860 30  0000 C CNN
+	1    5400 5750
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR095
+U 1 1 4F8985F8
+P 4000 2400
+F 0 "#PWR095" H 4000 2360 30  0001 C CNN
+F 1 "+3.3V" H 4000 2510 30  0000 C CNN
+	1    4000 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR096
+U 1 1 4F8984E9
+P 4000 3450
+F 0 "#PWR096" H 4000 3450 30  0001 C CNN
+F 1 "GND" H 4000 3380 30  0001 C CNN
+	1    4000 3450
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R8
+U 1 1 4F8984D5
+P 4000 2650
+F 0 "R8" V 4080 2650 50  0000 C CNN
+F 1 "20k" V 4000 2650 50  0000 C CNN
+	1    4000 2650
+	-1   0    0    1   
+$EndComp
+$Comp
+L +3.3V #PWR097
+U 1 1 4F898360
+P 3900 3950
+F 0 "#PWR097" H 3900 3910 30  0001 C CNN
+F 1 "+3.3V" H 3900 4060 30  0000 C CNN
+	1    3900 3950
+	1    0    0    -1  
+$EndComp
+$Comp
+L PDTA124X Q1
+U 1 1 4F898311
+P 3800 4400
+F 0 "Q1" H 4000 4300 50  0000 C CNN
+F 1 "PDTA124X" H 4050 4550 50  0000 C CNN
+F 2 "SOT23-3" H 3990 4400 30  0001 C CNN
+	1    3800 4400
+	1    0    0    1   
+$EndComp
+$Comp
+L PDTC123Y Q2
+U 1 1 4F898308
+P 4700 4750
+F 0 "Q2" H 4900 4650 50  0000 C CNN
+F 1 "PDTC123Y" H 4950 4900 50  0000 C CNN
+F 2 "SOT23-3" H 4890 4750 30  0001 C CNN
+	1    4700 4750
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR098
+U 1 1 4F897803
+P 4800 5200
+F 0 "#PWR098" H 4800 5200 30  0001 C CNN
+F 1 "GND" H 4800 5130 30  0001 C CNN
+	1    4800 5200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R16
+U 1 1 4F896ACC
+P 6100 3000
+F 0 "R16" V 6180 3000 50  0000 C CNN
+F 1 "220" V 6100 3000 50  0000 C CNN
+	1    6100 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR099
+U 1 1 4F896AAD
+P 7350 4200
+F 0 "#PWR099" H 7350 4200 30  0001 C CNN
+F 1 "GND" H 7350 4130 30  0001 C CNN
+	1    7350 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_5 P6
+U 1 1 4F896A9E
+P 7850 3850
+F 0 "P6" V 7800 3850 50  0000 C CNN
+F 1 "CONN_5" V 7900 3850 50  0000 C CNN
+	1    7850 3850
+	1    0    0    1   
+$EndComp
+$Comp
+L R R17
+U 1 1 4F896936
+P 5700 4000
+F 0 "R17" V 5780 4000 50  0000 C CNN
+F 1 "220" V 5700 4000 50  0000 C CNN
+	1    5700 4000
+	-1   0    0    1   
+$EndComp
+$Comp
+L R R15
+U 1 1 4F896930
+P 5300 4400
+F 0 "R15" V 5380 4400 50  0000 C CNN
+F 1 "220" V 5300 4400 50  0000 C CNN
+	1    5300 4400
+	0    1    1    0   
+$EndComp
+$Comp
+L +5V #PWR0101
+U 1 1 4F8968A2
+P 5700 3750
+F 0 "#PWR0101" H 5700 3840 20  0001 C CNN
+F 1 "+5V" H 5700 3840 30  0000 C CNN
+	1    5700 3750
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R13
+U 1 1 4F894AC7
+P 6600 2050
+F 0 "R13" V 6680 2050 50  0000 C CNN
+F 1 "DNP" V 6600 2050 50  0000 C CNN
+	1    6600 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR0102
+U 1 1 4F894AD1
+P 6600 2300
+F 0 "#PWR0102" H 6600 2300 30  0001 C CNN
+F 1 "GND" H 6600 2230 30  0001 C CNN
+	1    6600 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR0103
+U 1 1 4F894691
+P 6800 950
+F 0 "#PWR0103" H 6800 910 30  0001 C CNN
+F 1 "+3.3V" H 6800 1060 30  0000 C CNN
+	1    6800 950 
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R14
+U 1 1 4F894686
+P 6800 1200
+F 0 "R14" V 6880 1200 50  0000 C CNN
+F 1 "DNP" V 6800 1200 50  0000 C CNN
+	1    6800 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR0104
+U 1 1 4F89446F
+P 6600 950
+F 0 "#PWR0104" H 6600 910 30  0001 C CNN
+F 1 "+3.3V" H 6600 1060 30  0000 C CNN
+	1    6600 950 
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R12
+U 1 1 4F894443
+P 6600 1200
+F 0 "R12" V 6680 1200 50  0000 C CNN
+F 1 "1.5k" V 6600 1200 50  0000 C CNN
+	1    6600 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR0105
+U 1 1 4F894376
+P 6150 2100
+F 0 "#PWR0105" H 6150 2100 30  0001 C CNN
+F 1 "GND" H 6150 2030 30  0001 C CNN
+	1    6150 2100
+	1    0    0    -1  
+$EndComp
+$Comp
+L +5V #PWR0106
+U 1 1 4F894373
+P 6150 950
+F 0 "#PWR0106" H 6150 1040 20  0001 C CNN
+F 1 "+5V" H 6150 1040 30  0000 C CNN
+	1    6150 950 
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_5 P1
+U 1 1 4F894357
+P 4900 1700
+F 0 "P1" V 4850 1700 50  0000 C CNN
+F 1 "MICROUSB" V 4950 1700 50  0000 C CNN
+	1    4900 1700
+	-1   0    0    -1  
+$EndComp
+Text HLabel 5200 6000 0    60   Input ~ 0
+PGM_TX
+Text HLabel 5200 5900 0    60   Output ~ 0
+PGM_RX
+Text HLabel 6950 1600 2    60   BiDi ~ 0
+USB_DM
+Text HLabel 6950 1700 2    60   BiDi ~ 0
+USB_DP
+Text HLabel 3200 4400 0    60   Input ~ 0
+MIDI_TX
+Text HLabel 3800 3000 0    60   Output ~ 0
+MIDI_RX
+$Comp
+L OPTO-TRANSISTOR4 U5
+U 1 1 4F805397
+P 4800 3150
+F 0 "U5" H 5000 3400 60  0000 C CNN
+F 1 "VOL617A" H 4800 2900 60  0000 C CNN
+	1    4800 3150
+	-1   0    0    -1  
+$EndComp
+$EndSCHEMATC
