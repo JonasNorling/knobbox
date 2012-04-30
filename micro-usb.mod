@@ -1,10 +1,10 @@
-PCBNEW-LibModule-V1  Sun 08 Apr 2012 10:01:45 AM CEST
+PCBNEW-LibModule-V1  Mon 30 Apr 2012 11:39:54 AM CEST
 # encoding utf-8
 $INDEX
 micro-usb
 $EndINDEX
 $MODULE micro-usb
-Po 0 0 0 15 4F8145E2 00000000 ~~
+Po 0 0 0 15 4F9E5DE7 00000000 ~~
 Li micro-usb
 Sc 00000000
 AR micro-usb
@@ -85,15 +85,15 @@ Ne 0 ""
 Po 472 0
 $EndPAD
 $PAD
-Sh "H" C 591 591 0 0 0
-Dr 472 0 0
+Sh "H" C 700 700 0 0 0
+Dr 512 0 0
 At STD N 00E0FFFF
 Ne 0 ""
 Po -1299 0
 $EndPAD
 $PAD
-Sh "H" C 591 591 0 0 0
-Dr 472 0 0
+Sh "H" C 700 700 0 0 0
+Dr 512 0 0
 At STD N 00E0FFFF
 Ne 0 ""
 Po 1299 0
