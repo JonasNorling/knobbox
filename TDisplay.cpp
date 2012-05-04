@@ -17,12 +17,9 @@ static const uint8_t DOGM_SET_PAGE = 0xb0;
 static const uint8_t DOGM_SET_COL_HIGH = 0x10; // FIXME
 static const uint8_t DOGM_SET_COL_LOW = 0x00; // FIXME
 
-TDisplay::TDisplay()
-  : BufferAllocMask(TBitmask::Init(BufferCount))
-{ }
-
 void TDisplay::Init()
 {
+  BufferAllocMask = TBitmask::Init(BufferCount);
   TPageBuffer* buffer(GetBuffer());
   if (buffer) {
     buffer->Control[0] = DOGM_SYSTEM_RESET;

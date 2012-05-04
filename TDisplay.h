@@ -30,6 +30,9 @@ public:
   TBuffer(uint8_t* data, uint8_t len) :
     Data(data), Length(len) {}
 
+  uint8_t* GetData() const { return Data; }
+  uint8_t GetLength() const { return Length; }
+
   //start, end
   //xor, slice
 
@@ -74,7 +77,7 @@ public:
     uint8_t Control[3];
   };
 
-  TDisplay();
+  TDisplay() { }
   void Init();
 
   uint8_t GetWidthChars() { return WidthChars; }
@@ -101,11 +104,17 @@ private:
     if (true /* DMA queue space is available */) {
       uint8_t bufferid = (pageBuffer - &Buffers[0]) /
 	sizeof(Buffers[0]);
-      SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
-				     TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL));
-      SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Data, len),
-				     TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_DATA,
-				     this, reinterpret_cast<void*>(bufferid)));
+      if (len > 0) {
+	SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
+				       TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL));
+	SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Data, len),
+				       TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_DATA,
+				       this, reinterpret_cast<void*>(bufferid)));
+      } else {
+	SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
+				       TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL,
+				       this, reinterpret_cast<void*>(bufferid)));
+      }
       return true;
     } else {
       return false;

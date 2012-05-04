@@ -43,6 +43,11 @@ public:
     return Data[Read];
   }
 
+  bool Empty() const
+  {
+    return Count == 0;
+  }
+
 private:
   T Data[size];
   uint8_t Read;

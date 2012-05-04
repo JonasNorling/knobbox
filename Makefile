@@ -3,6 +3,7 @@ OBJS += main.o
 OBJS += syscalls.o
 OBJS += TDisplay.o
 OBJS += TGui.o
+OBJS += TSpiDmaJob.o
 
 # -------------------------------------
 # Assuming a toolchain from summon-arm-toolchain.
@@ -96,6 +97,6 @@ $(HOSTBUILDDIR)/$(PROJECT).elf: $(HOST_OBJS)
 -include $(HOSTBUILDDIR)/*.d
 
 clean:
-	rm -f $(BUILDDIR)
+	rm -rf $(BUILDDIR)
 
 .PHONY: clean all

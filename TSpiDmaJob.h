@@ -27,12 +27,12 @@ public:
 
   TSpiDmaJob() {}
 
-  TSpiDmaJob(const TBuffer& data,
+  TSpiDmaJob(const TBuffer& buffer,
 	     TChip chip,
 	     TLcdCd lcdCd,
 	     IDmaCallback* callback = 0,
 	     void* context = 0) :
-    Data(&data),
+    Buffer(&buffer),
     Callback(callback),
     Context(context),
     Bits((chip << 1) | lcdCd)
@@ -43,10 +43,15 @@ public:
     if (Callback) {
       Callback->DmaFinished(Context);
     }
-  }    
+  }
+
+  const TBuffer& GetBuffer() const
+  {
+    return *Buffer;
+  }
 
 private:
-  const TBuffer* Data;
+  const TBuffer* Buffer;
   IDmaCallback* Callback;
   void* Context;
   uint8_t Bits;
@@ -62,25 +67,8 @@ public:
 #endif
   }
   
-  bool Enqueue(const TSpiDmaJob& job)
-  {
-    if (Jobs.Add(job)) {
-      // FIXME: If no job is under way, start the DMA engine.  Think
-      // about race conditions. What if the interrupt happens when we
-      // have decided not to start a job, but before it's put on the
-      // queue. The solution is to enqueue it first, always?
-
-      Jobs.First();
-
-#ifdef HOST
-      dma1_channel7_isr();
-#else
-#endif
-      return true;
-    } else {
-      return false;
-    }
-  }
+  bool Enqueue(const TSpiDmaJob& job);
+  void TryStartJob();
 
   /** Called when interrupt is received. */
   void Finished()
