@@ -2,6 +2,7 @@
 #include "TDisplay.h"
 #include "TGui.h"
 #include "TSpiDmaJob.h"
+#include <new>
 
 TDisplay Display;
 TSpiDmaQueue SpiDmaQueue;
@@ -28,7 +29,7 @@ TGui Gui;
  * BOOT1 (PB2): pulled high
  * BOOT0: connected to SW2, default low
  * LCD display:
- *   SPI1_MOSI (PA7), SPI1_SCK (PA5), PB14: A0, PA4: CS
+ *   SPI1_MOSI (PA7), SPI1_SCK (PA5), PB14: A0, PA4: CS, PA0: RST
  * Atmel SPI flash:
  *   SPI1_MOSI (PA7), SPI1_MISO (PA6), SPI1_SCK (PA5), PB0: CS
  * Buttons:
@@ -61,14 +62,19 @@ void gpioInit()
 {
 #ifndef HOST
   // LCD A0
-  gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO14);
+  gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO7);
+  // LCD CS
+  gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO4);
+  // LCD RST
+  gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO0);
 
   // Discovery: LEDs on PC8 and PC9
   gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO8);
   gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO9);
 
   // Debug LEDs
-  gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO0 | GPIO1 | GPIO2 | GPIO3);
+  gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
+		GPIO0 | GPIO1 | GPIO2 | GPIO3 | GPIO4 | GPIO5);
 
   // SPI
   gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO7); // SPI1_MOSI
@@ -131,18 +137,25 @@ void dma1_channel3_isr(void)
 /* DMA channel 1:2 -- SPI1_RX */
 void dma1_channel2_isr(void);
 
-
 int main(void)
 {
+  // Use placement new to run the constructors of static objects,
+  // because libopencm3's crt0 and linker scripts aren't made for C++.
+  new(&Display) TDisplay();
+  new(&SpiDmaQueue) TSpiDmaQueue();
+  new(&Gui) TGui();
+
   // FIXME: We should wake up in some kind of low power mode.
   clockInit();
   gpioInit();
   spiInit();
 
+  for (uint32_t i=0; i < 2000000; i++) __asm__("nop");
   Display.Init();
-  Display.Power(true);
+  //Display.Power(true);
 
   while (true) {
+    for (uint32_t i=0; i < 2000000; i++) __asm__("nop");
     if (DmaEvents) {
       DmaEvents--;
       SpiDmaQueue.Finished();
@@ -153,7 +166,7 @@ int main(void)
       return 0;
 #endif
     }
-    Gui.Process();
+    //Gui.Process();
   }
 
   return 0;

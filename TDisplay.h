@@ -77,7 +77,7 @@ public:
     uint8_t Control[3];
   };
 
-  TDisplay() { }
+  TDisplay();
   void Init();
 
   uint8_t GetWidthChars() { return WidthChars; }

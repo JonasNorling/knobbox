@@ -9,6 +9,8 @@
 #endif
 
 static const uint8_t DOGM_SYSTEM_RESET = 0xe2;
+static const uint8_t DOGM_POWER_CONTROL = 0x28;
+static const uint8_t DOGM_SET_ELECTRONIC_VOLUME = 0x81;
 static const uint8_t DOGM_DISABLE_DISPLAY = 0xae;
 static const uint8_t DOGM_ENABLE_DISPLAY = 0xaf;
 static const uint8_t DOGM_ALL_PIXELS_OFF = 0xa4;
@@ -17,14 +19,37 @@ static const uint8_t DOGM_SET_PAGE = 0xb0;
 static const uint8_t DOGM_SET_COL_HIGH = 0x10; // FIXME
 static const uint8_t DOGM_SET_COL_LOW = 0x00; // FIXME
 
+TDisplay::TDisplay() :
+  BufferAllocMask(TBitmask::Init(BufferCount))
+{
+}
+
 void TDisplay::Init()
 {
-  BufferAllocMask = TBitmask::Init(BufferCount);
-  TPageBuffer* buffer(GetBuffer());
-  if (buffer) {
-    buffer->Control[0] = DOGM_SYSTEM_RESET;
-    buffer->Control[1] = DOGM_DISABLE_DISPLAY;
-    EnqueueDmaJob(buffer, 0, 2);
+  // Reset
+#ifndef HOST
+  gpio_clear(GPIOA, GPIO0);
+  for (uint32_t i=0; i < 1000000; i++) __asm__("nop");
+  gpio_set(GPIOA, GPIO0);
+  for (uint32_t i=0; i < 1000000; i++) __asm__("nop");
+#endif
+  {
+    TPageBuffer* buffer(GetBuffer());
+    if (buffer) {
+      buffer->Control[0] = DOGM_SYSTEM_RESET;
+      buffer->Control[1] = 0;
+      buffer->Control[2] = DOGM_POWER_CONTROL | 0x07;
+      EnqueueDmaJob(buffer, 0, 3);
+    }
+  }
+  {
+    TPageBuffer* buffer(GetBuffer());
+    if (buffer) {
+      buffer->Control[0] = DOGM_SET_ELECTRONIC_VOLUME;
+      buffer->Control[1] = 0x20;
+      buffer->Control[2] = DOGM_ENABLE_DISPLAY;
+      EnqueueDmaJob(buffer, 0, 3);
+    }
   }
 }
 

@@ -6,42 +6,6 @@
 #define assert(x)
 #endif
 
-#if 0
-
-class TBitmask
-{
-public:
-  static uint8_t Init(const uint8_t& size)
-  {
-    return 0;
-  }
-
-  static int8_t FindFree(const uint8_t& mask, const uint8_t& size)
-  {
-    for (uint8_t i = 0; i < size; i++) {
-      const uint8_t bit = 1 << i;
-      if ((mask & bit) == 0) {
-	return i;
-      }
-    }
-    return -1;
-  }
-
-  static void Acquire(uint8_t& mask, const uint8_t& bit)
-  {
-    assert(!(mask & (1 << bit)));
-    mask |= (1 << bit);
-  }
-
-  static void Release(uint8_t& mask, const uint8_t& bit)
-  {
-    assert(mask & (1 << bit));
-    mask &= ~(1 << bit);
-  }
-};
-
-#else
-
 class TBitmask
 {
 public:
@@ -55,7 +19,7 @@ public:
   {
     for (uint8_t i = 0; i < size; i++) {
       const uint8_t bit = 1 << i;
-      if ((mask & bit) == 1) {
+      if (mask & bit) {
 	mask &= ~(1 << i);
 	return i;
       }
@@ -69,5 +33,3 @@ public:
     mask |= (1 << bit);
   }
 };
-
-#endif

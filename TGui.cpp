@@ -4,13 +4,14 @@
 
 void TGui::Process()
 {
+#define CHARMAP
 #ifdef CHARMAP
   if (CurrentLine < Lines) {
     TDisplay::TPageBuffer* line = Display.GetBuffer();
     if (line) {
       line->Clear();
       char str[17];
-      int i;
+      uint8_t i;
       for (i = 0; i < sizeof(str)-1; i++) {
 	str[i] = CurrentLine*16 + i;
       }

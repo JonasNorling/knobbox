@@ -25,9 +25,19 @@ void TSpiDmaQueue::TryStartJob()
   if (!Jobs.Empty() &&
       (SPI1_SR & SPI_SR_TXE) &&
       !(SPI1_SR & SPI_SR_BSY)) {
-    const TBuffer& buffer = Jobs.First().GetBuffer();
+    const TSpiDmaJob& job = Jobs.First();
+    const TBuffer& buffer = job.GetBuffer();
 
-    // FIXME: Set CS and LCD_A0 lines
+    // Set CS and LCD_A0 lines
+    if (job.GetChip() == TSpiDmaJob::CS_LCD) {
+      // FIXME: Move pin mapping to a method in TDisplay
+      gpio_clear(GPIOA, GPIO4);
+      if (job.GetLcdData()) {
+	gpio_set(GPIOB, GPIO7);
+      } else {
+	gpio_clear(GPIOB, GPIO7);
+      }
+    }
 
     // FIXME: Don't have to do all this every time.
 #define DMA DMA1

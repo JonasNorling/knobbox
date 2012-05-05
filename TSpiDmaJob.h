@@ -45,10 +45,9 @@ public:
     }
   }
 
-  const TBuffer& GetBuffer() const
-  {
-    return *Buffer;
-  }
+  const TBuffer& GetBuffer() const { return *Buffer; }
+  TChip GetChip() const { return static_cast<TChip>(Bits >> 1); }
+  TLcdCd GetLcdData() const { return static_cast<TLcdCd>(Bits & 1); }
 
 private:
   const TBuffer* Buffer;
