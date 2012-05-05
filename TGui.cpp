@@ -4,7 +4,7 @@
 
 void TGui::Process()
 {
-#define CHARMAP
+  //#define CHARMAP
 #ifdef CHARMAP
   if (CurrentLine < Lines) {
     TDisplay::TPageBuffer* line = Display.GetBuffer();

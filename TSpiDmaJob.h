@@ -4,6 +4,7 @@
 #include <cstdint>
 #include "stm32.h"
 #include "TCircularBuffer.h"
+#include "TBuffer.h"
 
 class TBuffer;
 
@@ -32,7 +33,7 @@ public:
 	     TLcdCd lcdCd,
 	     IDmaCallback* callback = 0,
 	     void* context = 0) :
-    Buffer(&buffer),
+    Buffer(buffer),
     Callback(callback),
     Context(context),
     Bits((chip << 1) | lcdCd)
@@ -45,12 +46,12 @@ public:
     }
   }
 
-  const TBuffer& GetBuffer() const { return *Buffer; }
+  const TBuffer& GetBuffer() const { return Buffer; }
   TChip GetChip() const { return static_cast<TChip>(Bits >> 1); }
   TLcdCd GetLcdData() const { return static_cast<TLcdCd>(Bits & 1); }
 
 private:
-  const TBuffer* Buffer;
+  TBuffer Buffer;
   IDmaCallback* Callback;
   void* Context;
   uint8_t Bits;

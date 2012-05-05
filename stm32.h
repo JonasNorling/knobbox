@@ -1,3 +1,4 @@
+#pragma once
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -10,7 +11,10 @@ extern "C" {
 #include <f1/dma.h>
 #endif
 
-extern "C" {
+  static inline void delay_ms(unsigned n) {
+    for (unsigned i=0; i < n*7000; i++) __asm__("nop");    
+  }
+
   void dma1_channel1_isr(void);
   void dma1_channel2_isr(void);
   void dma1_channel3_isr(void);
@@ -18,7 +22,6 @@ extern "C" {
   void dma1_channel5_isr(void);
   void dma1_channel6_isr(void);
   void dma1_channel7_isr(void);
-}
 
 #ifdef __cplusplus
 }

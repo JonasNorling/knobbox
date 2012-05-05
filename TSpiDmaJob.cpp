@@ -1,6 +1,4 @@
 #include "TSpiDmaJob.h"
-#include "TDisplay.h"
-
 
 bool TSpiDmaQueue::Enqueue(const TSpiDmaJob& job)
 {
@@ -54,7 +52,6 @@ void TSpiDmaQueue::TryStartJob()
     dma_enable_transfer_complete_interrupt(DMA, CHANNEL);
     dma_enable_channel(DMA, CHANNEL);
     spi_enable_tx_dma(SPI1);
-    gpio_set(GPIOC, GPIO9);
   }
 #endif
 }

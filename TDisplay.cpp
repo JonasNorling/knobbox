@@ -8,16 +8,22 @@
 #define assert(x)
 #endif
 
-static const uint8_t DOGM_SYSTEM_RESET = 0xe2;
-static const uint8_t DOGM_POWER_CONTROL = 0x28;
+static const uint8_t DOGM_SYSTEM_RESET =          0xe2;
+static const uint8_t DOGM_POWER_CONTROL =         0x28;
 static const uint8_t DOGM_SET_ELECTRONIC_VOLUME = 0x81;
-static const uint8_t DOGM_DISABLE_DISPLAY = 0xae;
-static const uint8_t DOGM_ENABLE_DISPLAY = 0xaf;
-static const uint8_t DOGM_ALL_PIXELS_OFF = 0xa4;
-static const uint8_t DOGM_ALL_PIXELS_ON = 0xa5;
-static const uint8_t DOGM_SET_PAGE = 0xb0;
-static const uint8_t DOGM_SET_COL_HIGH = 0x10; // FIXME
-static const uint8_t DOGM_SET_COL_LOW = 0x00; // FIXME
+static const uint8_t DOGM_SEG_NORMAL =            0xa0;
+static const uint8_t DOGM_SEG_REVERSE =           0xa1;
+static const uint8_t DOGM_ALL_PIXELS_OFF =        0xa4;
+static const uint8_t DOGM_ALL_PIXELS_ON =         0xa5;
+static const uint8_t DOGM_INVERSE_OFF =           0xa6;
+static const uint8_t DOGM_INVERSE_ON =            0xa7;
+static const uint8_t DOGM_DISABLE_DISPLAY =       0xae;
+static const uint8_t DOGM_ENABLE_DISPLAY =        0xaf;
+static const uint8_t DOGM_COM_NORMAL =            0xc0;
+static const uint8_t DOGM_COM_REVERSE =           0xc8;
+static const uint8_t DOGM_SET_PAGE =              0xb0;
+static const uint8_t DOGM_SET_COL_HIGH =          0x10;
+static const uint8_t DOGM_SET_COL_LOW =           0x00;
 
 TDisplay::TDisplay() :
   BufferAllocMask(TBitmask::Init(BufferCount))
@@ -29,27 +35,48 @@ void TDisplay::Init()
   // Reset
 #ifndef HOST
   gpio_clear(GPIOA, GPIO0);
-  for (uint32_t i=0; i < 1000000; i++) __asm__("nop");
+  delay_ms(5);
   gpio_set(GPIOA, GPIO0);
-  for (uint32_t i=0; i < 1000000; i++) __asm__("nop");
+  delay_ms(5);
 #endif
-  {
-    TPageBuffer* buffer(GetBuffer());
-    if (buffer) {
-      buffer->Control[0] = DOGM_SYSTEM_RESET;
-      buffer->Control[1] = 0;
-      buffer->Control[2] = DOGM_POWER_CONTROL | 0x07;
-      EnqueueDmaJob(buffer, 0, 3);
-    }
+  TPageBuffer* buffer(GetBuffer());
+  if (buffer) {
+    const int len = 8;
+    buffer->Data[0] = DOGM_SYSTEM_RESET;
+    buffer->Data[1] = DOGM_COM_NORMAL;
+    buffer->Data[2] = DOGM_SEG_REVERSE;
+    buffer->Data[3] = DOGM_POWER_CONTROL | 0x07;
+    buffer->Data[4] = DOGM_SET_ELECTRONIC_VOLUME;
+    buffer->Data[5] = 0x20;
+    buffer->Data[6] = DOGM_ENABLE_DISPLAY;
+    buffer->Data[7] = DOGM_INVERSE_ON;
+
+    uint8_t bufferid = buffer - Buffers;
+    SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(buffer->Data, len),
+				   TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL,
+				   this, reinterpret_cast<void*>(bufferid)));
   }
-  {
-    TPageBuffer* buffer(GetBuffer());
-    if (buffer) {
-      buffer->Control[0] = DOGM_SET_ELECTRONIC_VOLUME;
-      buffer->Control[1] = 0x20;
-      buffer->Control[2] = DOGM_ENABLE_DISPLAY;
-      EnqueueDmaJob(buffer, 0, 3);
+}
+
+bool TDisplay::EnqueueDmaJob(TPageBuffer* pageBuffer,
+			     uint8_t len, uint8_t ctrllen)
+{
+  if (true /* DMA queue space is available */) {
+    uint8_t bufferid = pageBuffer - Buffers;
+    if (len > 0) {
+      SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
+				     TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL));
+      SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Data, len),
+				     TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_DATA,
+				     this, reinterpret_cast<void*>(bufferid)));
+    } else {
+      SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
+				     TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL,
+				     this, reinterpret_cast<void*>(bufferid)));
     }
+    return true;
+  } else {
+    return false;
   }
 }
 

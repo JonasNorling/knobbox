@@ -24,27 +24,6 @@
 
 typedef uint8_t TCharacter[6];
 
-class TBuffer
-{
-public:
-  TBuffer(uint8_t* data, uint8_t len) :
-    Data(data), Length(len) {}
-
-  uint8_t* GetData() const { return Data; }
-  uint8_t GetLength() const { return Length; }
-
-  //start, end
-  //xor, slice
-
-private:
-  TBuffer();
-  TBuffer(const TBuffer&);
-  const TBuffer& operator=(const TBuffer&);
-
-  uint8_t* Data;
-  uint8_t Length;
-};
-
 class TDisplay : public IDmaCallback
 {
 private:
@@ -98,28 +77,7 @@ public:
   virtual void DmaFinished(void* context);
 
 private:
-  bool EnqueueDmaJob(TPageBuffer* pageBuffer,
-		     uint8_t len, uint8_t ctrllen = 3)
-  {
-    if (true /* DMA queue space is available */) {
-      uint8_t bufferid = (pageBuffer - &Buffers[0]) /
-	sizeof(Buffers[0]);
-      if (len > 0) {
-	SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
-				       TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL));
-	SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Data, len),
-				       TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_DATA,
-				       this, reinterpret_cast<void*>(bufferid)));
-      } else {
-	SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
-				       TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL,
-				       this, reinterpret_cast<void*>(bufferid)));
-      }
-      return true;
-    } else {
-      return false;
-    }
-  }
+  bool EnqueueDmaJob(TPageBuffer* pageBuffer, uint8_t len, uint8_t ctrllen);
 
   /* We keep a little memory pool here that can be used to store data
      for DMA jobs. It's a bit wasteful to use [Width] bytes when

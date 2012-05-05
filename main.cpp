@@ -121,7 +121,7 @@ volatile static uint8_t DmaEvents = 0;
 void dma1_channel3_isr(void)
 {
 #ifndef HOST
-  gpio_set(GPIOC, GPIO8);
+  gpio_toggle(GPIOC, GPIO8);
 
   dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL3);
   dma_disable_channel(DMA1, DMA_CHANNEL3);
@@ -150,12 +150,15 @@ int main(void)
   gpioInit();
   spiInit();
 
-  for (uint32_t i=0; i < 2000000; i++) __asm__("nop");
+  delay_ms(5);
   Display.Init();
   //Display.Power(true);
 
   while (true) {
-    for (uint32_t i=0; i < 2000000; i++) __asm__("nop");
+    delay_ms(5);
+#ifndef HOST
+    gpio_toggle(GPIOC, GPIO9);
+#endif
     if (DmaEvents) {
       DmaEvents--;
       SpiDmaQueue.Finished();
@@ -166,7 +169,7 @@ int main(void)
       return 0;
 #endif
     }
-    //Gui.Process();
+    Gui.Process();
   }
 
   return 0;
