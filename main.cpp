@@ -2,15 +2,12 @@
 #include "TDisplay.h"
 #include "TGui.h"
 #include "TSpiDmaJob.h"
+#include "TKnobs.h"
 #include <new>
-
-TDisplay Display;
-TSpiDmaQueue SpiDmaQueue;
-TGui Gui;
 
 /*
  * This code expects to run on a STM32F101C8.
- * Reosurces:
+ * Resources:
  * USART1 - Shift registers for encoders and LEDs, programming
  * USART2 - MIDI in/out
  * USART3 - (unused)
@@ -43,93 +40,13 @@ TGui Gui;
  *
  */
 
-void clockInit()
-{
-#ifndef HOST
-  // FIXME: Want to run at 48 MHz.
-  rcc_clock_setup_in_hse_8mhz_out_24mhz();
+TDisplay Display;
+TSpiDmaQueue SpiDmaQueue;
+TGui Gui;
+TKnobs Knobs;
+uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
 
-  /*
-   * Systick timer striking every 1ms (1kHz):
-   * div 8 --> 24MHz/8 = 3MHz
-   * reload 2999 --> 3000000/(2999+1) --> 1000 overflows/second
-   */
-  systick_set_clocksource(STK_CTRL_CLKSOURCE_AHB_DIV8);
-  systick_set_reload(2999);
-  systick_interrupt_enable();
-  systick_counter_enable();
-
-  rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPAEN); // GPIOA
-  rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPBEN); // GPIOB
-  rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPCEN); // GPIOC
-
-  rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SPI1EN); // SPI1
-  rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_DMA1EN); // DMA1
-#endif
-}
-
-
-void gpioInit()
-{
-#ifndef HOST
-  /* There is some space to save here:
-   *  - gcc refuses to inline SetOutput randomly
-   *  - pin configurations in the same port can be ored together
-   */
-
-  Pin_lcd_a0.SetOutput();
-  Pin_lcd_cs.SetOutput();
-  Pin_lcd_rst.SetOutput();
-
-  // Discovery: LEDs on PC8 and PC9
-  Pin_led_b.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
-  Pin_led_g.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
-
-  // Debug LEDs (Discovery)
-  gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
-		GPIO0 | GPIO1 | GPIO2 | GPIO3 | GPIO4 | GPIO5);
-
-  // SPI
-  Pin_spi_mosi.SetOutput(GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
-  //TPin::SetOutput(Pin_spi_miso, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
-  Pin_spi_sck.SetOutput(GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
-#endif
-}
-
-void spiInit()
-{
-#ifndef HOST
-  spi_set_unidirectional_mode(SPI1);
-  spi_disable_crc(SPI1);
-  spi_set_dff_8bit(SPI1);
-  spi_set_full_duplex_mode(SPI1);
-  spi_enable_software_slave_management(SPI1);
-  spi_set_nss_high(SPI1);
-  spi_set_baudrate_prescaler(SPI1, SPI_CR1_BR_FPCLK_DIV_256);
-  spi_set_master_mode(SPI1);
-  spi_set_clock_polarity_1(SPI1);
-  spi_set_clock_phase_1(SPI1);
-  spi_enable(SPI1);
-
-  // Enable SPI TX DMA IRQ.
-  nvic_set_priority(NVIC_DMA1_CHANNEL3_IRQ, 0);
-  nvic_enable_irq(NVIC_DMA1_CHANNEL3_IRQ);
-#endif
-}
-
-/* DMA channel 1:7 -- USART2_TX */
-void dma1_channel7_isr(void);
-
-/* DMA channel 1:6 -- USART2_RX */
-void dma1_channel6_isr(void);
-
-/* DMA channel 1:5 -- USART1_RX */
-void dma1_channel5_isr(void);
-
-/* DMA channel 1:4 -- USART1_TX */
-void dma1_channel4_isr(void);
-
-/* DMA channel 1:3 -- SPI1_TX */
+/* DMA channel 1:3 -- SPI1_TX (display and flash) */
 volatile static uint8_t DmaEvents = 0;
 void dma1_channel3_isr(void)
 {
@@ -140,17 +57,19 @@ void dma1_channel3_isr(void)
   dma_disable_channel(DMA1, DMA_CHANNEL3);
   spi_disable_tx_dma(SPI1);
 
-  DmaEvents++;
   GPIO_ODR(GPIOC)++; // Debug LEDs
 
   // Note: we have to wait until TXE=1 and BSY=0 before changing CS lines.
 #endif
+  DmaEvents++;
 }
 
-/* DMA channel 1:2 -- SPI1_RX */
-void dma1_channel2_isr(void);
+/* DMA channel 1:4 -- USART1_TX (shift registers) */
+void dma1_channel4_isr(void)
+{
+  Knobs.StartShifting();
+}
 
-uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
 void sys_tick_handler(void)
 {
 #ifndef HOST
@@ -169,19 +88,21 @@ int main(void)
   new(&Display) TDisplay();
   new(&SpiDmaQueue) TSpiDmaQueue();
   new(&Gui) TGui();
+  new(&Knobs) TKnobs();
 
   // FIXME: We should wake up in some kind of low power mode.
   clockInit();
-  gpioInit();
-  spiInit();
+  deviceInit();
 
   delay_ms(5);
   Display.Init();
   //Display.Power(true);
 
+  Knobs.StartShifting();
+
   while (true) {
-    delay_ms(5);
     if (DmaEvents) {
+      // FIXME: race condition? Is there a test-and-decrement instruction?
       DmaEvents--;
       SpiDmaQueue.Finished();
     } else {

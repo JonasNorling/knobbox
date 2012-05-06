@@ -60,12 +60,7 @@ private:
 class TSpiDmaQueue
 {
 public:
-  TSpiDmaQueue()
-  {
-#ifndef HOST
-    dma_channel_reset(DMA1, DMA_CHANNEL7);
-#endif
-  }
+  TSpiDmaQueue() { }
   
   bool Enqueue(const TSpiDmaJob& job);
   void TryStartJob();

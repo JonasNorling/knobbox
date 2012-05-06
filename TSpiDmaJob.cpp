@@ -38,19 +38,19 @@ void TSpiDmaQueue::TryStartJob()
     }
 
     // FIXME: Don't have to do all this every time.
-#define DMA DMA1
-#define CHANNEL DMA_CHANNEL3
-    dma_channel_reset(DMA, CHANNEL);
-    dma_set_peripheral_address(DMA, CHANNEL, reinterpret_cast<uint32_t>(&SPI1_DR));
-    dma_set_memory_address(DMA, CHANNEL, reinterpret_cast<uint32_t>(buffer.GetData()));
-    dma_set_number_of_data(DMA, CHANNEL, buffer.GetLength());
-    dma_set_read_from_memory(DMA, CHANNEL);
-    dma_enable_memory_increment_mode(DMA, CHANNEL);
-    dma_set_peripheral_size(DMA, CHANNEL, DMA_CCR_PSIZE_8BIT);
-    dma_set_memory_size(DMA, CHANNEL, DMA_CCR_MSIZE_8BIT);
-    dma_set_priority(DMA, CHANNEL, DMA_CCR_PL_LOW);
-    dma_enable_transfer_complete_interrupt(DMA, CHANNEL);
-    dma_enable_channel(DMA, CHANNEL);
+    const uint32_t dma = DMA1;
+    const uint32_t channel = DMA_CHANNEL3;
+    dma_channel_reset(dma, channel);
+    dma_set_peripheral_address(dma, channel, reinterpret_cast<uint32_t>(&SPI1_DR));
+    dma_set_memory_address(dma, channel, reinterpret_cast<uint32_t>(buffer.GetData()));
+    dma_set_number_of_data(dma, channel, buffer.GetLength());
+    dma_set_read_from_memory(dma, channel);
+    dma_enable_memory_increment_mode(dma, channel);
+    dma_set_peripheral_size(dma, channel, DMA_CCR_PSIZE_8BIT);
+    dma_set_memory_size(dma, channel, DMA_CCR_MSIZE_8BIT);
+    dma_set_priority(dma, channel, DMA_CCR_PL_LOW);
+    dma_enable_transfer_complete_interrupt(dma, channel);
+    dma_enable_channel(dma, channel);
     spi_enable_tx_dma(SPI1);
   }
 #endif
