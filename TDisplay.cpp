@@ -34,9 +34,9 @@ void TDisplay::Init()
 {
   // Reset
 #ifndef HOST
-  gpio_clear(GPIOA, GPIO0);
+  gpio_clear(Pin_lcd_rst.Port, Pin_lcd_rst.Pin);
   delay_ms(5);
-  gpio_set(GPIOA, GPIO0);
+  gpio_set(Pin_lcd_rst.Port, Pin_lcd_rst.Pin);
   delay_ms(5);
 #endif
   TPageBuffer* buffer(GetBuffer());

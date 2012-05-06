@@ -23,7 +23,7 @@ TGui Gui;
  * TIM4 -
  * SysTick timer - 0.5ms master timer, sequencer tick
  *
- * Pin connections:
+ * Pin connections (specified in stm32.h):
  *
  * PB15: Vpullup - LCD backlight, encoder pullup voltage
  * BOOT1 (PB2): pulled high
@@ -58,28 +58,31 @@ void clockInit()
 #endif
 }
 
+
 void gpioInit()
 {
 #ifndef HOST
-  // LCD A0
-  gpio_set_mode(GPIOB, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO7);
-  // LCD CS
-  gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO4);
-  // LCD RST
-  gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO0);
+  /* There is some space to save here:
+   *  - gcc refuses to inline SetOutput randomly
+   *  - pin configurations in the same port can be ored together
+   */
+
+  Pin_lcd_a0.SetOutput();
+  Pin_lcd_cs.SetOutput();
+  Pin_lcd_rst.SetOutput();
 
   // Discovery: LEDs on PC8 and PC9
-  gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO8);
-  gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO9);
+  Pin_led_b.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+  Pin_led_g.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
 
-  // Debug LEDs
+  // Debug LEDs (Discovery)
   gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
 		GPIO0 | GPIO1 | GPIO2 | GPIO3 | GPIO4 | GPIO5);
 
   // SPI
-  gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO7); // SPI1_MOSI
-  gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO6); // SPI1_MISO
-  gpio_set_mode(GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO5); // SPI1_SCK
+  Pin_spi_mosi.SetOutput(GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
+  //TPin::SetOutput(Pin_spi_miso, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
+  Pin_spi_sck.SetOutput(GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
 #endif
 }
 
@@ -121,14 +124,14 @@ volatile static uint8_t DmaEvents = 0;
 void dma1_channel3_isr(void)
 {
 #ifndef HOST
-  gpio_toggle(GPIOC, GPIO8);
+  gpio_toggle(Pin_led_b.Port, Pin_led_b.Pin);
 
   dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL3);
   dma_disable_channel(DMA1, DMA_CHANNEL3);
   spi_disable_tx_dma(SPI1);
 
   DmaEvents++;
-  GPIO_ODR(GPIOC)++;
+  GPIO_ODR(GPIOC)++; // Debug LEDs
 
   // Note: we have to wait until TXE=1 and BSY=0 before changing CS lines.
 #endif
@@ -157,7 +160,7 @@ int main(void)
   while (true) {
     delay_ms(5);
 #ifndef HOST
-    gpio_toggle(GPIOC, GPIO9);
+    gpio_toggle(Pin_led_g.Port, Pin_led_g.Pin);
 #endif
     if (DmaEvents) {
       DmaEvents--;

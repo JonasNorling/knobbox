@@ -29,11 +29,11 @@ void TSpiDmaQueue::TryStartJob()
     // Set CS and LCD_A0 lines
     if (job.GetChip() == TSpiDmaJob::CS_LCD) {
       // FIXME: Move pin mapping to a method in TDisplay
-      gpio_clear(GPIOA, GPIO4);
+      gpio_clear(Pin_lcd_cs.Port, Pin_lcd_cs.Pin);
       if (job.GetLcdData()) {
-	gpio_set(GPIOB, GPIO7);
+	gpio_set(Pin_lcd_a0.Port, Pin_lcd_a0.Pin);
       } else {
-	gpio_clear(GPIOB, GPIO7);
+	gpio_clear(Pin_lcd_a0.Port, Pin_lcd_a0.Pin);
       }
     }
 
