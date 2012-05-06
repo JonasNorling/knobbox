@@ -124,7 +124,7 @@ volatile static uint8_t DmaEvents = 0;
 void dma1_channel3_isr(void)
 {
 #ifndef HOST
-  gpio_toggle(Pin_led_b.Port, Pin_led_b.Pin);
+  Pin_led_b.Toggle();
 
   dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL3);
   dma_disable_channel(DMA1, DMA_CHANNEL3);
@@ -160,7 +160,7 @@ int main(void)
   while (true) {
     delay_ms(5);
 #ifndef HOST
-    gpio_toggle(Pin_led_g.Port, Pin_led_g.Pin);
+    Pin_led_g.Toggle();
 #endif
     if (DmaEvents) {
       DmaEvents--;

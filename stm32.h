@@ -20,12 +20,28 @@ extern "C" {
 
     void SetOutput(uint8_t mode = GPIO_MODE_OUTPUT_50_MHZ,
 		   uint8_t cnf = GPIO_CNF_OUTPUT_PUSHPULL) const
+      __attribute__((always_inline))
     {
       gpio_set_mode(Port, mode, cnf, Pin);
     }
 
-    // Would have been nice, but gcc doesn't like to inline it today
-    //void Toggle() const { gpio_toggle(Port, Pin); }
+    void Toggle() const
+      __attribute__((always_inline))
+    {
+      gpio_toggle(Port, Pin);
+    }
+
+    void Set() const
+      __attribute__((always_inline))
+    {
+      gpio_set(Port, Pin);
+    }
+
+    void Clear() const
+      __attribute__((always_inline))
+    {
+      gpio_clear(Port, Pin);
+    }
   };
 
   static const TPin Pin_lcd_a0 =   {GPIOB, GPIO7}; // Discovery board
