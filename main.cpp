@@ -18,10 +18,10 @@ TGui Gui;
  * SPI2 - (unused)
  * I2C1 - (unused)
  * I2C1 - (unused)
- * TIM2 -
+ * TIM2 - Sequencer event timing?
  * TIM3 -
  * TIM4 -
- * SysTick timer - 0.5ms master timer, sequencer tick
+ * SysTick timer - 1ms master timer
  *
  * Pin connections (specified in stm32.h):
  *
@@ -48,6 +48,16 @@ void clockInit()
 #ifndef HOST
   // FIXME: Want to run at 48 MHz.
   rcc_clock_setup_in_hse_8mhz_out_24mhz();
+
+  /*
+   * Systick timer striking every 1ms (1kHz):
+   * div 8 --> 24MHz/8 = 3MHz
+   * reload 2999 --> 3000000/(2999+1) --> 1000 overflows/second
+   */
+  systick_set_clocksource(STK_CTRL_CLKSOURCE_AHB_DIV8);
+  systick_set_reload(2999);
+  systick_interrupt_enable();
+  systick_counter_enable();
 
   rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPAEN); // GPIOA
   rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPBEN); // GPIOB
@@ -140,6 +150,18 @@ void dma1_channel3_isr(void)
 /* DMA channel 1:2 -- SPI1_RX */
 void dma1_channel2_isr(void);
 
+uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
+void sys_tick_handler(void)
+{
+#ifndef HOST
+  SystemTime++;
+  if (!(SystemTime % 1000)) {
+    Pin_led_g.Toggle();
+  }
+#endif  
+}
+
+
 int main(void)
 {
   // Use placement new to run the constructors of static objects,
@@ -159,9 +181,6 @@ int main(void)
 
   while (true) {
     delay_ms(5);
-#ifndef HOST
-    Pin_led_g.Toggle();
-#endif
     if (DmaEvents) {
       DmaEvents--;
       SpiDmaQueue.Finished();

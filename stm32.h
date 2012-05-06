@@ -5,6 +5,7 @@ extern "C" {
 
 #ifndef HOST
 #include <spi.h>
+#include <systick.h>
 #include <nvic.h>
 #include <f1/rcc.h>
 #include <f1/gpio.h>
@@ -69,6 +70,7 @@ extern "C" {
     for (unsigned i=0; i < n*7000; i++) __asm__("nop");    
   }
 
+  // Need to declare ISRs as extern "C" for the linker to find them:
   void dma1_channel1_isr(void);
   void dma1_channel2_isr(void);
   void dma1_channel3_isr(void);
@@ -76,6 +78,7 @@ extern "C" {
   void dma1_channel5_isr(void);
   void dma1_channel6_isr(void);
   void dma1_channel7_isr(void);
+  void sys_tick_handler(void);
 
 #ifdef __cplusplus
 }
