@@ -21,6 +21,7 @@ void clockInit()
 
   rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SPI1EN); // SPI1
   rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_DMA1EN); // DMA1
+  rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_USART1EN); // USART1
 }
 
 
@@ -90,6 +91,8 @@ void deviceInit()
   usart_set_mode(USART1, USART_MODE_TX_RX);
   usart_set_parity(USART1, USART_PARITY_NONE);
   usart_set_flow_control(USART1, USART_FLOWCONTROL_NONE);
+  // Output clock, also on last bit
+  USART_CR2(USART1) |= USART_CR2_CLKEN | USART_CR2_LBCL;
   usart_enable(USART1);
 
   // Enable USART DMA transmission done interrupt

@@ -26,6 +26,8 @@ void TKnobs::StartShifting()
       (LedIntensity[color][knob] < CurrentPwmStep);
   }
 
+  CurrentPwmStep++;
+
   // Send LedControl.
   // FIXME: receive SwitchData.
   // FIXME: Don't have to do all this every time.
