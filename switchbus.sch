@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sat 05 May 2012 01:25:36 PM CEST
+EESchema Schematic File Version 2  date Sun 06 May 2012 02:46:54 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -46,7 +46,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 2 5
 Title ""
-Date "5 may 2012"
+Date "6 may 2012"
 Rev ""
 Comp ""
 Comment1 ""
@@ -81,19 +81,19 @@ F 1 "74HC165" H 3750 3150 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR068
+L GND #PWR03
 U 1 1 4F8DA672
 P 3300 4250
-F 0 "#PWR068" H 3300 4250 30  0001 C CNN
+F 0 "#PWR03" H 3300 4250 30  0001 C CNN
 F 1 "GND" H 3300 4180 30  0001 C CNN
 	1    3300 4250
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR069
+L +3.3V #PWR04
 U 1 1 4F8DA671
 P 3300 2500
-F 0 "#PWR069" H 3300 2460 30  0001 C CNN
+F 0 "#PWR04" H 3300 2460 30  0001 C CNN
 F 1 "+3.3V" H 3300 2610 30  0000 C CNN
 	1    3300 2500
 	1    0    0    -1  
@@ -109,19 +109,19 @@ SHIFT_CLK
 Text HLabel 2550 2800 0    60   Input ~ 0
 BTNSHIFT_IN0
 $Comp
-L GND #PWR070
+L GND #PWR05
 U 1 1 4F82A012
 P 5150 3850
-F 0 "#PWR070" H 5150 3850 30  0001 C CNN
+F 0 "#PWR05" H 5150 3850 30  0001 C CNN
 F 1 "GND" H 5150 3780 30  0001 C CNN
 	1    5150 3850
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR071
+L +3.3V #PWR06
 U 1 1 4F82A00E
 P 5150 3100
-F 0 "#PWR071" H 5150 3060 30  0001 C CNN
+F 0 "#PWR06" H 5150 3060 30  0001 C CNN
 F 1 "+3.3V" H 5150 3210 30  0000 C CNN
 	1    5150 3100
 	1    0    0    -1  
