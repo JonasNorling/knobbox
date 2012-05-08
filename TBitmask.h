@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #ifdef HOST
 #include <cassert>
 #else
@@ -9,6 +11,7 @@
 class TBitmask
 {
 public:
+  /* All positions are initialized to be "free" or "set" */
   static uint8_t Init(const uint8_t& size)
   {
     assert(size <= 8);
@@ -31,5 +34,15 @@ public:
   {
     assert(!(mask & (1 << bit)));
     mask |= (1 << bit);
+  }
+
+  static int8_t FindSet(uint8_t& mask, const uint8_t& size)
+  {
+    return FindFree(mask, size);
+  }
+
+  static void Set(uint8_t& mask, const uint8_t& bit)
+  {
+    Release(mask, bit);
   }
 };

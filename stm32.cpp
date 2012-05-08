@@ -72,7 +72,7 @@ void deviceInit()
   spi_set_full_duplex_mode(SPI1);
   spi_enable_software_slave_management(SPI1);
   spi_set_nss_high(SPI1);
-  spi_set_baudrate_prescaler(SPI1, SPI_CR1_BR_FPCLK_DIV_256);
+  spi_set_baudrate_prescaler(SPI1, SPI_CR1_BR_FPCLK_DIV_32);
   spi_set_master_mode(SPI1);
   spi_set_clock_polarity_1(SPI1);
   spi_set_clock_phase_1(SPI1);

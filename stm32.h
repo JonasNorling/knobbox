@@ -35,19 +35,22 @@ extern "C" {
     void Toggle() const
       __attribute__((always_inline))
     {
-      gpio_toggle(Port, Pin);
+      //gpio_toggle(Port, Pin);
+      GPIO_ODR(Port) ^= Pin;
     }
 
     void Set() const
       __attribute__((always_inline))
     {
-      gpio_set(Port, Pin);
+      //gpio_set(Port, Pin);
+      GPIO_BSRR(Port) = Pin;
     }
 
     void Clear() const
       __attribute__((always_inline))
     {
-      gpio_clear(Port, Pin);
+      //gpio_clear(Port, Pin);
+      GPIO_BRR(Port) = Pin;
     }
   };
 

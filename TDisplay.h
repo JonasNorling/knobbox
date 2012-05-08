@@ -40,12 +40,14 @@ public:
     uint8_t DrawText(const char* text, uint8_t offset = 0);
     void Clear()
     {
-      // Fixme: Is this optimised to 32-bit?
       for (int i=0; i<Width; i++) Data[i] = 0;
+    }
+    void Clear(uint8_t start, uint8_t end)
+    {
+      for (int i=start; i<end; i++) Data[i] = 0;
     }
     void Invert(uint8_t start, uint8_t end)
     {
-      // Fixme: Is this optimised to 32-bit?
       for (int i=start; i<end; i++) Data[i] = ~Data[i];
     }
     uint8_t GetLength() const { return Width; }
