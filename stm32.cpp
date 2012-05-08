@@ -44,6 +44,9 @@ void deviceInit()
   gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
 		GPIO0 | GPIO1 | GPIO2 | GPIO3 | GPIO4 | GPIO5);
 
+  // Switches
+  Pin_sw_1.SetInput();
+
   // SPI
   Pin_spi_mosi.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
 			 GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);

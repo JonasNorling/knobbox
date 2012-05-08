@@ -25,6 +25,13 @@ extern "C" {
       gpio_set_mode(Port, mode, cnf, Pin);
     }
 
+    void SetInput(uint8_t mode = GPIO_MODE_INPUT,
+		   uint8_t cnf = GPIO_CNF_INPUT_FLOAT) const
+      __attribute__((always_inline))
+    {
+      gpio_set_mode(Port, mode, cnf, Pin);
+    }
+
     void Toggle() const
       __attribute__((always_inline))
     {
@@ -45,9 +52,10 @@ extern "C" {
   };
 
   static const TPin Pin_lcd_a0 =         {GPIOB, GPIO7}; // Discovery
-  //static const TPin Pin_lcd_a0 =         {GPIOA, GPIO4}; // real board
+  //static const TPin Pin_lcd_a0 =         {GPIOA, GPIO4};
   static const TPin Pin_lcd_cs =         {GPIOA, GPIO4};
-  static const TPin Pin_lcd_rst =        {GPIOA, GPIO0};
+  //static const TPin Pin_lcd_rst =        {GPIOA, GPIO0};
+  static const TPin Pin_lcd_rst =        {GPIOA, GPIO1}; // Discovery
   static const TPin Pin_flash_cs =       {GPIOB, GPIO0};
   static const TPin Pin_spi_mosi =       {GPIOA, GPIO7};
   static const TPin Pin_spi_miso =       {GPIOA, GPIO6};
@@ -61,7 +69,8 @@ extern "C" {
   static const TPin Pin_shift_in_load =  {GPIOB, GPIO6};
   static const TPin Pin_shift_in_en =    {GPIOB, GPIO7};
 
-  static const TPin Pin_sw_1 =           {GPIOB, GPIO5};
+  static const TPin Pin_sw_1 =           {GPIOA, GPIO0}; // Discovery
+  //static const TPin Pin_sw_1 =           {GPIOB, GPIO5};
   static const TPin Pin_sw_2 =           {GPIOB, GPIO4};
   static const TPin Pin_sw_3 =           {GPIOB, GPIO13};
   static const TPin Pin_sw_4 =           {GPIOB, GPIO12};

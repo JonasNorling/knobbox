@@ -51,8 +51,6 @@ volatile static uint8_t DmaEvents = 0;
 void dma1_channel3_isr(void)
 {
 #ifndef HOST
-  Pin_led_b.Toggle();
-
   dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL3);
   dma_disable_channel(DMA1, DMA_CHANNEL3);
   spi_disable_tx_dma(SPI1);
@@ -101,6 +99,7 @@ int main(void)
   Knobs.StartShifting();
 
   while (true) {
+    /* Interrupt "bottom half" processing */
     if (DmaEvents) {
       // FIXME: race condition? Is there a test-and-decrement instruction?
       DmaEvents--;
@@ -112,6 +111,30 @@ int main(void)
       return 0;
 #endif
     }
+
+    /* Poll switches */
+#ifndef HOST
+    {
+      // FIXME: Poll more seldom (each ms or something), it's a cheap
+      // way to ignore bounces and spurious triggers when releasing
+      // the button.
+      delay_ms(1);
+      //
+      // Buttons go high when pressed on the Discovery. The real board
+      // is the other way around?
+      static uint16_t lastState = 0;
+      const uint16_t state = GPIO_IDR(Pin_sw_1.Port);
+      const uint16_t pinMask = Pin_sw_1.Pin; // | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
+      if ((state ^ lastState) & pinMask) {
+	if (state & Pin_sw_1.Pin) {
+	  Pin_led_b.Toggle();
+	}
+      }
+      lastState = state;
+    }
+#endif
+
+    /* Update things */
     Gui.Process();
   }
 
