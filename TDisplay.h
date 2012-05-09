@@ -34,6 +34,8 @@ private:
   static const int BufferCount = 2;
 
 public:
+  static const int GlyphWidth = 6;
+
   class TPageBuffer {
   public:
     friend class TDisplay;

@@ -168,14 +168,14 @@ uint8_t TDisplay::TPageBuffer::DrawText(const char* text, uint8_t offset)
 #ifdef FONT_LIQUID
     glyph_id_t glyph = fontliqstingmono_obj.first_glyph((uint8_t)*pt);
     if (glyph) {
-      for (int c = 0; c < 6; c++) {
+      for (int c = 0; c < GlyphWidth; c++) {
 	if (offset >= Width-1) goto out;
 	Data[offset++] = fontliqstingmono_obj.glyph_data(glyph, c);
       }
     }
 #else
     if ((uint8_t)*pt < FONT_GLYPHS) {
-      for (int c = 0; c < 6; c++) {
+      for (int c = 0; c < GlyphWidth; c++) {
 	if (offset >= Width-1) goto out;
 	Data[offset++] = Font[(uint8_t)*pt][c];
       }
@@ -183,7 +183,7 @@ uint8_t TDisplay::TPageBuffer::DrawText(const char* text, uint8_t offset)
 #endif
 
     else {
-      for (int c = 0; c < 6; c++) {
+      for (int c = 0; c < GlyphWidth; c++) {
 	if (offset >= Width-1) goto out;
 	Data[offset++] = 0xff;
       }

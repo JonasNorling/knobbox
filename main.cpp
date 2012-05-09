@@ -118,17 +118,21 @@ int main(void)
       // FIXME: Poll more seldom (each ms or something), it's a cheap
       // way to ignore bounces and spurious triggers when releasing
       // the button.
-      //delay_ms(1);
-      //
-      // Buttons go high when pressed on the Discovery. The real board
-      // is the other way around?
+      delay_ms(1);
+
       static uint16_t lastState = 0;
       const uint16_t state = gpio_port_read(Pin_sw_1.Port);
-      const uint16_t pinMask = Pin_sw_1.Pin; // | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
+      const uint16_t pinMask = Pin_sw_1.Pin | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
       if ((state ^ lastState) & pinMask) {
-	if (state & Pin_sw_1.Pin) {
-	  Pin_led_b.Toggle();
+	Pin_led_b.Toggle();
+	if (~state & Pin_sw_1.Pin) {
+	  Gui.KeyEvent(KEY_OK);
+	} else if (~state & Pin_sw_2.Pin) {
+	  Gui.KeyEvent(KEY_UP);
+	} else if (~state & Pin_sw_3.Pin) {
 	  Gui.KeyEvent(KEY_DOWN);
+	} else if (~state & Pin_sw_4.Pin) {
+	  Gui.KeyEvent(KEY_BACK);
 	}
       }
       lastState = state;

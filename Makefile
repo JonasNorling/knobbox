@@ -1,4 +1,5 @@
 PROJECT = knobbox
+SRCS += TControllerPage.cpp
 SRCS += TDisplay.cpp
 SRCS += TGui.cpp
 SRCS += TKnobs.cpp

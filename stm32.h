@@ -72,8 +72,8 @@ extern "C" {
   static const TPin Pin_shift_in_load =  {GPIOB, GPIO6};
   static const TPin Pin_shift_in_en =    {GPIOB, GPIO7};
 
-  static const TPin Pin_sw_1 =           {GPIOA, GPIO0}; // Discovery
-  //static const TPin Pin_sw_1 =           {GPIOB, GPIO5};
+  //static const TPin Pin_sw_1 =           {GPIOA, GPIO0}; // Discovery
+  static const TPin Pin_sw_1 =           {GPIOB, GPIO5};
   static const TPin Pin_sw_2 =           {GPIOB, GPIO4};
   static const TPin Pin_sw_3 =           {GPIOB, GPIO13};
   static const TPin Pin_sw_4 =           {GPIOB, GPIO12};

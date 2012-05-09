@@ -34,7 +34,7 @@ void TTopMenu::Render(uint8_t n __attribute__((unused)),
   line->Invert(shadestart, line->GetLength());
 
   if (Gui.GetFocus() == TGui::FOCUS_MENU) {
-    line->Invert(1*6, 5*6);
+    line->Invert(1*TDisplay::GlyphWidth, 5*TDisplay::GlyphWidth);
   }
 }
 
@@ -51,81 +51,49 @@ void TTopMenu::Event(TEvent event)
 }
 
 
-// FIXME: Temporary
-const char* TControllerPage::CurrentSetName = "Blofeld set1";
-
-void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
-{
-  if (n == 1) {
-    char channel[4];
-    channel[0] = '\037';
-    channel[1] = '7';
-    channel[2] = ' ';
-    channel[3] = '\0';
-    uint8_t pos = line->DrawText(channel, LeftMargin);
-    if (Focus == FOCUS_CHANNEL) {
-      line->Invert(LeftMargin, pos);
-    }
-    line->DrawText(CurrentSetName, pos);
-    if (Focus == FOCUS_SET) {
-      line->Invert(pos, line->GetLength()-RightMargin);
-    }
-  }
-  else if (n == 2) {
-    line->DrawText("clock ON, seq ON", LeftMargin);
-    line->Invert(LeftMargin, LeftMargin+6*8);
-  }
-  else if (n == 3) {
-    line->DrawText("\005knob3: 122", LeftMargin);
-  }
-  else if (n == 4) {
-    line->DrawText("\007CC33 Attack", LeftMargin);
-  }
-  else if (n == 5) {
-    line->DrawText("\005knob9: 39", LeftMargin);
-  }
-  else if (n == 6) {
-    line->DrawText("\007NPRNxxxx: 114", LeftMargin);
-  }
-  else if (n == 7) {
-    line->DrawText("tempo, i/o...", LeftMargin);
-    line->Invert(0, line->GetLength());
-  }
-}
-
-void TControllerPage::Event(TEvent event)
-{
-  Gui.UpdateAll();
-  switch (event) {
-  case RECEIVE_FOCUS:
-    Focus = FOCUS_CHANNEL;
-    break;
-  case KEY_DOWN:
-    //if (Focus < FOCUS_LAST) Focus++;
-    Focus++;
-    if (Focus > FOCUS_LAST) Gui.ChangeFocus(TGui::FOCUS_POPUP);
-    break;
-  default:
-    break;
-  }
-}
-
-
 void TPopup::Render(uint8_t n, TDisplay::TPageBuffer* line)
 {
   if (n == 0) {
     line->Clear(Margin, line->GetLength());
-    line->DrawText(" Select foobar", Margin);
+    char text[IDisplayPage::MenuTextLen];
+    text[0] = '\0';
+    Gui.GetCurrentPage()->GetMenuTitle(text);
+    line->DrawText(text, Margin + TDisplay::GlyphWidth);
     line->Invert(Margin, line->GetLength());
   } else {
+    const uint8_t item = n-1;
     line->Clear(Margin, line->GetLength());
-    line->DrawText("\003Junk", Margin);
+    char text[IDisplayPage::MenuTextLen + 1];
+    text[0] = '\003';
+    text[1] = '\0';
+    Gui.GetCurrentPage()->GetMenuItem(item, text + 1);
+    line->DrawText(text, Margin);
+    if (Focus == item) {
+      line->Invert(Margin + TDisplay::GlyphWidth, line->GetLength());
+    }
   }
 }
 
 void TPopup::Event(TEvent event)
 {
-  (void)event;
+  Gui.UpdateAll();
+  switch (event) {
+  case KEY_UP:
+    if (Focus > 0) Focus--;
+    break;
+  case KEY_DOWN:
+    Focus++;
+    break;
+  case KEY_OK:
+    Gui.GetCurrentPage()->MenuItemSelected(Focus);
+    Gui.ChangeFocus(TGui::FOCUS_PAGE);
+    break;
+  case KEY_BACK:
+    Gui.ChangeFocus(TGui::FOCUS_PAGE);
+    break;
+  default:
+    break;
+  }
 }
 
 
@@ -162,7 +130,7 @@ void TGui::ChangeFocus(TFocus focus)
     CurrentPage->Event(RECEIVE_FOCUS);
     break;
   case FOCUS_POPUP:
-    UpdateAll();
+    Popup.Event(RECEIVE_FOCUS);
     break;
   }
 }

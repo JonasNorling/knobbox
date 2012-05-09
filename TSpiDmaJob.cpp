@@ -28,7 +28,6 @@ void TSpiDmaQueue::TryStartJob()
 
     // Set CS and LCD_A0 lines
     if (job.GetChip() == TSpiDmaJob::CS_LCD) {
-      // FIXME: Move pin mapping to a method in TDisplay
       Pin_lcd_cs.Clear();
       if (job.GetLcdData()) {
 	Pin_lcd_a0.Set();

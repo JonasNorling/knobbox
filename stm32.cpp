@@ -45,7 +45,14 @@ void deviceInit()
 		GPIO0 | GPIO1 | GPIO2 | GPIO3 | GPIO4 | GPIO5);
 
   // Switches
-  Pin_sw_1.SetInput();
+  Pin_sw_1.SetInput(GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN);
+  Pin_sw_2.SetInput(GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN);
+  Pin_sw_3.SetInput(GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN);
+  Pin_sw_4.SetInput(GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN);
+  Pin_sw_1.Set();
+  Pin_sw_2.Set();
+  Pin_sw_3.Set();
+  Pin_sw_4.Set();
 
   // SPI
   Pin_spi_mosi.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
