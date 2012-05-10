@@ -8,7 +8,7 @@ class TControllerPage : public IDisplayPage
 {
 public:
   enum TFocus { FOCUS_NONE, FOCUS_CHANNEL, FOCUS_SET, FOCUS_LAST=FOCUS_SET };
-  TControllerPage() : Focus(FOCUS_CHANNEL) { }
+  TControllerPage() : CurrentChannel(7), Focus(FOCUS_CHANNEL) { }
   void Render(uint8_t n, TDisplay::TPageBuffer* line);
   void Event(TEvent event);
 
@@ -18,7 +18,7 @@ public:
 
 private:
   static const char* CurrentSetName; // temporary
-  static const uint8_t CurrentChannel = 7; // temporary
+  uint8_t CurrentChannel; // This shouldn't be here
 
   uint8_t Focus;
 };

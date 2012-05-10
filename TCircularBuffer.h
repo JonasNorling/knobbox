@@ -49,6 +49,7 @@ public:
   }
 
 private:
+  static_assert(size < 256, "Too big buffer");
   T Data[size];
   uint8_t Read;
   uint8_t Count;

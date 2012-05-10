@@ -60,16 +60,36 @@ void TPopup::Render(uint8_t n, TDisplay::TPageBuffer* line)
     Gui.GetCurrentPage()->GetMenuTitle(text);
     line->DrawText(text, Margin + TDisplay::GlyphWidth);
     line->Invert(Margin, line->GetLength());
-  } else {
-    const uint8_t item = n-1;
+  }
+  else {
+    const uint8_t item = Scroll + n-1;
     line->Clear(Margin, line->GetLength());
     char text[IDisplayPage::MenuTextLen + 1];
     text[0] = '\003';
     text[1] = '\0';
-    Gui.GetCurrentPage()->GetMenuItem(item, text + 1);
-    line->DrawText(text, Margin);
-    if (Focus == item) {
-      line->Invert(Margin + TDisplay::GlyphWidth, line->GetLength());
+
+    if (item < ItemCount) {
+      Gui.GetCurrentPage()->GetMenuItem(item, text + 1);
+
+      if (text[1] == '\0') {
+	// We discovered that this is past the end of the list.
+	// If this item was selected, move selection up and repaint.
+	ItemCount = item;
+	if (Focus >= ItemCount) {
+	  Focus = ItemCount - 1;
+	  Gui.UpdateLine(n-1);
+	}
+      }
+
+      line->DrawText(text, Margin);
+      if (Focus == item) {
+	line->Invert(Margin + TDisplay::GlyphWidth, line->GetLength());
+      }
+    }
+
+    if (item >= ItemCount) {
+      text[1] = '-';
+      line->DrawText(text, Margin);
     }
   }
 }
@@ -79,10 +99,20 @@ void TPopup::Event(TEvent event)
   Gui.UpdateAll();
   switch (event) {
   case KEY_UP:
-    if (Focus > 0) Focus--;
+    if (Focus > 0) {
+      Focus--;
+      if (Focus < Scroll) {
+	Scroll = Focus;
+      }
+    }
     break;
   case KEY_DOWN:
-    Focus++;
+    if (Focus < ItemCount-1) {
+      Focus++;
+      if (Focus - Scroll >= Lines) {
+	Scroll = Focus - Lines + 1;
+      }
+    }
     break;
   case KEY_OK:
     Gui.GetCurrentPage()->MenuItemSelected(Focus);
@@ -97,6 +127,14 @@ void TPopup::Event(TEvent event)
 }
 
 
+TGui::TGui() :
+  DirtyLines(TBitmask::Init(Lines)),
+  Focus(FOCUS_MENU)
+{
+  static_assert(sizeof(TControllerPage) <= sizeof(CurrentPage), "Too large object");
+  new(CurrentPage) TControllerPage();
+}
+
 void TGui::Process()
 {
   int8_t n = TBitmask::FindSet(DirtyLines, Lines);
@@ -107,7 +145,7 @@ void TGui::Process()
       if (n == 0) {
 	TopMenu.Render(n, line);
       } else {
-	CurrentPage->Render(n, line);
+	GetCurrentPage()->Render(n, line);
       }
       if (Focus == FOCUS_POPUP) {
 	Popup.Render(n, line);
@@ -127,9 +165,10 @@ void TGui::ChangeFocus(TFocus focus)
     TopMenu.Event(RECEIVE_FOCUS);
     break;
   case FOCUS_PAGE:
-    CurrentPage->Event(RECEIVE_FOCUS);
+    GetCurrentPage()->Event(RECEIVE_FOCUS);
     break;
   case FOCUS_POPUP:
+    Popup.Reset();
     Popup.Event(RECEIVE_FOCUS);
     break;
   }

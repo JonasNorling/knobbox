@@ -37,14 +37,19 @@ public:
 class TPopup
 {
 public:
-  TPopup() : Focus(0) { }
+  TPopup() { Reset(); }
+  void Reset() { Scroll = 0; Focus = 0; ItemCount = 255; }
   void Render(uint8_t n, TDisplay::TPageBuffer* line);
   void Event(TEvent event);
 
 private:
   static const uint8_t Margin = 13;
+  static const uint8_t Lines = 7;
+  uint8_t Scroll;
   uint8_t Focus;
+  uint8_t ItemCount;
 };
+
 
 class TGui
 {
@@ -52,11 +57,7 @@ public:
   static const int Lines = 8;
   enum TFocus { FOCUS_MENU, FOCUS_PAGE, FOCUS_POPUP };
 
-  TGui() :
-    DirtyLines(TBitmask::Init(Lines)),
-    Focus(FOCUS_MENU),
-    CurrentPage(&ControllerPage)
-  { }
+  TGui();
 
   void Process();
   void UpdateAll() { DirtyLines = TBitmask::Init(Lines); }
@@ -65,21 +66,21 @@ public:
   {
     switch (Focus) {
     case FOCUS_MENU: TopMenu.Event(event); break;
-    case FOCUS_PAGE: CurrentPage->Event(event); break;
+    case FOCUS_PAGE: GetCurrentPage()->Event(event); break;
     case FOCUS_POPUP: Popup.Event(event); break;
     }
   }
   void ChangeFocus(TFocus focus);
   TFocus GetFocus() const { return Focus; }
-  IDisplayPage* GetCurrentPage() { return &ControllerPage; }
+  IDisplayPage* GetCurrentPage() { return reinterpret_cast<IDisplayPage*>(CurrentPage); }
 
 private:
   uint8_t DirtyLines;
   TFocus Focus;
-  IDisplayPage* CurrentPage;
 
   TTopMenu TopMenu;
-  TControllerPage ControllerPage;
+  // The current IDisplayPage implementation is put here with placement new. Delete is never called.
+  uint8_t CurrentPage[sizeof(TControllerPage)];
   TPopup Popup;
 };
 
