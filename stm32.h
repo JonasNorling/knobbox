@@ -87,7 +87,7 @@ extern "C" {
   void deviceInit();
 
   static inline void delay_ms(unsigned n) {
-    for (unsigned i=0; i < n*7000; i++) __asm__("nop");    
+    for (unsigned i=0; i < n*7000; i++) __asm__("nop");
   }
 
   // Need to declare ISRs as extern "C" for the linker to find them:

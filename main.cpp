@@ -55,8 +55,6 @@ void dma1_channel3_isr(void)
   dma_disable_channel(DMA1, DMA_CHANNEL3);
   spi_disable_tx_dma(SPI1);
 
-  GPIO_ODR(GPIOC)++; // Debug LEDs
-
   // Note: we have to wait until TXE=1 and BSY=0 before changing CS lines.
 #endif
   DmaEvents++;
@@ -65,7 +63,21 @@ void dma1_channel3_isr(void)
 /* DMA channel 1:4 -- USART1_TX (shift registers) */
 void dma1_channel4_isr(void)
 {
+#ifndef HOST
+  dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL4);
+  Pin_led_b.Toggle();
+#endif
+  // FIXME: Once we get the latency in the main loop down, perhaps
+  // this could be moved to a bottom-half?
   Knobs.StartShifting();
+}
+
+/* DMA channel 1:5 -- USART1_RX (shift registers) */
+void dma1_channel5_isr(void)
+{
+#ifndef HOST
+  dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL5);
+#endif
 }
 
 void sys_tick_handler(void)
@@ -114,17 +126,17 @@ int main(void)
 
     /* Poll switches */
 #ifndef HOST
+    Pin_led_g.Toggle();
     {
       // FIXME: Poll more seldom (each ms or something), it's a cheap
       // way to ignore bounces and spurious triggers when releasing
       // the button.
-      delay_ms(1);
+      for (unsigned i=0; i < 1000; i++) __asm__("nop");
 
       static uint16_t lastState = 0;
       const uint16_t state = gpio_port_read(Pin_sw_1.Port);
       const uint16_t pinMask = Pin_sw_1.Pin | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
       if ((state ^ lastState) & pinMask) {
-	Pin_led_b.Toggle();
 	if (~state & Pin_sw_1.Pin) {
 	  Gui.KeyEvent(KEY_OK);
 	} else if (~state & Pin_sw_2.Pin) {
@@ -141,6 +153,19 @@ int main(void)
 
     /* Update things */
     Gui.Process();
+
+    /* Sanity check */
+#ifndef HOST
+    if (DMA_ISR(DMA1) & DMA_ISR_TEIF4) {
+      gpio_toggle(GPIOC, GPIO0);
+    }
+    if (DMA_ISR(DMA1) & DMA_ISR_TEIF3) {
+      gpio_toggle(GPIOC, GPIO1);
+    }
+    if (DMA_ISR(DMA1) & DMA_ISR_TEIF5) {
+      gpio_toggle(GPIOC, GPIO2);
+    }
+#endif
   }
 
   return 0;

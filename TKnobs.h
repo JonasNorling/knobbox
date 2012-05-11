@@ -16,6 +16,7 @@ public:
   TKnobs();
   void StartShifting();
 
+private:
   /// Wanted intensity for each LED, 0..255
   uint8_t LedIntensity[2][Knobs];
 

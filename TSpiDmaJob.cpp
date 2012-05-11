@@ -28,6 +28,7 @@ void TSpiDmaQueue::TryStartJob()
 
     // Set CS and LCD_A0 lines
     if (job.GetChip() == TSpiDmaJob::CS_LCD) {
+      Pin_flash_cs.Set();
       Pin_lcd_cs.Clear();
       if (job.GetLcdData()) {
 	Pin_lcd_a0.Set();
@@ -35,8 +36,11 @@ void TSpiDmaQueue::TryStartJob()
 	Pin_lcd_a0.Clear();
       }
     }
+    else {
+      Pin_lcd_cs.Set();
+      Pin_flash_cs.Clear();
+    }
 
-    // FIXME: Don't have to do all this every time.
     const uint32_t dma = DMA1;
     const uint32_t channel = DMA_CHANNEL3;
     dma_channel_reset(dma, channel);
