@@ -3,6 +3,7 @@ SRCS += TControllerPage.cpp
 SRCS += TDisplay.cpp
 SRCS += TGui.cpp
 SRCS += TKnobs.cpp
+SRCS += TSequencer.cpp
 SRCS += TSpiDmaJob.cpp
 SRCS += main.cpp
 SRCS += syscalls.cpp

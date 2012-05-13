@@ -69,11 +69,12 @@ void TKnobs::StartShifting()
   dma_enable_memory_increment_mode(dma, rxchannel);
   dma_set_peripheral_size(dma, rxchannel, DMA_CCR_PSIZE_8BIT);
   dma_set_memory_size(dma, rxchannel, DMA_CCR_MSIZE_8BIT);
-  dma_set_priority(dma, rxchannel, DMA_CCR_PL_LOW);
+  dma_set_priority(dma, rxchannel, DMA_CCR_PL_HIGH);
+  dma_enable_transfer_complete_interrupt(dma, rxchannel);
+  dma_enable_channel(dma, rxchannel);
+  usart_enable_rx_dma(USART1);
   */
-  //dma_enable_transfer_complete_interrupt(dma, rxchannel);
-  //dma_enable_channel(dma, rxchannel);
-  //usart_enable_rx_dma(USART1);
+  // Will trigger dma_channel5_isr when done.
 
 #endif
 }

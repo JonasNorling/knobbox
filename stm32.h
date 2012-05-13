@@ -12,6 +12,7 @@ extern "C" {
 #include <f1/rcc.h>
 #include <f1/gpio.h>
 #include <f1/dma.h>
+#include <timer.h>
 
   class TPin {
   public:
@@ -72,6 +73,9 @@ extern "C" {
   static const TPin Pin_shift_in_load =  {GPIOB, GPIO6};
   static const TPin Pin_shift_in_en =    {GPIOB, GPIO7};
 
+  static const TPin Pin_midi_out =       {GPIOA, GPIO2};
+  static const TPin Pin_midi_in =        {GPIOA, GPIO3};
+
   //static const TPin Pin_sw_1 =           {GPIOA, GPIO0}; // Discovery
   static const TPin Pin_sw_1 =           {GPIOB, GPIO5};
   static const TPin Pin_sw_2 =           {GPIOB, GPIO4};
@@ -99,6 +103,7 @@ extern "C" {
   void dma1_channel6_isr(void); // USART2_RX
   void dma1_channel7_isr(void); // USART2_TX
   void sys_tick_handler(void);
+  void tim2_isr(void);
 
 #ifdef __cplusplus
 }

@@ -11,7 +11,7 @@ void clockInit()
    * reload 2999 --> 3000000/(2999+1) --> 1000 overflows/second
    */
   systick_set_clocksource(STK_CTRL_CLKSOURCE_AHB_DIV8);
-  systick_set_reload(2999);
+  systick_set_reload(rcc_ppre2_frequency / 8 / 1000 - 1);
   systick_interrupt_enable();
   systick_counter_enable();
 
@@ -22,6 +22,8 @@ void clockInit()
   rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SPI1EN); // SPI1
   rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_DMA1EN); // DMA1
   rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_USART1EN); // USART1
+  rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_USART2EN); // USART2
+  rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN); // TIM2
 }
 
 
@@ -68,6 +70,10 @@ void deviceInit()
   Pin_shift_clk.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
 			  GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
 
+  // USART2
+  Pin_midi_out.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
+			 GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
+
   /*
    * *********************************************************** *
    * SPI
@@ -94,7 +100,7 @@ void deviceInit()
    * USART1: Shift registers
    */
 
-  usart_set_baudrate(USART1, 1000000);
+  usart_set_baudrate(USART1, 100000);
 
   usart_set_databits(USART1, 8);
   usart_set_stopbits(USART1, USART_STOPBITS_1);
@@ -108,4 +114,27 @@ void deviceInit()
   // Enable USART DMA transmission done interrupt
   nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 0);
   nvic_enable_irq(NVIC_DMA1_CHANNEL4_IRQ);
+  nvic_set_priority(NVIC_DMA1_CHANNEL5_IRQ, 0);
+  nvic_enable_irq(NVIC_DMA1_CHANNEL5_IRQ);
+
+  /*
+   * *********************************************************** *
+   * USART2: MIDI
+   */
+
+  usart_set_baudrate(USART2, 31250);
+
+  usart_set_databits(USART2, 8);
+  usart_set_stopbits(USART2, USART_STOPBITS_1);
+  usart_set_mode(USART2, USART_MODE_TX_RX);
+  usart_set_parity(USART2, USART_PARITY_NONE);
+  usart_set_flow_control(USART2, USART_FLOWCONTROL_NONE);
+  usart_enable(USART2);
+
+  /*
+   * *********************************************************** *
+   * Timers
+   */
+  nvic_enable_irq(NVIC_TIM2_IRQ);
+  nvic_set_priority(NVIC_TIM2_IRQ, 1);
 }

@@ -3,6 +3,8 @@
 #include "TGui.h"
 #include "TSpiDmaJob.h"
 #include "TKnobs.h"
+#include "TSequencer.h"
+#include "TMidi.h"
 #include <new>
 
 /*
@@ -15,7 +17,7 @@
  * SPI2 - (unused)
  * I2C1 - (unused)
  * I2C1 - (unused)
- * TIM2 - Sequencer event timing?
+ * TIM2 - Sequencer event timing, at 48 strikes per quarter note
  * TIM3 -
  * TIM4 -
  * SysTick timer - 1ms master timer
@@ -44,6 +46,8 @@ TDisplay Display;
 TSpiDmaQueue SpiDmaQueue;
 TGui Gui;
 TKnobs Knobs;
+TSequencer Sequencer;
+TMidi Midi;
 uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
 
 /* DMA channel 1:3 -- SPI1_TX (display and flash) */
@@ -65,7 +69,6 @@ void dma1_channel4_isr(void)
 {
 #ifndef HOST
   dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL4);
-  Pin_led_b.Toggle();
 #endif
   // FIXME: Once we get the latency in the main loop down, perhaps
   // this could be moved to a bottom-half?
@@ -80,6 +83,7 @@ void dma1_channel5_isr(void)
 #endif
 }
 
+/* ARM systick timer: millisecond counter */
 void sys_tick_handler(void)
 {
 #ifndef HOST
@@ -88,6 +92,15 @@ void sys_tick_handler(void)
     Pin_led_g.Toggle();
   }
 #endif  
+}
+
+/* TIM2: sequencer 48th beat counter */
+void tim2_isr(void)
+{
+#ifndef HOST
+  TIM_SR(TIM2) &= ~TIM_SR_UIF; // Clear interrupt
+#endif
+  Sequencer.Step();
 }
 
 
@@ -99,6 +112,8 @@ int main(void)
   new(&SpiDmaQueue) TSpiDmaQueue();
   new(&Gui) TGui();
   new(&Knobs) TKnobs();
+  new(&Sequencer) TSequencer();
+  new(&Midi) TMidi();
 
   // FIXME: We should wake up in some kind of low power mode.
   clockInit();
@@ -109,6 +124,7 @@ int main(void)
   //Display.Power(true);
 
   Knobs.StartShifting();
+  Sequencer.StartTimer();
 
   while (true) {
     /* Interrupt "bottom half" processing */
@@ -126,7 +142,6 @@ int main(void)
 
     /* Poll switches */
 #ifndef HOST
-    Pin_led_g.Toggle();
     {
       // FIXME: Poll more seldom (each ms or something), it's a cheap
       // way to ignore bounces and spurious triggers when releasing

@@ -1,5 +1,7 @@
 #include "TControllerPage.h"
 #include "TGui.h"
+#include "TSequencer.h"
+#include "utils.h"
 
 // FIXME: Temporary
 const char* TControllerPage::CurrentSetName = "Blofeld set1";
@@ -35,7 +37,10 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   else if (n == 6) {
   }
   else if (n == 7) {
-    line->DrawText("\035=120  USB  MIDI", LeftMargin);
+    char text[20];
+    cheap_strcpy(text, "\035=     USB  MIDI");
+    render_uint(text+2, Sequencer.GetTempo(), 3);
+    line->DrawText(text, LeftMargin);
     line->Invert(0, line->GetLength());
   }
 }
@@ -66,10 +71,7 @@ void TControllerPage::GetMenuTitle(char text[MenuTextLen])
 {
   switch (Focus) {
   case FOCUS_CHANNEL: {
-    const char* title = "MIDI channel";
-    int i = 0;
-    for (; title[i] != '\0'; i++) text[i] = title[i];
-    text[i] = '\0';
+    cheap_strcpy(text, "MIDI channel");
   }
   }
 }
@@ -80,8 +82,7 @@ void TControllerPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
   case FOCUS_CHANNEL: {
     if (n > 15) return;
     const char* channel = "Channel \037";
-    int i = 0;
-    for (; channel[i] != '\0'; i++) text[i] = channel[i];
+    size_t i = cheap_strcpy(text, channel);
     text[i++] = ' ';
     text[i++] = '0' + n + 1;
     text[i++] = '\0';
