@@ -16,13 +16,15 @@ public:
   TKnobs();
   void StartShifting();
 
-private:
   /// Wanted intensity for each LED, 0..255
   uint8_t LedIntensity[2][Knobs];
 
+private:
   uint8_t CurrentPwmStep;
 
   /// Data to shift out and in
   uint8_t LedControl[ShiftLength];
   uint8_t SwitchData[ShiftLength];
 };
+
+extern TKnobs Knobs;

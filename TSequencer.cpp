@@ -1,5 +1,6 @@
 #include "TSequencer.h"
 #include "TMidi.h"
+#include "TKnobs.h"
 #include "stm32.h"
 
 void TSequencer::StartTimer()
@@ -35,9 +36,15 @@ void TSequencer::Step()
 #ifndef HOST
   if (Position.Minor == 0) {
     Pin_led_b.Set();
+    for (int i=0; i < Knobs.Knobs; i++) {
+      Knobs.LedIntensity[1][i] = 10;
+    }
   }
   else if (Position.Minor == 2) {
     Pin_led_b.Clear();
+    for (int i=0; i < Knobs.Knobs; i++) {
+      Knobs.LedIntensity[1][i] = 0;
+    }
   }
 #endif
   if ((Position.Minor % (Resolution / 24)) == 0) {

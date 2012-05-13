@@ -5,10 +5,11 @@
 #include "TKnobs.h"
 #include "TSequencer.h"
 #include "TMidi.h"
+#include "TMemory.h"
 #include <new>
 
 /*
- * This code expects to run on a STM32F101C8.
+ * This code expects to run on a STM32F102C8. 64k flash, 10k RAM.
  * Resources:
  * USART1 - Shift registers for encoders and LEDs, programming
  * USART2 - MIDI in/out
@@ -48,6 +49,7 @@ TGui Gui;
 TKnobs Knobs;
 TSequencer Sequencer;
 TMidi Midi;
+TMemory Memory;
 uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
 
 /* DMA channel 1:3 -- SPI1_TX (display and flash) */
@@ -114,6 +116,7 @@ int main(void)
   new(&Knobs) TKnobs();
   new(&Sequencer) TSequencer();
   new(&Midi) TMidi();
+  new(&Memory) TMemory();
 
   // FIXME: We should wake up in some kind of low power mode.
   clockInit();
@@ -123,6 +126,7 @@ int main(void)
   Display.Init();
   //Display.Power(true);
 
+  Memory.FetchBlock(TMemory::BLOCK_PRODPARAM);
   Knobs.StartShifting();
   Sequencer.StartTimer();
 
