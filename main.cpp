@@ -6,6 +6,7 @@
 #include "TSequencer.h"
 #include "TMidi.h"
 #include "TMemory.h"
+#include "TControllers.h"
 #include <new>
 
 /*
@@ -50,6 +51,7 @@ TKnobs Knobs;
 TSequencer Sequencer;
 TMidi Midi;
 TMemory Memory;
+TControllers Controllers;
 uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
 
 /* DMA channel 1:3 -- SPI1_TX (display and flash) */
@@ -117,6 +119,7 @@ int main(void)
   new(&Sequencer) TSequencer();
   new(&Midi) TMidi();
   new(&Memory) TMemory();
+  new(&Controllers) TControllers();
 
   // FIXME: We should wake up in some kind of low power mode.
   clockInit();

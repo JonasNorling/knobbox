@@ -53,10 +53,11 @@ public:
       for (int i=start; i<end; i++) Data[i] = ~Data[i];
     }
     uint8_t GetLength() const { return Width; }
+    uint8_t Data[Width];
+
   private:
     TPageBuffer() {}
     const TPageBuffer& operator=(const TPageBuffer&);    
-    uint8_t Data[Width];
     uint8_t Control[3];
   };
 

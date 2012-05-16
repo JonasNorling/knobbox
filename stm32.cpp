@@ -91,10 +91,6 @@ void deviceInit()
   spi_set_clock_phase_1(SPI1);
   spi_enable(SPI1);
 
-  // Enable SPI DMA transmission done interrupt
-  nvic_set_priority(NVIC_DMA1_CHANNEL3_IRQ, 0);
-  nvic_enable_irq(NVIC_DMA1_CHANNEL3_IRQ);
-
   /*
    * *********************************************************** *
    * USART1: Shift registers
@@ -110,12 +106,6 @@ void deviceInit()
   // Output clock, also on last bit
   USART_CR2(USART1) |= USART_CR2_CLKEN | USART_CR2_LBCL;
   usart_enable(USART1);
-
-  // Enable USART DMA transmission done interrupt
-  nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 0);
-  nvic_enable_irq(NVIC_DMA1_CHANNEL4_IRQ);
-  nvic_set_priority(NVIC_DMA1_CHANNEL5_IRQ, 0);
-  nvic_enable_irq(NVIC_DMA1_CHANNEL5_IRQ);
 
   /*
    * *********************************************************** *
@@ -133,8 +123,30 @@ void deviceInit()
 
   /*
    * *********************************************************** *
-   * Timers
+   * Interrupt priorities
    */
+  /*
+   * PREGROUP in AIRCR is reset to 0, so interrupts are grouped based
+   * on all but the least significant bit. Lower number is higher
+   * priority, and interrupts can preempt each other as long as their
+   * priorities differ by at least two (that's the grouping). There
+   * are 16 priority levels in this device.
+   */
+
+  // SPI DMA transmission done interrupt
+  nvic_set_priority(NVIC_DMA1_CHANNEL3_IRQ, 2);
+  nvic_enable_irq(NVIC_DMA1_CHANNEL3_IRQ);
+
+  // Shift register USART DMA transmission done interrupt
+  nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 2);
+  nvic_enable_irq(NVIC_DMA1_CHANNEL4_IRQ);
+  nvic_set_priority(NVIC_DMA1_CHANNEL5_IRQ, 2);
+  nvic_enable_irq(NVIC_DMA1_CHANNEL5_IRQ);
+
+  // Sequencer timer
   nvic_enable_irq(NVIC_TIM2_IRQ);
-  nvic_set_priority(NVIC_TIM2_IRQ, 1);
+  nvic_set_priority(NVIC_TIM2_IRQ, 0);
+
+  // Millisecond timer
+  nvic_set_priority(NVIC_SYSTICK_IRQ, 0);
 }
