@@ -1,5 +1,6 @@
 PROJECT = knobbox
 SRCS += TControllerPage.cpp
+SRCS += TControllers.cpp
 SRCS += TDisplay.cpp
 SRCS += TGui.cpp
 SRCS += TKnobs.cpp
@@ -30,7 +31,7 @@ ARM_LDFLAGS += -lc -lnosys -nostartfiles -Wl,--gc-sections -lstdc++
 ARM_LDFLAGS += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
 ARM_LDFLAGS += -Tstm32vl-discovery.ld
 
-ARM_COMMONFLAGS += -Os -fno-common -g -fdump-class-hierarchy
+ARM_COMMONFLAGS += -Os -fno-common -g
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
 ARM_COMMONFLAGS += -Wall -Wextra
 ARM_COMMONFLAGS += -I$(TOOLCHAIN)/arm-none-eabi/include/libopencm3/stm32

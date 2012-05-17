@@ -52,10 +52,12 @@ TSequencer Sequencer;
 TMidi Midi;
 TMemory Memory;
 TControllers Controllers;
-uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
+
+volatile uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
+volatile static uint8_t DmaEvents = 0;
+volatile static bool PollButtons = 0;
 
 /* DMA channel 1:3 -- SPI1_TX (display and flash) */
-volatile static uint8_t DmaEvents = 0;
 void dma1_channel3_isr(void)
 {
 #ifndef HOST
@@ -76,7 +78,7 @@ void dma1_channel4_isr(void)
 #endif
   // FIXME: Once we get the latency in the main loop down, perhaps
   // this could be moved to a bottom-half?
-  Knobs.StartShifting();
+  //Knobs.StartShifting();
 }
 
 /* DMA channel 1:5 -- USART1_RX (shift registers) */
@@ -85,6 +87,7 @@ void dma1_channel5_isr(void)
 #ifndef HOST
   dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL5);
 #endif
+  Knobs.StartShifting();
 }
 
 /* ARM systick timer: millisecond counter */
@@ -95,6 +98,7 @@ void sys_tick_handler(void)
   if (!(SystemTime % 1000)) {
     Pin_led_g.Toggle();
   }
+  PollButtons = true;
 #endif  
 }
 
@@ -110,6 +114,21 @@ void tim2_isr(void)
 
 int main(void)
 {
+#ifndef HOST
+  // Reset some peripherals, this helps when reloading software
+  // without issuing a hard reset.
+  systick_interrupt_disable();
+  systick_counter_disable();
+  nvic_disable_irq(NVIC_DMA1_CHANNEL3_IRQ);
+  nvic_disable_irq(NVIC_DMA1_CHANNEL4_IRQ);
+  nvic_disable_irq(NVIC_DMA1_CHANNEL5_IRQ);
+  nvic_disable_irq(NVIC_TIM2_IRQ);
+  rcc_peripheral_reset(&RCC_APB2RSTR, RCC_APB2RSTR_USART1RST |
+		       RCC_APB2RSTR_SPI1RST);
+  rcc_peripheral_clear_reset(&RCC_APB2RSTR, RCC_APB2RSTR_USART1RST |
+			     RCC_APB2RSTR_SPI1RST);
+#endif
+
   // Use placement new to run the constructors of static objects,
   // because libopencm3's crt0 and linker scripts aren't made for C++.
   new(&Display) TDisplay();
@@ -150,26 +169,29 @@ int main(void)
     /* Poll switches */
 #ifndef HOST
     {
-      // FIXME: Poll more seldom (each ms or something), it's a cheap
-      // way to ignore bounces and spurious triggers when releasing
-      // the button.
-      for (unsigned i=0; i < 1000; i++) __asm__("nop");
+      if (PollButtons) {
+	PollButtons = false;
 
-      static uint16_t lastState = 0;
-      const uint16_t state = gpio_port_read(Pin_sw_1.Port);
-      const uint16_t pinMask = Pin_sw_1.Pin | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
-      if ((state ^ lastState) & pinMask) {
-	if (~state & Pin_sw_1.Pin) {
-	  Gui.KeyEvent(KEY_OK);
-	} else if (~state & Pin_sw_2.Pin) {
-	  Gui.KeyEvent(KEY_UP);
-	} else if (~state & Pin_sw_3.Pin) {
-	  Gui.KeyEvent(KEY_DOWN);
-	} else if (~state & Pin_sw_4.Pin) {
-	  Gui.KeyEvent(KEY_BACK);
+	// Tact switches
+	static uint16_t lastState = 0;
+	const uint16_t state = gpio_port_read(Pin_sw_1.Port);
+	const uint16_t pinMask = Pin_sw_1.Pin | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
+	if ((state ^ lastState) & pinMask) {
+	  if (~state & Pin_sw_1.Pin) {
+	    Gui.KeyEvent(KEY_OK);
+	  } else if (~state & Pin_sw_2.Pin) {
+	    Gui.KeyEvent(KEY_UP);
+	  } else if (~state & Pin_sw_3.Pin) {
+	    Gui.KeyEvent(KEY_DOWN);
+	  } else if (~state & Pin_sw_4.Pin) {
+	    Gui.KeyEvent(KEY_BACK);
+	  }
 	}
+	lastState = state;
+
+	// Encoders and encoder push buttons
+	Knobs.Poll();
       }
-      lastState = state;
     }
 #endif
 
@@ -179,13 +201,13 @@ int main(void)
     /* Sanity check */
 #ifndef HOST
     if (DMA_ISR(DMA1) & DMA_ISR_TEIF4) {
-      gpio_toggle(GPIOC, GPIO0);
+      while (true);
     }
     if (DMA_ISR(DMA1) & DMA_ISR_TEIF3) {
-      gpio_toggle(GPIOC, GPIO1);
+      while (true);
     }
     if (DMA_ISR(DMA1) & DMA_ISR_TEIF5) {
-      gpio_toggle(GPIOC, GPIO2);
+      while (true);
     }
 #endif
   }

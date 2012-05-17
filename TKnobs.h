@@ -15,6 +15,7 @@ public:
 
   TKnobs();
   void StartShifting();
+  void Poll();
 
   /// Wanted intensity for each LED, 0..255
   uint8_t LedIntensity[2][Knobs];
@@ -25,6 +26,13 @@ private:
   /// Data to shift out and in
   uint8_t LedControl[ShiftLength];
   uint8_t SwitchData[ShiftLength];
+
+  struct TEncoderBits {
+    uint16_t EncoderA;
+    uint16_t EncoderB;
+    uint16_t Button;
+  };
+  TEncoderBits LastEncoderData;
 };
 
 extern TKnobs Knobs;

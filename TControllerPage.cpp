@@ -29,8 +29,8 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   }
   else if (n == 3) {
     const int barstart = 18;
-    line->Data[barstart] = 0x7e;
-    int i = 0;
+    int i = -1;
+    line->Data[barstart+i] = 0x7e;
     for (; i < currentValue / 2; i++) {
       line->Data[barstart+i] = 0x7e;
     }
@@ -66,6 +66,21 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     render_uint(text+2, Sequencer.GetTempo(), 3);
     line->DrawText(text, LeftMargin);
     line->Invert(0, line->GetLength());
+
+    /*
+    int i = -1;
+    line->Data[20 + i*4 + 2] = 0xff;
+    line->Data[20 + i*4 + 3] = 0xff;
+    for (i = 0; i < 16; i++) {
+      if (Knobs.SwitchData[i / 8] & (1 << (i % 8))) {
+	line->Data[20 + i*4    ] = 0x3c;
+	line->Data[20 + i*4 + 1] = 0x3c;
+	line->Data[20 + i*4 + 2] = 0x3c;
+      }
+    }
+    line->Data[20 + i*4   ] = 0xff;
+    line->Data[20 + i*4 + 1] = 0xff;
+    */
   }
 }
 

@@ -1,6 +1,9 @@
 /* -*- c++ -*- */
 #pragma once
 
+#include <cstdint>
+#include <cstddef>
+
 inline static size_t cheap_strcpy(char* out, const char* in)
 {
   size_t i = 0;

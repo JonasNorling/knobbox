@@ -1,4 +1,6 @@
 #include "TKnobs.h"
+#include "TGui.h"
+#include "TControllers.h"
 #include "stm32.h"
 
 TKnobs::TKnobs()
@@ -18,6 +20,9 @@ TKnobs::TKnobs()
   LedIntensity[0][3] = 5;
   LedIntensity[1][3] = 0;
   CurrentPwmStep = 0;
+
+  SwitchData[0] = 0xaa;
+  SwitchData[1] = 0xaa;
 }
 
 void TKnobs::StartShifting()
@@ -45,9 +50,20 @@ void TKnobs::StartShifting()
 
   CurrentPwmStep++;
 
-  // Send LedControl.
-  // FIXME: receive SwitchData.
 #ifndef HOST
+
+  dma_set_peripheral_address(dma, rxchannel, reinterpret_cast<uint32_t>(&USART1_DR));
+  dma_set_memory_address(dma, rxchannel, reinterpret_cast<uint32_t>(SwitchData));
+  dma_set_number_of_data(dma, rxchannel, ShiftLength);
+  dma_set_read_from_peripheral(dma, rxchannel);
+  dma_enable_memory_increment_mode(dma, rxchannel);
+  dma_set_peripheral_size(dma, rxchannel, DMA_CCR_PSIZE_8BIT);
+  dma_set_memory_size(dma, rxchannel, DMA_CCR_MSIZE_8BIT);
+  dma_set_priority(dma, rxchannel, DMA_CCR_PL_HIGH);
+  dma_enable_transfer_complete_interrupt(dma, rxchannel);
+  dma_enable_channel(dma, rxchannel);
+  usart_enable_rx_dma(USART1);
+
   dma_set_peripheral_address(dma, txchannel, reinterpret_cast<uint32_t>(&USART1_DR));
   dma_set_memory_address(dma, txchannel, reinterpret_cast<uint32_t>(LedControl));
   dma_set_number_of_data(dma, txchannel, ShiftLength);
@@ -61,20 +77,43 @@ void TKnobs::StartShifting()
   usart_enable_tx_dma(USART1);
   // Will trigger dma_channel4_isr when done.
 
-  /*
-  dma_set_peripheral_address(dma, rxchannel, reinterpret_cast<uint32_t>(&USART1_DR));
-  dma_set_memory_address(dma, rxchannel, reinterpret_cast<uint32_t>(LedControl));
-  dma_set_number_of_data(dma, rxchannel, ShiftLength);
-  dma_set_read_from_peripheral(dma, rxchannel);
-  dma_enable_memory_increment_mode(dma, rxchannel);
-  dma_set_peripheral_size(dma, rxchannel, DMA_CCR_PSIZE_8BIT);
-  dma_set_memory_size(dma, rxchannel, DMA_CCR_MSIZE_8BIT);
-  dma_set_priority(dma, rxchannel, DMA_CCR_PL_HIGH);
-  dma_enable_transfer_complete_interrupt(dma, rxchannel);
-  dma_enable_channel(dma, rxchannel);
-  usart_enable_rx_dma(USART1);
-  */
-  // Will trigger dma_channel5_isr when done.
-
 #endif
+}
+
+void TKnobs::Poll()
+{
+  // FIXME: This is probably stupid.
+
+  TEncoderBits data;
+  data.EncoderA = ((SwitchData[0] & 0x80) >> 4) |
+    ((SwitchData[0] & 0x20) >> 3) |
+    ((SwitchData[0] & 0x08) >> 2) |
+    ((SwitchData[0] & 0x02) >> 1);
+  data.EncoderB = ((SwitchData[0] & 0x40) >> 3) |
+    ((SwitchData[0] & 0x10) >> 2) |
+    ((SwitchData[0] & 0x04) >> 1) |
+    ((SwitchData[0] & 0x01) >> 0);
+  data.Button = SwitchData[1];
+
+  const uint16_t edgesA = data.EncoderA ^ LastEncoderData.EncoderA;
+  //const uint16_t edgesB = data.EncoderB ^ LastEncoderData.EncoderB;
+
+#ifndef HOST
+  gpio_port_write(GPIOC, edgesA);
+#endif
+
+  if (edgesA) {
+    for (int i = 0; i < Knobs; i++) {
+      if (edgesA & (1 << i)) {
+	if (data.EncoderB & (1 << i)) {
+	  Controllers.IncreaseValue(i, 1);
+	} else {
+	  Controllers.DecreaseValue(i, 1);
+	}
+      }
+      // ... other cases. FIXME: Make this not an if jungle.
+    }
+  }
+
+  LastEncoderData = data;
 }
