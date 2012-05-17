@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include "TMemory.h"
+#include "TKnobs.h"
 
 class TControllers
 {
@@ -32,19 +33,26 @@ public:
     Scene.Name[9] = 'e';
     Scene.Name[10] = 'n';
     Scene.Name[11] = 'e';
-    for (int i=0; i<16; i++) {
+    for (int i = 0; i < KNOBS; i++) {
       Scene.Knobs[i].Instrument = 0;
       Scene.Knobs[i].Channel = 0;
       Scene.Knobs[i].Param = i;
       cheap_strcpy(Scene.Knobs[i].Name, "Attack time");
       cheap_strcpy(Scene.Knobs[i].InstrumentName, "Korg KARMA");
     }
+
+    for (int i = 0; i < KNOBS; i++) {
+      Values[i] = 25;
+    }
   }
 
   const TParamScene& GetScene() const { return Scene; }
+  uint8_t GetValue(int knob) const { return Values[knob]; }
+  int GetActiveKnob() const { return 2; }
 
 private:
   TParamScene Scene;
+  uint8_t Values[KNOBS];
 };
 
 extern TControllers Controllers;

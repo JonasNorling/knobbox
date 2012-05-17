@@ -12,6 +12,7 @@
  */
 
 const size_t NAMELEN = 12;
+const int KNOBS = 16;
 
 struct TProductionData
 {
@@ -57,7 +58,7 @@ struct TParamScene
     char InstrumentName[NAMELEN];
     uint8_t Nprn[2];
     uint16_t NprnRange[2];
-  } Knobs[16];
+  } Knobs[KNOBS];
 };
 
 struct TSequencerScene

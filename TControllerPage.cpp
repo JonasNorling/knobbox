@@ -6,6 +6,9 @@
 
 void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 {
+  const int currentKnob = Controllers.GetActiveKnob();
+  const uint8_t currentValue = Controllers.GetValue(currentKnob);
+
   if (n == 1) {
     char channel[4];
     channel[0] = '\037';
@@ -28,7 +31,7 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     const int barstart = 18;
     line->Data[barstart] = 0x7e;
     int i = 0;
-    for (; i < 40; i++) {
+    for (; i < currentValue / 2; i++) {
       line->Data[barstart+i] = 0x7e;
     }
     for (; i < 64; i++) {
@@ -39,22 +42,22 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   else if (n == 4) {
     char text[20];
     cheap_strcpy(text, "\036knob xx: xxx");
-    render_uint(text+6, CurrentKnob, 2);
-    render_uint(text+10, 122, 3);
+    render_uint(text+6, currentKnob + 1, 2);
+    render_uint(text+10, currentValue, 3);
     line->DrawText(text, LeftMargin);
   }
   else if (n == 5) {
     char text[20];
     cheap_strcpy(text, "\036\037xx ");
-    render_uint(text+2, Controllers.GetScene().Knobs[CurrentKnob].Channel + 1, 2);
-    cheap_strcpy(text+5, Controllers.GetScene().Knobs[CurrentKnob].InstrumentName);
+    render_uint(text+2, Controllers.GetScene().Knobs[currentKnob].Channel + 1, 2);
+    cheap_strcpy(text+5, Controllers.GetScene().Knobs[currentKnob].InstrumentName);
     line->DrawText(text, LeftMargin);
   }
   else if (n == 6) {
     char text[20];
     cheap_strcpy(text, "\036CCxx ");
-    render_uint(text+3, Controllers.GetScene().Knobs[CurrentKnob].Param, 2);
-    cheap_strcpy(text+6, Controllers.GetScene().Knobs[CurrentKnob].Name);
+    render_uint(text+3, Controllers.GetScene().Knobs[currentKnob].Param, 2);
+    cheap_strcpy(text+6, Controllers.GetScene().Knobs[currentKnob].Name);
     line->DrawText(text, LeftMargin);
   }
   else if (n == 7) {
