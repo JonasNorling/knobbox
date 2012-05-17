@@ -1,6 +1,7 @@
 #include "TGui.h"
 #include "TDisplay.h"
 #include "TBitmask.h"
+#include "TSeqPage.h"
 
 /*
 void TGui::DrawCharmap()
@@ -41,7 +42,11 @@ void TTopMenu::Render(uint8_t n __attribute__((unused)),
 void TTopMenu::Event(TEvent event)
 {
   switch (event) {
-  case RECEIVE_FOCUS:
+  case KEY_OK:
+    Gui.SetPage(TGui::PAGE_SEQ);
+    break;
+  case KEY_BACK:
+    Gui.SetPage(TGui::PAGE_CONTROLLER);
     break;
   case KEY_DOWN:
     Gui.ChangeFocus(TGui::FOCUS_PAGE);
@@ -131,8 +136,22 @@ TGui::TGui() :
   DirtyLines(TBitmask::Init(Lines)),
   Focus(FOCUS_MENU)
 {
-  static_assert(sizeof(TControllerPage) <= sizeof(CurrentPage), "Too large object");
-  new(CurrentPage) TControllerPage();
+  SetPage(PAGE_CONTROLLER);
+}
+
+void TGui::SetPage(TPage page)
+{
+  switch (page) {
+  case PAGE_CONTROLLER:
+    static_assert(sizeof(TControllerPage) <= sizeof(CurrentPage), "Too large object");
+    new(CurrentPage) TControllerPage();
+    break;
+  default:
+    static_assert(sizeof(TSeqPage) <= sizeof(CurrentPage), "Too large object");
+    new(CurrentPage) TSeqPage();
+    break;
+  }
+  UpdateAll();
 }
 
 void TGui::Process()

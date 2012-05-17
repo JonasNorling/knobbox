@@ -56,6 +56,7 @@ class TGui
 public:
   static const int Lines = 8;
   enum TFocus { FOCUS_MENU, FOCUS_PAGE, FOCUS_POPUP };
+  enum TPage { PAGE_CONTROLLER, PAGE_SEQ, PAGE_SETTINGS };
 
   TGui();
 
@@ -73,6 +74,7 @@ public:
   void ChangeFocus(TFocus focus);
   TFocus GetFocus() const { return Focus; }
   IDisplayPage* GetCurrentPage() { return reinterpret_cast<IDisplayPage*>(CurrentPage); }
+  void SetPage(TPage page);
 
 private:
   uint8_t DirtyLines;
