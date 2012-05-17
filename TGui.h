@@ -56,7 +56,11 @@ class TGui
 public:
   static const int Lines = 8;
   enum TFocus { FOCUS_MENU, FOCUS_PAGE, FOCUS_POPUP };
-  enum TPage { PAGE_CONTROLLER, PAGE_SEQ, PAGE_SETTINGS };
+  enum TPage { PAGE_FIRST = 0,
+	       PAGE_CONTROLLER = 0,
+	       PAGE_SEQ,
+	       PAGE_SETTINGS,
+	       PAGE_LAST = PAGE_SETTINGS };
 
   TGui();
 
@@ -67,13 +71,14 @@ public:
   {
     switch (Focus) {
     case FOCUS_MENU: TopMenu.Event(event); break;
-    case FOCUS_PAGE: GetCurrentPage()->Event(event); break;
+    case FOCUS_PAGE: GetCurrentPageObject()->Event(event); break;
     case FOCUS_POPUP: Popup.Event(event); break;
     }
   }
   void ChangeFocus(TFocus focus);
   TFocus GetFocus() const { return Focus; }
-  IDisplayPage* GetCurrentPage() { return reinterpret_cast<IDisplayPage*>(CurrentPage); }
+  TPage GetCurrentPage() const { return CurrentPage; }
+  IDisplayPage* GetCurrentPageObject() { return reinterpret_cast<IDisplayPage*>(CurrentPageObject); }
   void SetPage(TPage page);
 
 private:
@@ -81,8 +86,9 @@ private:
   TFocus Focus;
 
   TTopMenu TopMenu;
+  TPage CurrentPage;
   // The current IDisplayPage implementation is put here with placement new. Delete is never called.
-  uint8_t CurrentPage[sizeof(TControllerPage)];
+  uint8_t CurrentPageObject[sizeof(TControllerPage)];
   TPopup Popup;
 };
 

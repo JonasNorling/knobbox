@@ -28,25 +28,50 @@ void TGui::DrawCharmap()
 void TTopMenu::Render(uint8_t n __attribute__((unused)),
 		      TDisplay::TPageBuffer* line)
 {
-  uint8_t pos = 0;
-  uint8_t shadestart = pos = line->DrawText("\020CTRL\021", pos);
-  pos = line->DrawText(" SEQ ", pos);
-  pos = line->DrawText(" SETUP", pos);
-  line->Invert(shadestart, line->GetLength());
+  int pos = 3;
+  const int selected = Gui.GetCurrentPage();
+  const char* strings[3] = {"CTRL", "SEQ", "SETUP"};
+  int shadestart = 0;
+  int shadeend = 0;
 
+  for (int i = 0; i < 3; i++) {
+    if (i == selected) {
+      shadestart = pos;
+      pos = line->DrawText("\020", pos);
+    }
+    pos = line->DrawText(strings[i], pos);
+    if (i == selected) {
+      pos = line->DrawText("\021", pos);
+      shadeend = pos;
+    } else {
+      pos += TDisplay::GlyphWidth;
+    }
+  }
+
+  line->Invert(0, shadestart);
+  line->Invert(shadeend, line->GetLength());
+
+  // FIXME: Is this the right look?
   if (Gui.GetFocus() == TGui::FOCUS_MENU) {
-    line->Invert(1*TDisplay::GlyphWidth, 5*TDisplay::GlyphWidth);
+    line->Invert(0, line->GetLength());
   }
 }
 
 void TTopMenu::Event(TEvent event)
 {
+  uint8_t page = Gui.GetCurrentPage();
   switch (event) {
   case KEY_OK:
-    Gui.SetPage(TGui::PAGE_SEQ);
+    if (page != TGui::PAGE_LAST) {
+      page++;
+      Gui.SetPage(static_cast<TGui::TPage>(page));
+    }
     break;
   case KEY_BACK:
-    Gui.SetPage(TGui::PAGE_CONTROLLER);
+    if (page != TGui::PAGE_FIRST) {
+      page--;
+      Gui.SetPage(static_cast<TGui::TPage>(page));
+    }
     break;
   case KEY_DOWN:
     Gui.ChangeFocus(TGui::FOCUS_PAGE);
@@ -62,7 +87,7 @@ void TPopup::Render(uint8_t n, TDisplay::TPageBuffer* line)
     line->Clear(Margin, line->GetLength());
     char text[IDisplayPage::MenuTextLen];
     text[0] = '\0';
-    Gui.GetCurrentPage()->GetMenuTitle(text);
+    Gui.GetCurrentPageObject()->GetMenuTitle(text);
     line->DrawText(text, Margin + TDisplay::GlyphWidth);
     line->Invert(Margin, line->GetLength());
   }
@@ -74,7 +99,7 @@ void TPopup::Render(uint8_t n, TDisplay::TPageBuffer* line)
     text[1] = '\0';
 
     if (item < ItemCount) {
-      Gui.GetCurrentPage()->GetMenuItem(item, text + 1);
+      Gui.GetCurrentPageObject()->GetMenuItem(item, text + 1);
 
       if (text[1] == '\0') {
 	// We discovered that this is past the end of the list.
@@ -120,7 +145,7 @@ void TPopup::Event(TEvent event)
     }
     break;
   case KEY_OK:
-    Gui.GetCurrentPage()->MenuItemSelected(Focus);
+    Gui.GetCurrentPageObject()->MenuItemSelected(Focus);
     Gui.ChangeFocus(TGui::FOCUS_PAGE);
     break;
   case KEY_BACK:
@@ -141,14 +166,15 @@ TGui::TGui() :
 
 void TGui::SetPage(TPage page)
 {
+  CurrentPage = page;
   switch (page) {
   case PAGE_CONTROLLER:
-    static_assert(sizeof(TControllerPage) <= sizeof(CurrentPage), "Too large object");
-    new(CurrentPage) TControllerPage();
+    static_assert(sizeof(TControllerPage) <= sizeof(CurrentPageObject), "Too large object");
+    new(CurrentPageObject) TControllerPage();
     break;
   default:
-    static_assert(sizeof(TSeqPage) <= sizeof(CurrentPage), "Too large object");
-    new(CurrentPage) TSeqPage();
+    static_assert(sizeof(TSeqPage) <= sizeof(CurrentPageObject), "Too large object");
+    new(CurrentPageObject) TSeqPage();
     break;
   }
   UpdateAll();
@@ -164,7 +190,7 @@ void TGui::Process()
       if (n == 0) {
 	TopMenu.Render(n, line);
       } else {
-	GetCurrentPage()->Render(n, line);
+	GetCurrentPageObject()->Render(n, line);
       }
       if (Focus == FOCUS_POPUP) {
 	Popup.Render(n, line);
@@ -184,7 +210,7 @@ void TGui::ChangeFocus(TFocus focus)
     TopMenu.Event(RECEIVE_FOCUS);
     break;
   case FOCUS_PAGE:
-    GetCurrentPage()->Event(RECEIVE_FOCUS);
+    GetCurrentPageObject()->Event(RECEIVE_FOCUS);
     break;
   case FOCUS_POPUP:
     Popup.Reset();

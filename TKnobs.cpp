@@ -98,10 +98,6 @@ void TKnobs::Poll()
   const uint16_t edgesA = data.EncoderA ^ LastEncoderData.EncoderA;
   //const uint16_t edgesB = data.EncoderB ^ LastEncoderData.EncoderB;
 
-#ifndef HOST
-  gpio_port_write(GPIOC, edgesA);
-#endif
-
   if (edgesA) {
     for (int i = 0; i < Knobs; i++) {
       if (edgesA & (1 << i)) {
