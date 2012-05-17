@@ -65,15 +65,15 @@ liquid-2.0/fontliqsting.inc: liquid-2.0
 # -------------------------------------
 # ARM rules
 
-$(BUILDDIR)/%.o: %.c Makefile $(BUILDDIR)
+$(BUILDDIR)/%.o: %.c Makefile
 	@echo ARMCC $< --\> $@
 	@$(ARMCC) -MD $(ARM_COMMONFLAGS) $(CFLAGS) -c -o $@ $<
 
-$(BUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc $(BUILDDIR)
+$(BUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc
 	@echo ARMCC $< --\> $@
 	@$(ARMCC) -MD $(ARM_COMMONFLAGS) $(CXXFLAGS) -c -o $@ $<
 
-$(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS) $(BUILDDIR)
+$(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS)
 	@echo ARMLD $@
 	@$(ARMLD) -o $@ $(ARM_OBJS) $(ARM_LDFLAGS) -Wl,-Map,$(BUILDDIR)/$(PROJECT).map
 
@@ -88,15 +88,15 @@ $(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS) $(BUILDDIR)
 # -------------------------------------
 # Host rules
 
-$(HOSTBUILDDIR)/%.o: %.c Makefile $(HOSTBUILDDIR)
+$(HOSTBUILDDIR)/%.o: %.c Makefile
 	@echo CC $< --\> $@
 	@$(CC) -MD $(HOST_COMMONFLAGS) $(CFLAGS) -c -o $@ $<
 
-$(HOSTBUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc $(HOSTBUILDDIR)
+$(HOSTBUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc
 	@echo CC $< --\> $@
 	@$(CC) -MD $(HOST_COMMONFLAGS) $(CXXFLAGS) -c -o $@ $<
 
-$(HOSTBUILDDIR)/$(PROJECT).elf: $(HOST_OBJS) $(HOSTBUILDDIR)
+$(HOSTBUILDDIR)/$(PROJECT).elf: $(HOST_OBJS)
 	@echo LD $@
 	@$(CXX) -o $@ $(HOST_OBJS) $(HOST_LDFLAGS)
 
