@@ -10,13 +10,22 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     line->Invert(4*TDisplay::GlyphWidth, line->GetLength());
   }
   else if (n == 2) {
-    line->DrawText("mode: 12 linear", LeftMargin);
+    uint8_t pos = LeftMargin;
+    pos = line->DrawText("setup\022", pos);
+    if (Focus == FOCUS_SETUPMENU) {
+      line->Invert(LeftMargin, pos);
+    }
+    pos = line->Advance(pos);
+    pos = line->DrawText("actions\022", pos);
+    if (Focus == FOCUS_SETUPMENU) {
+      line->Invert(pos, line->GetLength()-RightMargin);
+    }
   }
   else if (n == 3) {
-    line->DrawText("<trigger magic>", LeftMargin);
+    line->DrawText("step 03: Eb3\022", LeftMargin);
   }
   else if (n == 4) {
-    line->DrawText("step 3  note Eb3", LeftMargin);
+    line->DrawText("action: start S2", LeftMargin);
   }
   else if (n == 5) {
     line->DrawText("velo 097 len \035", LeftMargin);
@@ -37,8 +46,18 @@ void TSeqPage::Event(TEvent event)
 {
   Gui.UpdateAll();
   switch (event) {
+  case RECEIVE_FOCUS:
+    Focus = FOCUS_SETUPMENU;
+    break;
+  case KEY_DOWN:
+    if (Focus < FOCUS_LAST) Focus++;
+    break;
   case KEY_UP:
-    Gui.ChangeFocus(TGui::FOCUS_MENU);
+    Focus--;
+    if (Focus == 0) Gui.ChangeFocus(TGui::FOCUS_MENU);
+    break;
+  case KEY_OK:
+    Gui.ChangeFocus(TGui::FOCUS_POPUP);
     break;
   default:
     break;

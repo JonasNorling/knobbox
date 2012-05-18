@@ -40,6 +40,8 @@ public:
   public:
     friend class TDisplay;
     uint8_t DrawText(const char* text, uint8_t offset = 0);
+    uint8_t Advance(uint8_t offset) { return offset + TDisplay::GlyphWidth; }
+
     void Clear()
     {
       for (int i=0; i<Width; i++) Data[i] = 0;

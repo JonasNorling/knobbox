@@ -44,7 +44,7 @@ void TTopMenu::Render(uint8_t n __attribute__((unused)),
       pos = line->DrawText("\021", pos);
       shadeend = pos;
     } else {
-      pos += TDisplay::GlyphWidth;
+      pos = line->Advance(pos);
     }
   }
 
@@ -161,7 +161,7 @@ TGui::TGui() :
   DirtyLines(TBitmask::Init(Lines)),
   Focus(FOCUS_MENU)
 {
-  SetPage(PAGE_CONTROLLER);
+  SetPage(PAGE_SEQ);
 }
 
 void TGui::SetPage(TPage page)

@@ -7,7 +7,9 @@
 class TControllerPage : public IDisplayPage
 {
 public:
-  enum TFocus { FOCUS_NONE, FOCUS_CHANNEL, FOCUS_SET, FOCUS_LAST=FOCUS_SET };
+  enum TFocus { FOCUS_NONE, FOCUS_CHANNEL, FOCUS_SET,
+		FOCUS_LAST = FOCUS_SET };
+
   TControllerPage() : CurrentChannel(7), Focus(FOCUS_CHANNEL) { }
   void Render(uint8_t n, TDisplay::TPageBuffer* line);
   void Event(TEvent event);
