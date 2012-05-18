@@ -39,7 +39,8 @@ void TTopMenu::Render(uint8_t n __attribute__((unused)),
       shadestart = pos;
       pos = line->DrawText("\020", pos);
     }
-    pos = line->DrawText(strings[i], pos);
+    pos = line->DrawText(strings[i], pos,
+			 i == selected && Gui.GetFocus() == TGui::FOCUS_MENU);
     if (i == selected) {
       pos = line->DrawText("\021", pos);
       shadeend = pos;
@@ -50,11 +51,6 @@ void TTopMenu::Render(uint8_t n __attribute__((unused)),
 
   line->Invert(0, shadestart);
   line->Invert(shadeend, line->GetLength());
-
-  // FIXME: Is this the right look?
-  if (Gui.GetFocus() == TGui::FOCUS_MENU) {
-    line->Invert(0, line->GetLength());
-  }
 }
 
 void TTopMenu::Event(TEvent event)

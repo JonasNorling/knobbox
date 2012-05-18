@@ -56,7 +56,7 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   }
   else if (n == 7) {
     char text[20];
-    cheap_strcpy(text, "\035=     USB  MIDI");
+    cheap_strcpy(text, "\033=     USB  MIDI");
     render_uint(text+2, Sequencer.GetTempo(), 3);
     line->DrawText(text, LeftMargin);
     line->Invert(0, line->GetLength());

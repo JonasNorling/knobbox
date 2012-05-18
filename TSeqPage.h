@@ -16,6 +16,10 @@ public:
   void Render(uint8_t n, TDisplay::TPageBuffer* line);
   void Event(TEvent event);
 
+  void GetMenuTitle(char text[MenuTextLen]);
+  void GetMenuItem(uint8_t n, char text[MenuTextLen]);
+  void MenuItemSelected(uint8_t n);
+
 private:
   uint8_t Focus;
 };
