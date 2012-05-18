@@ -15,14 +15,8 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     channel[1] = '0' + CurrentChannel + 1;
     channel[2] = ' ';
     channel[3] = '\0';
-    uint8_t pos = line->DrawText(channel, LeftMargin);
-    if (Focus == FOCUS_CHANNEL) {
-      line->Invert(LeftMargin, pos);
-    }
-    line->DrawText(Controllers.GetScene().Name, pos);
-    if (Focus == FOCUS_SET) {
-      line->Invert(pos, line->GetLength()-RightMargin);
-    }
+    uint8_t pos = line->DrawText(channel, LeftMargin, Focus == FOCUS_CHANNEL);
+    line->DrawText(Controllers.GetScene().Name, pos, Focus == FOCUS_SET);
   }
   else if (n == 2) {
     line->DrawText("clock ON  seq ON", LeftMargin);

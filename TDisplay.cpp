@@ -162,7 +162,7 @@ void TDisplay::DumpPixels()
 #include "font.h"
 #endif
 
-uint8_t TDisplay::TPageBuffer::DrawText(const char* text, uint8_t offset)
+uint8_t TDisplay::TPageBuffer::DrawText(const char* text, uint8_t offset, bool invert)
 {
   for (const char* pt = text; *pt != '\0'; pt++) {
 #ifdef FONT_LIQUID
@@ -177,7 +177,7 @@ uint8_t TDisplay::TPageBuffer::DrawText(const char* text, uint8_t offset)
     if ((uint8_t)*pt < FONT_GLYPHS) {
       for (int c = 0; c < GlyphWidth; c++) {
 	if (offset >= Width-1) goto out;
-	Data[offset++] = Font[(uint8_t)*pt][c];
+	Data[offset++] = invert ? ~Font[(uint8_t)*pt][c] : Font[(uint8_t)*pt][c];
       }
     }
 #endif

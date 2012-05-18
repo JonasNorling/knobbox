@@ -11,15 +11,9 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   }
   else if (n == 2) {
     uint8_t pos = LeftMargin;
-    pos = line->DrawText("setup\022", pos);
-    if (Focus == FOCUS_SETUPMENU) {
-      line->Invert(LeftMargin, pos);
-    }
+    pos = line->DrawText("setup\022", pos, Focus == FOCUS_SETUPMENU);
     pos = line->Advance(pos);
-    pos = line->DrawText("actions\022", pos);
-    if (Focus == FOCUS_SETUPMENU) {
-      line->Invert(pos, line->GetLength()-RightMargin);
-    }
+    pos = line->DrawText("actions\022", pos, Focus == FOCUS_ACTIONMENU);
   }
   else if (n == 3) {
     line->DrawText("step 03: Eb3\022", LeftMargin);
