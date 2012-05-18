@@ -93,13 +93,11 @@ void dma1_channel5_isr(void)
 /* ARM systick timer: millisecond counter */
 void sys_tick_handler(void)
 {
-#ifndef HOST
   SystemTime++;
   if (!(SystemTime % 1000)) {
     Pin_led_g.Toggle();
   }
   PollButtons = true;
-#endif  
 }
 
 /* TIM2: sequencer 48th beat counter */
@@ -167,7 +165,6 @@ int main(void)
     }
 
     /* Poll switches */
-#ifndef HOST
     {
       if (PollButtons) {
 	PollButtons = false;
@@ -193,7 +190,6 @@ int main(void)
 	Knobs.Poll();
       }
     }
-#endif
 
     /* Update things */
     Gui.Process();

@@ -33,12 +33,11 @@ TDisplay::TDisplay() :
 void TDisplay::Init()
 {
   // Reset
-#ifndef HOST
   Pin_lcd_rst.Clear();
   delay_ms(5);
   Pin_lcd_rst.Set();
   delay_ms(5);
-#endif
+
   TPageBuffer* buffer(GetBuffer());
   if (buffer) {
     const int len = 8;

@@ -7,10 +7,11 @@ SRCS += TKnobs.cpp
 SRCS += TSequencer.cpp
 SRCS += TSeqPage.cpp
 SRCS += TSpiDmaJob.cpp
-SRCS += main.cpp
-SRCS += syscalls.cpp
+ARM_SRCS += main.cpp
 ARM_SRCS += stm32.cpp
+HOST_SRCS += main.cpp
 HOST_SRCS += host.cpp
+TEST_SRCS += tests/testmain.cpp
 
 # -------------------------------------
 # Assuming a toolchain from summon-arm-toolchain.
@@ -32,11 +33,11 @@ ARM_LDFLAGS += -lc -lnosys -nostartfiles -Wl,--gc-sections -lstdc++
 ARM_LDFLAGS += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
 ARM_LDFLAGS += -Tstm32vl-discovery.ld
 
-ARM_COMMONFLAGS += -Os -fno-common -g
+ARM_COMMONFLAGS += -I. -Os -fno-common -g
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
 ARM_COMMONFLAGS += -Wall -Wextra
 ARM_COMMONFLAGS += -I$(TOOLCHAIN)/arm-none-eabi/include/libopencm3/stm32
-HOST_COMMONFLAGS += -O0 -fno-common -g -Wall -Wextra -DHOST
+HOST_COMMONFLAGS += -I. -O0 -fno-common -g -Wall -Wextra -DHOST
 
 CFLAGS += -std=c99 -Werror-implicit-function-declaration
 
@@ -46,6 +47,8 @@ ARM_OBJS += $(SRCS:%.cpp=$(BUILDDIR)/%.o)
 ARM_OBJS += $(ARM_SRCS:%.cpp=$(BUILDDIR)/%.o)
 HOST_OBJS += $(SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 HOST_OBJS += $(HOST_SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
+TEST_OBJS += $(SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
+TEST_OBJS += $(TEST_SRCS:tests/%.cpp=$(HOSTBUILDDIR)/%.o)
 
 # -------------------------------------
 
@@ -96,9 +99,20 @@ $(HOSTBUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc
 	@echo CC $< --\> $@
 	@$(CC) -MD $(HOST_COMMONFLAGS) $(CXXFLAGS) -c -o $@ $<
 
+$(HOSTBUILDDIR)/%.o: tests/%.cpp Makefile
+	@echo CC $< --\> $@
+	@$(CC) -MD $(HOST_COMMONFLAGS) $(CXXFLAGS) -c -o $@ $<
+
 $(HOSTBUILDDIR)/$(PROJECT).elf: $(HOST_OBJS)
 	@echo LD $@
 	@$(CXX) -o $@ $(HOST_OBJS) $(HOST_LDFLAGS)
+
+$(HOSTBUILDDIR)/tests: $(TEST_OBJS)
+	@echo LD $@
+	$(CXX) -o $@ $(TEST_OBJS) $(HOST_LDFLAGS)
+
+tests: $(HOSTBUILDDIR)/tests
+	exec $(HOSTBUILDDIR)/tests
 
 # -------------------------------------
 
@@ -108,4 +122,4 @@ $(HOSTBUILDDIR)/$(PROJECT).elf: $(HOST_OBJS)
 clean:
 	rm -rf $(BUILDDIR) $(HOSTBUILDDIR)
 
-.PHONY: clean all
+.PHONY: clean all tests

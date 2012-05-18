@@ -2,6 +2,7 @@
  */
 #pragma once
 #include "logging.h"
+#include <cstdint>
 
 #ifdef HOST
 #include <cassert>
@@ -19,9 +20,9 @@ public:
 
   bool Add(const T& t)
   {
-    LOG("TCircularBuffer::Add\n");
+    //LOG("TCircularBuffer::Add\n");
     if (Count >= size) {
-      LOG("TCircularBuffer::Add: no space left\n");
+      //LOG("TCircularBuffer::Add: no space left\n");
       return false;
     }
     Data[(Read + Count) % size] = t;
@@ -31,7 +32,7 @@ public:
 
   void Remove()
   {
-    LOG("TCircularBuffer::Remove\n");
+    //LOG("TCircularBuffer::Remove\n");
     assert(Count > 0);
     Read = (Read + 1) % size;
     Count--;
