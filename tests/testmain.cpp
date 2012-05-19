@@ -32,6 +32,7 @@ void dma1_channel3_isr()
 #define test_assert(x) if (!(x)) { fprintf(stderr, "%s:%d: error: Test failed: %s\n", __FILE__, __LINE__, #x); return 1; }
 
 #include "TestCircularBuffer.cpp"
+#include "TestMidi.cpp"
 
 int main(int, char**)
 {
@@ -39,6 +40,7 @@ int main(int, char**)
 
   int failures = 0;
   failures += TestCircularBuffer();
+  failures += TestMidi();
 
   if (failures == 0) {
     fprintf(stderr, "Tests OK.\n");

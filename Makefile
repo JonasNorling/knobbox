@@ -12,6 +12,7 @@ ARM_SRCS += stm32.cpp
 HOST_SRCS += main.cpp
 HOST_SRCS += host.cpp
 TEST_SRCS += tests/testmain.cpp
+TEST_SRCS += host.cpp
 
 # -------------------------------------
 # Assuming a toolchain from summon-arm-toolchain.
@@ -48,7 +49,7 @@ ARM_OBJS += $(ARM_SRCS:%.cpp=$(BUILDDIR)/%.o)
 HOST_OBJS += $(SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 HOST_OBJS += $(HOST_SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 TEST_OBJS += $(SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
-TEST_OBJS += $(TEST_SRCS:tests/%.cpp=$(HOSTBUILDDIR)/%.o)
+TEST_OBJS += $(TEST_SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 
 # -------------------------------------
 
@@ -57,7 +58,7 @@ all: $(BUILDDIR) $(BUILDDIR)/$(PROJECT).bin $(BUILDDIR)/$(PROJECT).asm
 	@size $(BUILDDIR)/$(PROJECT).elf
 
 $(BUILDDIR) $(HOSTBUILDDIR):
-	mkdir $@
+	mkdir $@ $@/tests
 
 liquid-2.0: external/liquid-2.0.tgz external/liquid.patch Makefile
 	tar xf $<
@@ -107,12 +108,14 @@ $(HOSTBUILDDIR)/$(PROJECT).elf: $(HOST_OBJS)
 	@echo LD $@
 	@$(CXX) -o $@ $(HOST_OBJS) $(HOST_LDFLAGS)
 
-$(HOSTBUILDDIR)/tests: $(TEST_OBJS)
+$(TEST_OBJS): tests/*.cpp
+
+$(HOSTBUILDDIR)/test: $(TEST_OBJS)
 	@echo LD $@
 	$(CXX) -o $@ $(TEST_OBJS) $(HOST_LDFLAGS)
 
-tests: $(HOSTBUILDDIR)/tests
-	exec $(HOSTBUILDDIR)/tests
+tests: $(HOSTBUILDDIR)/test
+	exec $(HOSTBUILDDIR)/test
 
 # -------------------------------------
 

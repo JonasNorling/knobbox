@@ -40,7 +40,7 @@ void deviceInit()
 
   // Discovery: LEDs on PC8 and PC9
   Pin_led_b.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
-  Pin_led_g.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+  Pin_led_g.SetOutput(GPIO_MODE_OUTPUT_50_MHZ);
 
   // Debug LEDs (Discovery)
   gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
@@ -134,19 +134,23 @@ void deviceInit()
    */
 
   // SPI DMA transmission done interrupt
-  nvic_set_priority(NVIC_DMA1_CHANNEL3_IRQ, 2);
+  nvic_set_priority(NVIC_DMA1_CHANNEL3_IRQ, 4);
   nvic_enable_irq(NVIC_DMA1_CHANNEL3_IRQ);
 
   // Shift register USART DMA transmission done interrupt
-  nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 2);
+  nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 4);
   nvic_enable_irq(NVIC_DMA1_CHANNEL4_IRQ);
-  nvic_set_priority(NVIC_DMA1_CHANNEL5_IRQ, 2);
+  nvic_set_priority(NVIC_DMA1_CHANNEL5_IRQ, 4);
   nvic_enable_irq(NVIC_DMA1_CHANNEL5_IRQ);
 
   // Sequencer timer
   nvic_enable_irq(NVIC_TIM2_IRQ);
-  nvic_set_priority(NVIC_TIM2_IRQ, 0);
+  nvic_set_priority(NVIC_TIM2_IRQ, 2);
 
   // Millisecond timer
-  nvic_set_priority(NVIC_SYSTICK_IRQ, 0);
+  nvic_set_priority(NVIC_SYSTICK_IRQ, 2);
+
+  // MIDI USART
+  nvic_enable_irq(NVIC_USART2_IRQ);
+  nvic_set_priority(NVIC_USART2_IRQ, 2);
 }

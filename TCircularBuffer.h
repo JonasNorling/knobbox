@@ -22,7 +22,7 @@ public:
   {
     //LOG("TCircularBuffer::Add\n");
     if (Count >= size) {
-      //LOG("TCircularBuffer::Add: no space left\n");
+      LOG("TCircularBuffer::Add: no space left\n");
       return false;
     }
     Data[(Read + Count) % size] = t;

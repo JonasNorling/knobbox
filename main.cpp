@@ -89,12 +89,16 @@ void dma1_channel5_isr(void)
   Knobs.StartShifting();
 }
 
+void usart2_isr(void)
+{
+  Midi.GotInterrupt();
+}
+
 /* ARM systick timer: millisecond counter */
 void sys_tick_handler(void)
 {
   SystemTime++;
   if (!(SystemTime % 1000)) {
-    Pin_led_g.Toggle();
   }
   PollButtons = true;
 }
@@ -120,10 +124,15 @@ int main(void)
   nvic_disable_irq(NVIC_DMA1_CHANNEL4_IRQ);
   nvic_disable_irq(NVIC_DMA1_CHANNEL5_IRQ);
   nvic_disable_irq(NVIC_TIM2_IRQ);
-  rcc_peripheral_reset(&RCC_APB2RSTR, RCC_APB2RSTR_USART1RST |
-		       RCC_APB2RSTR_SPI1RST);
-  rcc_peripheral_clear_reset(&RCC_APB2RSTR, RCC_APB2RSTR_USART1RST |
-			     RCC_APB2RSTR_SPI1RST);
+  const uint32_t resets2 =
+    RCC_APB2RSTR_USART1RST |
+    RCC_APB2RSTR_SPI1RST;
+  const uint32_t resets1 =
+    RCC_APB1RSTR_USART2RST;
+  rcc_peripheral_reset(&RCC_APB2RSTR, resets2);
+  rcc_peripheral_reset(&RCC_APB1RSTR, resets1);
+  rcc_peripheral_clear_reset(&RCC_APB2RSTR, resets2);
+  rcc_peripheral_clear_reset(&RCC_APB1RSTR, resets1);
 #endif
 
   // Use placement new to run the constructors of static objects,

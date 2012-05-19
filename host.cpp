@@ -11,5 +11,5 @@ void deviceInit()
 
 void usart_send(uint32_t uart, uint8_t byte)
 {
-  printf("UART%d: 0x%02x", uart, byte);
+  printf("UART%d: 0x%02x\n", uart, byte);
 }
