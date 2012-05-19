@@ -1,7 +1,7 @@
 #include "TKnobs.h"
 #include "TGui.h"
 #include "TControllers.h"
-#include "stm32.h"
+#include "device.h"
 
 TKnobs::TKnobs()
 {

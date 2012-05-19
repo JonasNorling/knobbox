@@ -1,6 +1,6 @@
 #include "TDisplay.h"
 #include "TBitmask.h"
-#include "stm32.h"
+#include "device.h"
 #include "logging.h"
 #ifdef HOST
 #include <cassert>

@@ -1,4 +1,4 @@
-#include "stm32.h"
+#include "device.h"
 #include "TDisplay.h"
 #include "TGui.h"
 #include "TSpiDmaJob.h"
@@ -24,7 +24,7 @@
  * TIM4 -
  * SysTick timer - 1ms master timer
  *
- * Pin connections (specified in stm32.h):
+ * Pin connections (specified in device.h):
  *
  * PB15: Vpullup - LCD backlight, encoder pullup voltage
  * BOOT1 (PB2): pulled high
@@ -70,7 +70,6 @@ void dma1_channel3_isr(void)
   DmaEvents++;
 }
 
-/* DMA channel 1:4 -- USART1_TX (shift registers) */
 void dma1_channel4_isr(void)
 {
 #ifndef HOST
@@ -158,10 +157,6 @@ int main(void)
       SpiDmaQueue.Finished();
     } else {
       SpiDmaQueue.TryStartJob();
-#ifdef HOST
-      Display.DumpPixels();
-      return 0;
-#endif
     }
 
     /* Poll switches */
@@ -204,6 +199,14 @@ int main(void)
     }
     if (DMA_ISR(DMA1) & DMA_ISR_TEIF5) {
       while (true);
+    }
+#endif
+
+#ifdef HOST
+    static int counter = 0;
+    if (counter++ > 1000) {
+      Display.DumpPixels();
+      return 0;
     }
 #endif
   }

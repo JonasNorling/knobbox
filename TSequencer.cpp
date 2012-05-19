@@ -1,7 +1,7 @@
 #include "TSequencer.h"
 #include "TMidi.h"
 #include "TKnobs.h"
-#include "stm32.h"
+#include "device.h"
 
 void TSequencer::StartTimer()
 {

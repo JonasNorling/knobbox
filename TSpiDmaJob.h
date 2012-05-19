@@ -2,7 +2,7 @@
  */
 #pragma once
 #include <cstdint>
-#include "stm32.h"
+#include "device.h"
 #include "TCircularBuffer.h"
 #include "TBuffer.h"
 

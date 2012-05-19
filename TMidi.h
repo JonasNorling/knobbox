@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 #pragma once
-#include "stm32.h"
+#include "device.h"
 
 class TMidi
 {
