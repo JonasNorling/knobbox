@@ -1,5 +1,4 @@
-/* -*- c++ -*-
- */
+/* -*- c++ -*- */
 #pragma once
 #include "logging.h"
 #include <cstdint>
@@ -10,6 +9,11 @@
 #define assert(x)
 #endif
 
+/**
+ * Circular buffer class. Holds size objects of type T.
+ *
+ * Status: Unit tested. Works.
+ */
 template<typename T, int size>
 class TCircularBuffer
 {
@@ -18,6 +22,7 @@ public:
     Read(0), Count(0)
   { }
 
+  /// Add object to end of buffer.
   bool Add(const T& t)
   {
     //LOG("TCircularBuffer::Add\n");
@@ -30,6 +35,7 @@ public:
     return true;
   }
 
+  /// Remove object from beginning of buffer.
   void Remove()
   {
     //LOG("TCircularBuffer::Remove\n");
@@ -38,12 +44,14 @@ public:
     Count--;
   }
 
-  const T& First()
+  /// Return object at beginning of buffer. Does not alter the buffer.
+  const T& First() const
   {
     assert(Count > 0);
     return Data[Read];
   }
 
+  /// Empty predicate.
   bool Empty() const
   {
     return Count == 0;

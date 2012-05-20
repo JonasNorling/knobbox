@@ -1,15 +1,14 @@
 #include "TControllers.h"
 
+/// The procedure is to pull in the requested scene from flash
+/// directly to Scene, and then populate the instrument and
+/// parameter names and data from each referenced instrument by
+/// reading the instruments to the TMemory cache page in turn.
+///
+/// Reading is event based, so we have to keep a state and wait for
+/// callbacks to proceed.
 void TControllers::Load()
 {
-  // The procedure is to pull in the requested scene from flash
-  // directly to Scene, and then populate the instrument and
-  // parameter names and data from each referenced instrument by
-  // reading the instruments to the TMemory cache page in turn.
-  //
-  // Reading is event based, so we have to keep a state and wait for
-  // callbacks to proceed.
-
   Scene.Magic = Scene.MAGIC;
   Scene.Name[0] = 'A';
   Scene.Name[1] = ' ';

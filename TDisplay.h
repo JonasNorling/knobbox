@@ -1,5 +1,15 @@
-/* -*- c++ -*-
- *
+/* -*- c++ -*- */
+#pragma once
+
+#include "TSpiDmaJob.h"
+#include <cstdint>
+#include <cstddef>
+#include <cstdlib>
+#include <functional>
+
+typedef uint8_t TCharacter[6];
+
+/**
  * Device driver for EA DOGS102W-6 LCD display on SPI.  The display is
  * 102x64 pixels and is controlled by a UC1701x driver chip (capable
  * of driving a 132x65 pixel display). The display isn't mapped as a
@@ -13,17 +23,11 @@
  * The display is mainly treated as if it's a 17x8 character display,
  * and a 6x8 font (with empty space top and right) is used to render
  * text. Each character is thus 6 bytes in size.
+ *
+ * \todo The font is rather horrible.
+ *
+ * Status: Fairly complete and tested. Power/standby not implemented.
  */
-#pragma once
-
-#include "TSpiDmaJob.h"
-#include <cstdint>
-#include <cstddef>
-#include <cstdlib>
-#include <functional>
-
-typedef uint8_t TCharacter[6];
-
 class TDisplay : public IDmaCallback
 {
 private:
@@ -36,10 +40,14 @@ private:
 public:
   static const int GlyphWidth = 6;
 
+  /**
+   * Represent a "page", an 8-pixel high band, on the display.
+   */
   class TPageBuffer {
   public:
     friend class TDisplay;
     uint8_t DrawText(const char* text, uint8_t offset = 0, bool invert = false);
+    /// Advance a character witdth.
     uint8_t Advance(uint8_t offset) { return offset + TDisplay::GlyphWidth; }
 
     void Clear()
@@ -71,7 +79,12 @@ public:
 
   bool Power(bool on);
 
+  /// Get a buffer that will later be sent to the display.
+  /// \return 0 if no buffers are available.
   TPageBuffer* GetBuffer();
+  /// Enqueue the buffer to be sent to the display. This call will
+  /// always succeed -- the fact that you got a buffer from
+  /// GetBuffer() guarantees that it can be sent to the display.
   void OutputBuffer(TPageBuffer* buffer, uint8_t length,
 		    uint8_t page, uint8_t col);
 

@@ -1,0 +1,30 @@
+This is a piece of code that implements a MIDI controller and step
+sequencer in a STM32 (ARMv7-M) MCU.
+
+Contact: Jonas Norling <jonas.norling@gmail.com>
+
+
+BUILDING
+---------------------------------------------------------
+
+You need an ARM toolchain and libopencm3 to build the project. The
+toolchain from summon-arm-toolchain is the recommended one [1].
+
+Modify the Makefile to point to your toolchain install directory and
+type "make all" to build the project. I typically use gdb (from s-a-t)
+and stlink[2] to flash the microcontroller, using an ST Discovery
+board.
+
+
+DOCUMENTATION
+---------------------------------------------------------
+
+Type "make doc" in the source tree, and Doxygen documentation will pop
+up in doc/html/.
+
+
+LINKS
+---------------------------------------------------------
+
+[1] https://github.com/esden/summon-arm-toolchain
+[2] https://github.com/texane/stlink

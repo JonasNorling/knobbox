@@ -1,8 +1,12 @@
 #include "device.h"
 
+/**
+ * \file stm32.cpp STM32 initialization functions.
+ */
+
 void clockInit()
 {
-  // FIXME: Want to run at 48 MHz.
+  /// \todo Want to run at 48 MHz.
   rcc_clock_setup_in_hse_8mhz_out_24mhz();
 
   /*

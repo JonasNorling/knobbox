@@ -25,6 +25,14 @@ TKnobs::TKnobs()
   SwitchData[1] = 0xaa;
 }
 
+/**
+ * \todo This is probably horribly slow -- we need to optimise the DMA
+ * channel setup and it's probably not a good idea to make all those
+ * library calls that aren't inlined.
+ *
+ * \todo We shouldn't trigger intterupts for both RX and TX here,
+ * that's just stupid.
+ */
 void TKnobs::StartShifting()
 {
 #ifndef HOST
@@ -35,7 +43,7 @@ void TKnobs::StartShifting()
   dma_channel_reset(dma, rxchannel);
 #endif
 
-  // FIXME: Think about symmetric PWM to lower the power ripple a bit.
+  /// \todo Think about symmetric PWM to lower the power ripple a bit.
   // Also, we could scatter the on-state pseudo-randomly in the
   // timeslot, giving a much more even power usage. How will the
   // brightness be affected by that? USe a LUT of some kind?
@@ -82,7 +90,7 @@ void TKnobs::StartShifting()
 
 void TKnobs::Poll()
 {
-  // FIXME: This is probably stupid.
+  /// \todo This is probably stupid.
 
   TEncoderBits data;
   data.EncoderA = ((SwitchData[0] & 0x80) >> 4) |

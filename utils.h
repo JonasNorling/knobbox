@@ -4,6 +4,15 @@
 #include <cstdint>
 #include <cstddef>
 
+/**
+ * \file utils.h
+ * Some cheap libc alternatives.
+ */
+
+/**
+ * Copy string until \0.
+ * \todo Consider not making inline.
+ */
 inline static size_t cheap_strcpy(char* out, const char* in)
 {
   size_t i = 0;
@@ -12,6 +21,10 @@ inline static size_t cheap_strcpy(char* out, const char* in)
   return i;
 }
 
+/**
+ * Render a number to a string.
+ * \todo Consider not making inline.
+ */
 inline static void render_uint(char* pt, uint32_t n, size_t fieldsize)
 {
   uint32_t value = 1;

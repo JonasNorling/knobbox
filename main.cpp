@@ -9,7 +9,10 @@
 #include "TControllers.h"
 #include <new>
 
-/*
+/**
+ * \file main.cpp
+ * \verbatim
+ *
  * This code expects to run on a STM32F102C8. 64k flash, 10k RAM.
  * Resources:
  * USART1 - Shift registers for encoders and LEDs, programming
@@ -42,6 +45,7 @@
  * Input shift registers (Encoder and push button read)
  *   USART1_RX (PA10): data, UART1_CK (PA8): clock, PB6: load, PB7: CE
  *
+ * \endverbatim
  */
 
 TDisplay Display;
@@ -57,7 +61,7 @@ volatile uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
 volatile static uint8_t DmaEvents = 0;
 volatile static bool PollButtons = 0;
 
-/* DMA channel 1:3 -- SPI1_TX (display and flash) */
+/** DMA channel 1:3 -- SPI1_TX (display and flash) */
 void dma1_channel3_isr(void)
 {
 #ifndef HOST
@@ -75,17 +79,16 @@ void dma1_channel4_isr(void)
 #ifndef HOST
   dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL4);
 #endif
-  // FIXME: Once we get the latency in the main loop down, perhaps
-  // this could be moved to a bottom-half?
-  //Knobs.StartShifting();
 }
 
-/* DMA channel 1:5 -- USART1_RX (shift registers) */
+/** DMA channel 1:5 -- USART1_RX (shift registers) */
 void dma1_channel5_isr(void)
 {
 #ifndef HOST
   dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL5);
 #endif
+  /// \todo Once we get the latency in the main loop down, perhaps
+  /// this could be moved to a bottom-half?
   Knobs.StartShifting();
 }
 
@@ -94,7 +97,7 @@ void usart2_isr(void)
   Midi.GotInterrupt();
 }
 
-/* ARM systick timer: millisecond counter */
+/** ARM systick timer: millisecond counter */
 void sys_tick_handler(void)
 {
   SystemTime++;
@@ -103,7 +106,7 @@ void sys_tick_handler(void)
   PollButtons = true;
 }
 
-/* TIM2: sequencer 48th beat counter */
+/** TIM2: sequencer 48th beat counter */
 void tim2_isr(void)
 {
 #ifndef HOST
@@ -146,7 +149,7 @@ int main(void)
   new(&Memory) TMemory();
   new(&Controllers) TControllers();
 
-  // FIXME: We should wake up in some kind of low power mode.
+  /// \todo We should wake up in some kind of low power mode.
   clockInit();
   deviceInit();
 
@@ -161,7 +164,8 @@ int main(void)
   while (true) {
     /* Interrupt "bottom half" processing */
     if (DmaEvents) {
-      // FIXME: race condition? Is there a test-and-decrement instruction?
+      /// \todo race condition? Is there a test-and-decrement
+      /// instruction?
       DmaEvents--;
       SpiDmaQueue.Finished();
     } else {

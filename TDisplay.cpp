@@ -111,6 +111,7 @@ void TDisplay::DmaFinished(void* context)
   TBitmask::Release(BufferAllocMask, bufferid);
 }
 
+/// \todo Probably not correctly implemented.
 bool TDisplay::Power(bool on)
 {
   TPageBuffer* buffer(GetBuffer());

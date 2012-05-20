@@ -4,6 +4,13 @@
 #include <cstdint>
 #include "IDisplayPage.h"
 
+/**
+ * The user interface page that is displayed when the device is in
+ * MIDI controller mode.
+ *
+ * Status: Mostly a mockup. Moving around works, some knob updates
+ * work.
+ */
 class TControllerPage : public IDisplayPage
 {
 public:
@@ -19,7 +26,7 @@ public:
   void MenuItemSelected(uint8_t n);
 
 private:
-  uint8_t CurrentChannel; // This shouldn't be here
+  uint8_t CurrentChannel; ///< This shouldn't be here
 
   uint8_t Focus;
 };

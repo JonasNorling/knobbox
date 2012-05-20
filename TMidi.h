@@ -7,6 +7,13 @@
 #include <functional>
 #endif
 
+/**
+ * Enqueue MIDI data and send it off. A queue is implemented and clock
+ * ticks are sent immediately (they can interrupt ongoing commands
+ * without messing up the signalling).
+ *
+ * Status: Not tested with real device. MIDI IN not implemented.
+ */
 class TMidi
 {
 private:
@@ -14,6 +21,11 @@ private:
   static const uint32_t USART = USART2;
 
 public:
+  static const uint8_t MIDI_NOTE_OFF = 0x80;
+  static const uint8_t MIDI_NOTE_ON = 0x90;
+  static const uint8_t MIDI_CC = 0xb0;
+  static const uint8_t MIDI_CLOCK_TICK = 0xf8;
+
   TMidi() : SendTick(false)  { }
 
 #ifdef HOST
@@ -40,12 +52,13 @@ public:
     return status;
   }
 
+  /// Called from ISR, in interrupt context.
   void GotInterrupt()
   {
     DisableTxInterrupt();
     if (SendTick) {
       SendTick = false;
-      usart_send(USART, 0xf8);
+      usart_send(USART, MIDI_CLOCK_TICK);
     }
     else {
       usart_send(USART, Queue.First());

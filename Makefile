@@ -119,10 +119,15 @@ tests: $(HOSTBUILDDIR)/test
 
 # -------------------------------------
 
+doc: $(SRCS) $(ARM_SRCS) $(HOST_SRCS) doc/Doxyfile
+	doxygen doc/Doxyfile
+
+# -------------------------------------
+
 -include $(BUILDDIR)/*.d
 -include $(HOSTBUILDDIR)/*.d
 
 clean:
 	rm -rf $(BUILDDIR) $(HOSTBUILDDIR)
 
-.PHONY: clean all tests
+.PHONY: clean all tests doc

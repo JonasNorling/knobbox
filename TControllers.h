@@ -7,6 +7,12 @@
 #include "TGui.h"
 #include "TMidi.h"
 
+/**
+ * Keep controller (parameters/knobs) state. Receive change events,
+ * make the appropriate calls.
+ *
+ * Status: This is a sketch. Functionality is missing.
+ */
 class TControllers
 {
 public:
@@ -15,6 +21,7 @@ public:
 
   TControllers() { Load(); }
 
+  /// Load the controller scene from flash.
   void Load();
   const TParamScene& GetScene() const { return Scene; }
   uint8_t GetValue(int knob) const { return Values[knob]; }
@@ -40,8 +47,7 @@ public:
 private:
   void SendMidi(int knob)
   {
-    // FIXME: If a message for this CC is already queued, update that instead.
-    Midi.EnqueueByte(0xC0 | Scene.Knobs[knob].Channel);
+    Midi.EnqueueByte(TMidi::MIDI_CC | Scene.Knobs[knob].Channel);
     Midi.EnqueueByte(Scene.Knobs[knob].Param);
     Midi.EnqueueByte(Values[knob]);
   }

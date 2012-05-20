@@ -1,6 +1,9 @@
 /* -*- c++ -*- */
 #pragma once
 
+/**
+ * Encapsulate a data buffer. No allocation is made in this class.
+ */
 class TBuffer
 {
 public:

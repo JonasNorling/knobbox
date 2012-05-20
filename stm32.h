@@ -20,6 +20,10 @@ extern "C" {
 }
 #endif
 
+/**
+ * GPIO pin abstraction. Everything should be inlined, so calls are
+ * faster than to libopencm3.
+ */
 class TPin {
 public:
   uint32_t Port;

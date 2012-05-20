@@ -18,7 +18,7 @@ void TSequencer::StartTimer()
 
   // Counts for a 24MHz CPU clock:
   // 12 BPM --> 2 500 000, 240 BPM --> 125 000
-  // FIXME: Calculate an error that we can correct when running
+  /// \todo: Calculate an error that we can correct when running
   const uint32_t prescale = 50;
   const uint32_t counts = (rcc_ppre2_frequency * 60 / Resolution / prescale) / Tempo;
 
