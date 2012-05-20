@@ -1,4 +1,5 @@
 #include "TMidi.h"
+#include <vector>
 
 int TestMidi()
 {
