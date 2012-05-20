@@ -4,7 +4,7 @@
 #include "TCircularBuffer.h"
 
 #ifdef HOST
-#include <algorithm>
+#include <functional>
 #endif
 
 class TMidi
@@ -40,7 +40,7 @@ public:
     return status;
   }
 
-  void GotInterrupt() __attribute__((optimize (0)))
+  void GotInterrupt()
   {
     DisableTxInterrupt();
     if (SendTick) {
