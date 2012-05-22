@@ -74,13 +74,6 @@ void dma1_channel3_isr(void)
   DmaEvents++;
 }
 
-void dma1_channel4_isr(void)
-{
-#ifndef HOST
-  dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL4);
-#endif
-}
-
 /** DMA channel 1:5 -- USART1_RX (shift registers) */
 void dma1_channel5_isr(void)
 {
@@ -136,6 +129,7 @@ int main(void)
   rcc_peripheral_reset(&RCC_APB1RSTR, resets1);
   rcc_peripheral_clear_reset(&RCC_APB2RSTR, resets2);
   rcc_peripheral_clear_reset(&RCC_APB1RSTR, resets1);
+  DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
 #endif
 
   // Use placement new to run the constructors of static objects,
@@ -158,6 +152,7 @@ int main(void)
   //Display.Power(true);
 
   Memory.FetchBlock(TMemory::BLOCK_PRODPARAM);
+  Knobs.InitDma();
   Knobs.StartShifting();
   Sequencer.StartTimer();
 

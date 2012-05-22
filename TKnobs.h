@@ -24,6 +24,7 @@ public:
   static const uint8_t ShiftLength = 2;
 
   TKnobs();
+  void InitDma();
   /// Called from an ISR when the DMA job has finished.
   void StartShifting();
   void Poll();

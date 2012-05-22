@@ -25,6 +25,19 @@ TKnobs::TKnobs()
   SwitchData[1] = 0xaa;
 }
 
+void TKnobs::InitDma()
+{
+#ifndef HOST
+  const uint32_t dma = DMA1;
+  const uint32_t txchannel = DMA_CHANNEL4;
+  const uint32_t rxchannel = DMA_CHANNEL5;
+  DMA_CPAR(dma, rxchannel) = reinterpret_cast<uint32_t>(&USART1_DR); // peripheral addr
+  DMA_CMAR(dma, rxchannel) = reinterpret_cast<uint32_t>(SwitchData); // memory addr
+  DMA_CPAR(dma, txchannel) = reinterpret_cast<uint32_t>(&USART1_DR); // peripheral addr
+  DMA_CMAR(dma, txchannel) = reinterpret_cast<uint32_t>(LedControl); // memory addr
+#endif
+}
+
 /**
  * \todo This is probably horribly slow -- we need to optimise the DMA
  * channel setup and it's probably not a good idea to make all those
@@ -35,12 +48,20 @@ TKnobs::TKnobs()
  */
 void TKnobs::StartShifting()
 {
+  Pin_led_g.Set();
+
 #ifndef HOST
   const uint32_t dma = DMA1;
   const uint32_t txchannel = DMA_CHANNEL4;
   const uint32_t rxchannel = DMA_CHANNEL5;
-  dma_channel_reset(dma, txchannel);
-  dma_channel_reset(dma, rxchannel);
+  //  dma_channel_reset(dma, txchannel);
+  //  dma_channel_reset(dma, rxchannel);
+
+  // Disable channels
+  DMA_CCR(dma, txchannel) &= ~DMA_CCR_EN;
+  DMA_CCR(dma, rxchannel) &= ~DMA_CCR_EN;
+  // Reset interrupts
+  DMA_IFCR(dma) |= DMA_IFCR_CIF(txchannel) | DMA_IFCR_CIF(rxchannel);
 #endif
 
   /// \todo Think about symmetric PWM to lower the power ripple a bit.
@@ -55,37 +76,34 @@ void TKnobs::StartShifting()
     LedControl[1] = (LedControl[1] << 1) |
       (LedIntensity[color][knob] > CurrentPwmStep);
   }
-
   CurrentPwmStep++;
-
 #ifndef HOST
 
-  dma_set_peripheral_address(dma, rxchannel, reinterpret_cast<uint32_t>(&USART1_DR));
-  dma_set_memory_address(dma, rxchannel, reinterpret_cast<uint32_t>(SwitchData));
-  dma_set_number_of_data(dma, rxchannel, ShiftLength);
-  dma_set_read_from_peripheral(dma, rxchannel);
-  dma_enable_memory_increment_mode(dma, rxchannel);
-  dma_set_peripheral_size(dma, rxchannel, DMA_CCR_PSIZE_8BIT);
-  dma_set_memory_size(dma, rxchannel, DMA_CCR_MSIZE_8BIT);
-  dma_set_priority(dma, rxchannel, DMA_CCR_PL_HIGH);
-  dma_enable_transfer_complete_interrupt(dma, rxchannel);
-  dma_enable_channel(dma, rxchannel);
-  usart_enable_rx_dma(USART1);
+  DMA_CCR(dma, rxchannel) = (DMA_CCR_PL_HIGH | // prio
+			     DMA_CCR_MSIZE_8BIT |
+			     DMA_CCR_PSIZE_8BIT |
+			     DMA_CCR_MINC | // memory increment mode
+			     DMA_CCR_TCIE // transfer complete interrupt
+			     );
+  DMA_CNDTR(dma, rxchannel) = ShiftLength; // number of data
 
-  dma_set_peripheral_address(dma, txchannel, reinterpret_cast<uint32_t>(&USART1_DR));
-  dma_set_memory_address(dma, txchannel, reinterpret_cast<uint32_t>(LedControl));
-  dma_set_number_of_data(dma, txchannel, ShiftLength);
-  dma_set_read_from_memory(dma, txchannel);
-  dma_enable_memory_increment_mode(dma, txchannel);
-  dma_set_peripheral_size(dma, txchannel, DMA_CCR_PSIZE_8BIT);
-  dma_set_memory_size(dma, txchannel, DMA_CCR_MSIZE_8BIT);
-  dma_set_priority(dma, txchannel, DMA_CCR_PL_LOW);
-  dma_enable_transfer_complete_interrupt(dma, txchannel);
-  dma_enable_channel(dma, txchannel);
-  usart_enable_tx_dma(USART1);
-  // Will trigger dma_channel4_isr when done.
+  DMA_CCR(dma, txchannel) = (DMA_CCR_PL_LOW | // prio
+			     DMA_CCR_MSIZE_8BIT |
+			     DMA_CCR_PSIZE_8BIT |
+			     DMA_CCR_MINC | // memory increment mode
+			     DMA_CCR_DIR // read from memory
+			     );
+  DMA_CNDTR(dma, txchannel) = ShiftLength; // number of data
+
+  // Enable DMAs
+  DMA_CCR(dma, rxchannel) |= DMA_CCR_EN;
+  DMA_CCR(dma, txchannel) |= DMA_CCR_EN;
+  // Enable RX/TX DMA, kicks off the transfer
+  USART_CR3(USART1) |= USART_CR3_DMAR | USART_CR3_DMAT;
 
 #endif
+
+  Pin_led_g.Clear();
 }
 
 void TKnobs::Poll()

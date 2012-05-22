@@ -37,7 +37,6 @@ public:
 
   void SendClockTick()
   {
-    Pin_led_g.Set();
     SendTick = true;
     EnableTxInterrupt();
   }
@@ -67,7 +66,6 @@ public:
     if (!Queue.Empty()) {
       EnableTxInterrupt();
     }
-    Pin_led_g.Clear();
   }
 
 private:

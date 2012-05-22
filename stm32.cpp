@@ -100,7 +100,7 @@ void deviceInit()
    * USART1: Shift registers
    */
 
-  usart_set_baudrate(USART1, 100000);
+  usart_set_baudrate(USART1, 1000000);
 
   usart_set_databits(USART1, 8);
   usart_set_stopbits(USART1, USART_STOPBITS_1);
