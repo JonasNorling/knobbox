@@ -50,4 +50,12 @@ void TSequencer::Step()
   if ((Position.Minor % (Resolution / 24)) == 0) {
     Midi.SendClockTick();
   }
+  if (Position.Minor == Resolution - 1) {
+    Midi.EnqueueByte(0xf0);
+    Midi.EnqueueByte(0x00);
+    Midi.EnqueueByte(0x00);
+    Midi.EnqueueByte(0x00);
+    Midi.EnqueueByte(0x01);
+    Midi.EnqueueByte(0xf7);
+  }
 }

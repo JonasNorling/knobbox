@@ -64,19 +64,6 @@ void TKnobs::StartShifting()
   DMA_IFCR(dma) |= DMA_IFCR_CIF(txchannel) | DMA_IFCR_CIF(rxchannel);
 #endif
 
-  /// \todo Think about symmetric PWM to lower the power ripple a bit.
-  // Also, we could scatter the on-state pseudo-randomly in the
-  // timeslot, giving a much more even power usage. How will the
-  // brightness be affected by that? USe a LUT of some kind?
-
-  LedControl[0] = 0;
-  for (int bit=0; bit < 8; bit++) {
-    const uint8_t color = bit & 0x01;
-    const uint8_t knob = bit >> 1;
-    LedControl[1] = (LedControl[1] << 1) |
-      (LedIntensity[color][knob] > CurrentPwmStep);
-  }
-  CurrentPwmStep++;
 #ifndef HOST
 
   DMA_CCR(dma, rxchannel) = (DMA_CCR_PL_HIGH | // prio
@@ -102,6 +89,23 @@ void TKnobs::StartShifting()
   USART_CR3(USART1) |= USART_CR3_DMAR | USART_CR3_DMAT;
 
 #endif
+
+  /// \todo Think about symmetric PWM to lower the power ripple a bit.
+  // Also, we could scatter the on-state pseudo-randomly in the
+  // timeslot, giving a much more even power usage. How will the
+  // brightness be affected by that? USe a LUT of some kind?
+
+  // Calculate the next PWM step. It's ok to do this after the DMA job
+  // has been started -- we'll output the first byte from the last
+  // cycle, but that's good enough for the human eye.
+  LedControl[0] = 0;
+  for (int bit=0; bit < 8; bit++) {
+    const uint8_t color = bit & 0x01;
+    const uint8_t knob = bit >> 1;
+    LedControl[1] = (LedControl[1] << 1) |
+      (LedIntensity[color][knob] > CurrentPwmStep);
+  }
+  CurrentPwmStep++;
 
   Pin_led_g.Clear();
 }
