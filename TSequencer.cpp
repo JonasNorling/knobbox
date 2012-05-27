@@ -3,6 +3,30 @@
 #include "TKnobs.h"
 #include "device.h"
 
+void TSequencer::Load()
+{
+  for (int scene = 0; scene < SceneCount; scene++) {
+    Scenes[scene].Magic = TSequencerScene::MAGIC;
+    Scenes[scene].Name[0] = 'A';
+    Scenes[scene].Name[1] = ' ';
+    Scenes[scene].Name[2] = 't';
+    Scenes[scene].Name[3] = 'e';
+    Scenes[scene].Name[4] = 's';
+    Scenes[scene].Name[5] = 't';
+    Scenes[scene].Name[6] = ' ';
+    Scenes[scene].Name[7] = 's';
+    Scenes[scene].Name[8] = 'c';
+    Scenes[scene].Name[9] = 'e';
+    Scenes[scene].Name[10] = 'n';
+    Scenes[scene].Name[11] = 'e';
+    
+    for (int s = 0; s < SEQLEN; s++) {
+      Scenes[scene].Data[s].Note = 0x40;
+      Scenes[scene].Data[s].Velocity = 0x40;
+    }
+  }
+}
+
 void TSequencer::StartTimer()
 {
 #ifndef HOST
@@ -32,7 +56,7 @@ void TSequencer::StartTimer()
 
 void TSequencer::Step()
 {
-  Position.Minor = (Position.Minor + 1 ) % Resolution;
+  Position.Minor = (Position.Minor + 1) % Resolution;
 #ifndef HOST
   if (Position.Minor == 0) {
     Pin_led_b.Set();
@@ -51,6 +75,7 @@ void TSequencer::Step()
     Midi.SendClockTick();
   }
   if (Position.Minor == Resolution - 1) {
+    // On each beat, just send a dummy sysex to see the LED blink a bit.
     Midi.EnqueueByte(0xf0);
     Midi.EnqueueByte(0x00);
     Midi.EnqueueByte(0x00);

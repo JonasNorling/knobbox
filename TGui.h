@@ -67,7 +67,7 @@ public:
   void Process();
   void UpdateAll() { DirtyLines = TBitmask::Init(Lines); }
   void UpdateLine(uint8_t n) { TBitmask::Set(DirtyLines, n); }
-  void KeyEvent(TEvent event)
+  void Event(TEvent event)
   {
     switch (Focus) {
     case FOCUS_MENU: TopMenu.Event(event); break;

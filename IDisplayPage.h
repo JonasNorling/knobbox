@@ -3,7 +3,12 @@
 
 #include "TDisplay.h"
 
-enum TEvent { KEY_UP, KEY_DOWN, KEY_OK, KEY_BACK, RECEIVE_FOCUS };
+enum TEvent { KEY_UP,
+	      KEY_DOWN,
+	      KEY_OK,
+	      KEY_BACK,
+	      RECEIVE_FOCUS,
+	      BLINK_TIMER };
 
 /**
  * A user interface main page. Handles render requests and input

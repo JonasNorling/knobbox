@@ -12,7 +12,8 @@ public:
 		FOCUS_VELO, FOCUS_LEN, FOCUS_OFFSET, FOCUS_CC,
 		FOCUS_LAST = FOCUS_CC };
 
-  TSeqPage() { }
+  TSeqPage() : Focus(FOCUS_NONE), CurrentStep(0),
+	       Selected(false), Blink(false) { }
   void Render(uint8_t n, TDisplay::TPageBuffer* line);
   void Event(TEvent event);
 
@@ -22,4 +23,7 @@ public:
 
 private:
   uint8_t Focus;
+  uint8_t CurrentStep;
+  bool Selected; /// Focused item is selected and blinking
+  bool Blink;
 };

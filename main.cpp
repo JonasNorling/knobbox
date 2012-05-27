@@ -59,7 +59,9 @@ TControllers Controllers;
 
 volatile uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
 volatile static uint8_t DmaEvents = 0;
-volatile static bool PollButtons = 0;
+volatile static uint8_t Actions; // Signalling from interrupts to bottom halves
+static const uint8_t ACTION_POLL_BUTTONS = 0x01;
+static const uint8_t ACTION_BLINK_TIMER = 0x02;
 
 /** DMA channel 1:3 -- SPI1_TX (display and flash) */
 void dma1_channel3_isr(void)
@@ -96,7 +98,10 @@ void sys_tick_handler(void)
   SystemTime++;
   if (!(SystemTime % 1000)) {
   }
-  PollButtons = true;
+  if (!(SystemTime % 128)) {
+    Actions |= ACTION_BLINK_TIMER;
+  }
+  Actions |= ACTION_POLL_BUTTONS;
 }
 
 /** TIM2: sequencer 48th beat counter */
@@ -168,30 +173,32 @@ int main(void)
     }
 
     /* Poll switches */
-    {
-      if (PollButtons) {
-	PollButtons = false;
+    if (Actions & ACTION_POLL_BUTTONS) {
+      Actions &= ~ACTION_POLL_BUTTONS;
 
-	// Tact switches
-	static uint16_t lastState = 0;
-	const uint16_t state = gpio_port_read(Pin_sw_1.Port);
-	const uint16_t pinMask = Pin_sw_1.Pin | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
-	if ((state ^ lastState) & pinMask) {
-	  if (~state & Pin_sw_1.Pin) {
-	    Gui.KeyEvent(KEY_OK);
-	  } else if (~state & Pin_sw_2.Pin) {
-	    Gui.KeyEvent(KEY_UP);
-	  } else if (~state & Pin_sw_3.Pin) {
-	    Gui.KeyEvent(KEY_DOWN);
-	  } else if (~state & Pin_sw_4.Pin) {
-	    Gui.KeyEvent(KEY_BACK);
-	  }
+      // Tact switches
+      static uint16_t lastState = 0;
+      const uint16_t state = gpio_port_read(Pin_sw_1.Port);
+      const uint16_t pinMask = Pin_sw_1.Pin | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
+      if ((state ^ lastState) & pinMask) {
+	if (~state & Pin_sw_1.Pin) {
+	  Gui.Event(KEY_OK);
+	} else if (~state & Pin_sw_2.Pin) {
+	  Gui.Event(KEY_UP);
+	} else if (~state & Pin_sw_3.Pin) {
+	  Gui.Event(KEY_DOWN);
+	} else if (~state & Pin_sw_4.Pin) {
+	  Gui.Event(KEY_BACK);
 	}
-	lastState = state;
-
-	// Encoders and encoder push buttons
-	Knobs.Poll();
       }
+      lastState = state;
+
+      // Encoders and encoder push buttons
+      Knobs.Poll();
+    }
+    else if (Actions & ACTION_BLINK_TIMER) {
+      Actions &= ~ACTION_BLINK_TIMER;
+      Gui.Event(BLINK_TIMER);
     }
 
     /* Update things */

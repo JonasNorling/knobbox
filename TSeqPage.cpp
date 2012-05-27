@@ -16,7 +16,10 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     pos = line->DrawText("actions\022", pos, Focus == FOCUS_ACTIONMENU);
   }
   else if (n == 3) {
-    pos = line->DrawText("step 03:", pos, Focus == FOCUS_STEP);
+    char text[9];
+    cheap_strcpy(text, "step xx:");
+    render_uint(text+5, CurrentStep + 1, 2);
+    pos = line->DrawText(text, pos, Focus == FOCUS_STEP && !Blink);
     pos = line->Advance(pos);
     pos = line->DrawText("Eb3\022", pos, Focus == FOCUS_NOTE);
   }
@@ -45,20 +48,56 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 
 void TSeqPage::Event(TEvent event)
 {
+  /// \todo This will get a bit messy if we keep on this way. There's
+  /// probably a splendid design pattern that I won't use...
   Gui.UpdateAll();
   switch (event) {
   case RECEIVE_FOCUS:
     Focus = FOCUS_SETUPMENU;
     break;
   case KEY_DOWN:
-    if (Focus < FOCUS_LAST) Focus++;
+    if (Selected) {
+      switch (Focus) {
+      case FOCUS_STEP:
+	CurrentStep--;
+	break;
+      }
+    } else if (Focus < FOCUS_LAST) {
+      Focus++;
+    }
     break;
   case KEY_UP:
-    Focus--;
-    if (Focus == 0) Gui.ChangeFocus(TGui::FOCUS_MENU);
+    if (Selected) {
+      switch (Focus) {
+      case FOCUS_STEP:
+	CurrentStep++;
+	break;
+      }
+    } else {
+      Focus--;
+      if (Focus == 0) {
+	Gui.ChangeFocus(TGui::FOCUS_MENU);
+      }
+    }
     break;
   case KEY_OK:
-    Gui.ChangeFocus(TGui::FOCUS_POPUP);
+    switch (Focus) {
+    case FOCUS_SETUPMENU:
+      Gui.ChangeFocus(TGui::FOCUS_POPUP);
+      break;
+    default:
+      Selected = !Selected;
+      Blink = Selected;
+      break;
+    }
+    break;
+  case KEY_BACK:
+    break;
+  case BLINK_TIMER:
+    if (Selected) {
+      Blink = !Blink;
+      Gui.UpdateAll(); // A bit wasteful
+    }
     break;
   default:
     break;
