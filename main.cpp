@@ -101,6 +101,30 @@ void sys_tick_handler(void)
   if (!(SystemTime % 128)) {
     Actions |= ACTION_BLINK_TIMER;
   }
+  if (!(SystemTime % 4)) {
+    static uint16_t s = 0;
+    s = (s + 1) & 0x3ff;
+    for (int i=0; i < Knobs.Knobs; i++) {
+      switch (s >> 8) {
+      case 0:
+	Knobs.LedIntensity[0][i] = s;
+	Knobs.LedIntensity[1][i] = 0;
+	break;
+      case 1:
+	Knobs.LedIntensity[0][i] = 0;
+	Knobs.LedIntensity[1][i] = 0x100-s;
+	break;
+      case 2:
+	Knobs.LedIntensity[0][i] = s;
+	Knobs.LedIntensity[1][i] = s;
+	break;
+      case 3:
+	Knobs.LedIntensity[0][i] = 0x100-s;
+	Knobs.LedIntensity[1][i] = 0x100-s;
+	break;
+      }
+    }
+  }
   Actions |= ACTION_POLL_BUTTONS;
 }
 
@@ -137,6 +161,8 @@ int main(void)
   DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
 #endif
 
+  Pin_vpullup.Clear();
+
   // Use placement new to run the constructors of static objects,
   // because libopencm3's crt0 and linker scripts aren't made for C++.
   new(&Display) TDisplay();
@@ -160,6 +186,8 @@ int main(void)
   Knobs.InitDma();
   Knobs.StartShifting();
   Sequencer.StartTimer();
+
+  Pin_vpullup.Set();
 
   while (true) {
     /* Interrupt "bottom half" processing */

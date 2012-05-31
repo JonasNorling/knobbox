@@ -23,8 +23,8 @@
 MEMORY
 {
 	/* STM32F102C8T6: 64k flash, 10k RAM */
-	rom (rx) : ORIGIN = 0x08000000, LENGTH = 128K
-	ram (rwx) : ORIGIN = 0x20000000, LENGTH = 8K
+	rom (rx) : ORIGIN = 0x08000000, LENGTH = 64K
+	ram (rwx) : ORIGIN = 0x20000000, LENGTH = 10K
 }
 
 /* Include the common ld script. */

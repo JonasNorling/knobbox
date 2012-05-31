@@ -59,16 +59,10 @@ void TSequencer::Step()
   Position.Minor = (Position.Minor + 1) % Resolution;
 #ifndef HOST
   if (Position.Minor == 0) {
-    Pin_led_b.Set();
-    for (int i=0; i < Knobs.Knobs; i++) {
-      Knobs.LedIntensity[1][i] = 10;
-    }
+    //Pin_led_b.Set();
   }
-  else if (Position.Minor == 2) {
-    Pin_led_b.Clear();
-    for (int i=0; i < Knobs.Knobs; i++) {
-      Knobs.LedIntensity[1][i] = 0;
-    }
+  else if (Position.Minor == 5) {
+    //Pin_led_b.Clear();
   }
 #endif
   if ((Position.Minor % (Resolution / 24)) == 0) {

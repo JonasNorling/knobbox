@@ -41,14 +41,14 @@ void deviceInit()
   Pin_lcd_a0.SetOutput();
   Pin_lcd_cs.SetOutput();
   Pin_lcd_rst.SetOutput();
+  Pin_shift_out_load.SetOutput();
+  Pin_shift_out_en.SetOutput();
+  Pin_shift_in_load.SetOutput();
+  Pin_shift_in_en.SetOutput();
 
   // Discovery: LEDs on PC8 and PC9
-  Pin_led_b.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
-  Pin_led_g.SetOutput(GPIO_MODE_OUTPUT_50_MHZ);
-
-  // Debug LEDs (Discovery)
-  gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
-		GPIO0 | GPIO1 | GPIO2 | GPIO3 | GPIO4 | GPIO5);
+  //Pin_led_b.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+  //Pin_led_g.SetOutput(GPIO_MODE_OUTPUT_50_MHZ);
 
   // Switches
   Pin_sw_1.SetInput(GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN);
@@ -77,6 +77,8 @@ void deviceInit()
   // USART2
   Pin_midi_out.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
 			 GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
+
+  Pin_vpullup.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
 
   /*
    * *********************************************************** *

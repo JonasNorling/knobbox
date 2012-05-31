@@ -11,14 +11,14 @@ TKnobs::TKnobs()
     LedIntensity[1][i] = 256 - i*(256/Knobs);
   }
   */
-  LedIntensity[0][0] = 255;
-  LedIntensity[1][0] = 0;
+  LedIntensity[0][0] = 100;
+  LedIntensity[1][0] = 100;
   LedIntensity[0][1] = 100;
-  LedIntensity[1][1] = 0;
-  LedIntensity[0][2] = 50;
-  LedIntensity[1][2] = 0;
-  LedIntensity[0][3] = 5;
-  LedIntensity[1][3] = 0;
+  LedIntensity[1][1] = 100;
+  LedIntensity[0][2] = 100;
+  LedIntensity[1][2] = 100;
+  LedIntensity[0][3] = 100;
+  LedIntensity[1][3] = 100;
   CurrentPwmStep = 0;
 
   SwitchData[0] = 0xaa;
@@ -48,8 +48,6 @@ void TKnobs::InitDma()
  */
 void TKnobs::StartShifting()
 {
-  Pin_led_g.Set();
-
 #ifndef HOST
   const uint32_t dma = DMA1;
   const uint32_t txchannel = DMA_CHANNEL4;
@@ -64,8 +62,12 @@ void TKnobs::StartShifting()
   DMA_IFCR(dma) |= DMA_IFCR_CIF(txchannel) | DMA_IFCR_CIF(rxchannel);
 #endif
 
-#ifndef HOST
+  // LED driver: clock in the last sent data, always enable outputs.
+  Pin_shift_out_load.Set();
+  Pin_shift_out_en.Clear();
+  Pin_shift_out_load.Clear();
 
+#ifndef HOST
   DMA_CCR(dma, rxchannel) = (DMA_CCR_PL_HIGH | // prio
 			     DMA_CCR_MSIZE_8BIT |
 			     DMA_CCR_PSIZE_8BIT |
@@ -87,7 +89,6 @@ void TKnobs::StartShifting()
   DMA_CCR(dma, txchannel) |= DMA_CCR_EN;
   // Enable RX/TX DMA, kicks off the transfer
   USART_CR3(USART1) |= USART_CR3_DMAR | USART_CR3_DMAT;
-
 #endif
 
   /// \todo Think about symmetric PWM to lower the power ripple a bit.
@@ -98,16 +99,15 @@ void TKnobs::StartShifting()
   // Calculate the next PWM step. It's ok to do this after the DMA job
   // has been started -- we'll output the first byte from the last
   // cycle, but that's good enough for the human eye.
-  LedControl[0] = 0;
-  for (int bit=0; bit < 8; bit++) {
+  uint8_t value = 0;
+  for (int bit = 0; bit < 8; bit++) {
     const uint8_t color = bit & 0x01;
     const uint8_t knob = bit >> 1;
-    LedControl[1] = (LedControl[1] << 1) |
-      (LedIntensity[color][knob] > CurrentPwmStep);
+    value = (value << 1) | (LedIntensity[color][knob] > CurrentPwmStep);
   }
+  LedControl[0] = 0;
+  LedControl[1] = value;
   CurrentPwmStep++;
-
-  Pin_led_g.Clear();
 }
 
 void TKnobs::Poll()

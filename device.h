@@ -25,11 +25,11 @@ extern "C" {
 }
 #endif
 
-static const TPin Pin_lcd_a0 =         {GPIOB, GPIO7}; // Discovery
-//static const TPin Pin_lcd_a0 =         {GPIOA, GPIO4};
+//static const TPin Pin_lcd_a0 =         {GPIOB, GPIO7}; // Discovery
+static const TPin Pin_lcd_a0 =         {GPIOB, GPIO14};
 static const TPin Pin_lcd_cs =         {GPIOA, GPIO4};
-//static const TPin Pin_lcd_rst =        {GPIOA, GPIO0};
-static const TPin Pin_lcd_rst =        {GPIOA, GPIO1}; // Discovery
+static const TPin Pin_lcd_rst =        {GPIOA, GPIO0};
+//static const TPin Pin_lcd_rst =        {GPIOA, GPIO1}; // Discovery
 static const TPin Pin_flash_cs =       {GPIOB, GPIO0};
 static const TPin Pin_spi_mosi =       {GPIOA, GPIO7};
 static const TPin Pin_spi_miso =       {GPIOA, GPIO6};
@@ -52,9 +52,12 @@ static const TPin Pin_sw_2 =           {GPIOB, GPIO4};
 static const TPin Pin_sw_3 =           {GPIOB, GPIO13};
 static const TPin Pin_sw_4 =           {GPIOB, GPIO12};
 
-static const TPin Pin_led_b =          {GPIOC, GPIO8}; // Discovery
-static const TPin Pin_led_g =          {GPIOC, GPIO9}; // Discovery
+//static const TPin Pin_led_b =          {GPIOC, GPIO8}; // Discovery
+//static const TPin Pin_led_g =          {GPIOC, GPIO9}; // Discovery
+static const TPin Pin_led_b =          {GPIOC, GPIO15}; // N/C
+static const TPin Pin_led_g =          {GPIOC, GPIO14}; // N/C
 
+static const TPin Pin_vpullup =        {GPIOB, GPIO15}; // N/C
 
 void clockInit();
 void deviceInit();

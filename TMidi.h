@@ -43,7 +43,6 @@ public:
 
   bool EnqueueByte(uint8_t d)
   {
-    Pin_led_g.Set();
     // Disable the interrupt when modifying the queue
     DisableTxInterrupt();
     bool status = Queue.Add(d);
