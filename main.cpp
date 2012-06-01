@@ -209,13 +209,13 @@ int main(void)
       const uint16_t state = gpio_port_read(Pin_sw_1.Port);
       const uint16_t pinMask = Pin_sw_1.Pin | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
       if ((state ^ lastState) & pinMask) {
-	if (~state & Pin_sw_1.Pin) {
+	if (state & Pin_sw_1.Pin) {
 	  Gui.Event(KEY_OK);
-	} else if (~state & Pin_sw_2.Pin) {
+	} else if (state & Pin_sw_2.Pin) {
 	  Gui.Event(KEY_UP);
-	} else if (~state & Pin_sw_3.Pin) {
+	} else if (state & Pin_sw_3.Pin) {
 	  Gui.Event(KEY_DOWN);
-	} else if (~state & Pin_sw_4.Pin) {
+	} else if (state & Pin_sw_4.Pin) {
 	  Gui.Event(KEY_BACK);
 	}
       }
