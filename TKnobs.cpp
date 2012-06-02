@@ -5,24 +5,18 @@
 
 TKnobs::TKnobs()
 {
-  /*
-  for (int i = 0; i < Knobs; i++) {
-    LedIntensity[0][i] = i*(256/Knobs);
-    LedIntensity[1][i] = 256 - i*(256/Knobs);
-  }
-  */
-  LedIntensity[0][0] = 100;
-  LedIntensity[1][0] = 100;
-  LedIntensity[0][1] = 100;
-  LedIntensity[1][1] = 100;
-  LedIntensity[0][2] = 100;
-  LedIntensity[1][2] = 100;
-  LedIntensity[0][3] = 100;
-  LedIntensity[1][3] = 100;
+  LedIntensity[COLOR_RED][0] = 0;
+  LedIntensity[COLOR_GREEN][0] = 0;
+  LedIntensity[COLOR_RED][1] = 0;
+  LedIntensity[COLOR_GREEN][1] = 0;
+  LedIntensity[COLOR_RED][2] = 0;
+  LedIntensity[COLOR_GREEN][2] = 0;
+  LedIntensity[COLOR_RED][3] = 0;
+  LedIntensity[COLOR_GREEN][3] = 0;
   CurrentPwmStep = 0;
 
-  SwitchData[0] = 0xaa;
-  SwitchData[1] = 0xaa;
+  SwitchData[0] = 0;
+  SwitchData[1] = 0;
 }
 
 void TKnobs::InitDma()
@@ -67,6 +61,11 @@ void TKnobs::StartShifting()
   Pin_shift_out_en.Clear();
   Pin_shift_out_load.Clear();
 
+  Pin_shift_in_en.Set();
+  Pin_shift_in_load.Clear();
+  Pin_shift_in_en.Clear();
+  Pin_shift_in_load.Set();
+
 #ifndef HOST
   DMA_CCR(dma, rxchannel) = (DMA_CCR_PL_HIGH | // prio
 			     DMA_CCR_MSIZE_8BIT |
@@ -110,34 +109,45 @@ void TKnobs::StartShifting()
   CurrentPwmStep++;
 }
 
+/*
+ * detent  V           V            V
+ *   --------.     .-----.     .------.
+ * A         |     |     |     |      |
+ *           ^-----^     ^-----^      ^-----
+ *   -----------.     .-----.     .---------
+ * B            |     |     |     |
+ *              ^-----^     ^-----^
+ *
+ */
 void TKnobs::Poll()
 {
   /// \todo This is probably stupid.
 
   TEncoderBits data;
-  data.EncoderA = ((SwitchData[0] & 0x80) >> 4) |
-    ((SwitchData[0] & 0x20) >> 3) |
-    ((SwitchData[0] & 0x08) >> 2) |
-    ((SwitchData[0] & 0x02) >> 1);
-  data.EncoderB = ((SwitchData[0] & 0x40) >> 3) |
-    ((SwitchData[0] & 0x10) >> 2) |
-    ((SwitchData[0] & 0x04) >> 1) |
-    ((SwitchData[0] & 0x01) >> 0);
+  data.EncoderA = ((SwitchData[0] & 0x80) >> 7) |
+    ((SwitchData[0] & 0x20) >> 4) |
+    ((SwitchData[0] & 0x08) >> 1) |
+    ((SwitchData[0] & 0x02) << 2);
+  data.EncoderB = ((SwitchData[0] & 0x40) >> 6) |
+    ((SwitchData[0] & 0x10) >> 3) |
+    ((SwitchData[0] & 0x04) >> 0) |
+    ((SwitchData[0] & 0x01) << 3);
   data.Button = SwitchData[1];
 
-  const uint16_t edgesA = data.EncoderA ^ LastEncoderData.EncoderA;
-  //const uint16_t edgesB = data.EncoderB ^ LastEncoderData.EncoderB;
+  //const uint16_t edgesA = data.EncoderA ^ LastEncoderData.EncoderA;
+  const uint16_t edgesB = data.EncoderB ^ LastEncoderData.EncoderB;
 
-  if (edgesA) {
-    for (int i = 0; i < Knobs; i++) {
-      if (edgesA & (1 << i)) {
-	if (data.EncoderB & (1 << i)) {
-	  Controllers.IncreaseValue(i, 1);
-	} else {
-	  Controllers.DecreaseValue(i, 1);
+  if (edgesB) {
+    for (int i = 0; i < Knobs; i++) { // for each encoder
+      if (!(data.EncoderA & (1 << i))) { // if A is low
+	if (edgesB & (1 << i)) { // B changed
+	  if (data.EncoderB & (1 << i)) { // B went high
+	    Controllers.DecreaseValue(i, 1);
+	  } else { // B went low
+	    Controllers.IncreaseValue(i, 1);
+	  }
 	}
       }
-      // ... other cases. FIXME: Make this not an if jungle.
     }
   }
 

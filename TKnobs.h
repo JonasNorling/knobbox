@@ -22,6 +22,10 @@ public:
   static const uint8_t Knobs = 4;
   /// Number of bytes we need to shift for LEDs and encoders
   static const uint8_t ShiftLength = 2;
+  enum Color {
+    COLOR_RED = 0,
+    COLOR_GREEN = 1
+  };
 
   TKnobs();
   void InitDma();

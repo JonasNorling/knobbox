@@ -30,6 +30,8 @@ public:
   void IncreaseValue(int knob, uint8_t v) {
     Values[knob] += v;
     if (Values[knob] > MAX) Values[knob] = MAX;
+    Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 255-2*Values[knob];
+    Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = 2*Values[knob];
     SendMidi(knob);
     Gui.UpdateLine(3);
     Gui.UpdateLine(4);
@@ -37,6 +39,8 @@ public:
   void DecreaseValue(int knob, uint8_t v) {
     Values[knob] -= v;
     if (Values[knob] > MAX) Values[knob] = MIN;
+    Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 255-2*Values[knob];
+    Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = 2*Values[knob];
     SendMidi(knob);
     Gui.UpdateLine(3);
     Gui.UpdateLine(4);

@@ -101,30 +101,6 @@ void sys_tick_handler(void)
   if (!(SystemTime % 128)) {
     Actions |= ACTION_BLINK_TIMER;
   }
-  if (!(SystemTime % 4)) {
-    static uint16_t s = 0;
-    s = (s + 1) & 0x3ff;
-    for (int i=0; i < Knobs.Knobs; i++) {
-      switch (s >> 8) {
-      case 0:
-	Knobs.LedIntensity[0][i] = s;
-	Knobs.LedIntensity[1][i] = 0;
-	break;
-      case 1:
-	Knobs.LedIntensity[0][i] = 0;
-	Knobs.LedIntensity[1][i] = 0x100-s;
-	break;
-      case 2:
-	Knobs.LedIntensity[0][i] = s;
-	Knobs.LedIntensity[1][i] = s;
-	break;
-      case 3:
-	Knobs.LedIntensity[0][i] = 0x100-s;
-	Knobs.LedIntensity[1][i] = 0x100-s;
-	break;
-      }
-    }
-  }
   Actions |= ACTION_POLL_BUTTONS;
 }
 
