@@ -22,7 +22,7 @@ TMidi Midi;
 TMemory Memory;
 TControllers Controllers;
 
-void dma1_channel3_isr()
+void dma1_channel2_isr()
 {
 }
 

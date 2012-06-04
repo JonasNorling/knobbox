@@ -32,3 +32,9 @@ inline static void render_uint(char* pt, uint32_t n, size_t fieldsize)
     pt[fieldsize-1] = '0' + (n % (10*value)) / value;
   }
 }
+
+inline static void render_hexbyte(char* pt, uint8_t n)
+{
+  pt[0] = (n >> 4) < 0xa ? (n >> 4) + '0' : (n >> 4 ) - 0xa + 'a';
+  pt[1] = (n & 0xf) < 0xa ? (n & 0xf) + '0' : (n & 0xf) - 0xa + 'a';
+}

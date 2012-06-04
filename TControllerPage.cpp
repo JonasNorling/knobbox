@@ -56,25 +56,16 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   }
   else if (n == 7) {
     char text[20];
-    cheap_strcpy(text, "\033=     USB  MIDI");
-    render_uint(text+2, Sequencer.GetTempo(), 3);
+    cheap_strcpy(text, "Flash=");
+    render_hexbyte(text + 6, Memory.Data()[0]);
+    render_hexbyte(text + 8, Memory.Data()[1]);
+    render_hexbyte(text +10, Memory.Data()[2]);
+    render_hexbyte(text +12, Memory.Data()[3]);
+    render_hexbyte(text +14, Memory.Data()[4]);
+    text[16] = '\0';
+
     line->DrawText(text, LeftMargin);
     line->Invert(0, line->GetLength());
-
-    /*
-    int i = -1;
-    line->Data[20 + i*4 + 2] = 0xff;
-    line->Data[20 + i*4 + 3] = 0xff;
-    for (i = 0; i < 16; i++) {
-      if (Knobs.SwitchData[i / 8] & (1 << (i % 8))) {
-	line->Data[20 + i*4    ] = 0x3c;
-	line->Data[20 + i*4 + 1] = 0x3c;
-	line->Data[20 + i*4 + 2] = 0x3c;
-      }
-    }
-    line->Data[20 + i*4   ] = 0xff;
-    line->Data[20 + i*4 + 1] = 0xff;
-    */
   }
 }
 

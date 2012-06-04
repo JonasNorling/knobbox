@@ -1,6 +1,7 @@
 /* -*- c++ -*- */
 #pragma once
 
+#include "TSpiDmaJob.h"
 #include <cstdint>
 
 /*
@@ -106,14 +107,15 @@ struct TSequencerScene
  *
  * Status: Just a dummy.
  */
-class TMemory
+class TMemory : public IDmaCallback
 {
 public:
   TMemory() : CachedBlockNo(0) {}
   void GetVariable();
   void GetIntSetting();
 
-  void FetchBlock(uint8_t n) { (void)n; }
+  void FetchBlock(uint8_t n);
+  uint8_t* Data() { return CachedBlock; }
 
   static const uint8_t BLOCK_PRODPARAM = 0;
   static const uint8_t BLOCK_SETTINGS = 1;
@@ -122,11 +124,17 @@ public:
   static const uint8_t BLOCK_FIRST_PARAM_SCENE = 32;
   static const uint8_t BLOCK_FIRST_SEQ_SCENE = 64;
 
+  /* IDmaCallback */
+
+  virtual void DmaFinished(void* context);
+
 private:
   static const uint32_t BlockSize = 4096;
+  static const uint32_t CommandSize = 6;
 
   uint8_t CachedBlock[BlockSize];
   uint8_t CachedBlockNo;
+  uint8_t CommandBuffer[CommandSize];
 };
 
 extern TMemory Memory;

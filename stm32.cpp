@@ -41,6 +41,7 @@ void deviceInit()
   Pin_lcd_a0.SetOutput();
   Pin_lcd_cs.SetOutput();
   Pin_lcd_rst.SetOutput();
+  Pin_flash_cs.SetOutput();
   Pin_shift_out_load.SetOutput();
   Pin_shift_out_en.SetOutput();
   Pin_shift_in_load.SetOutput();
@@ -59,8 +60,6 @@ void deviceInit()
   // SPI
   Pin_spi_mosi.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
 			 GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
-  //Pin_spi_miso.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
-  //                       GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
   Pin_spi_sck.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
 			GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
 
@@ -138,6 +137,10 @@ void deviceInit()
   // SPI DMA transmission done interrupt
   nvic_set_priority(NVIC_DMA1_CHANNEL3_IRQ, 4);
   nvic_enable_irq(NVIC_DMA1_CHANNEL3_IRQ);
+
+  // SPI DMA reception done interrupt
+  nvic_set_priority(NVIC_DMA1_CHANNEL2_IRQ, 4);
+  nvic_enable_irq(NVIC_DMA1_CHANNEL2_IRQ);
 
   // Shift register USART DMA transmission done interrupt
   nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 4);

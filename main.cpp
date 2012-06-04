@@ -64,11 +64,12 @@ volatile static uint8_t Actions; // Signalling from interrupts to bottom halves
 static const uint8_t ACTION_POLL_BUTTONS = 0x01;
 static const uint8_t ACTION_BLINK_TIMER = 0x02;
 
-/** DMA channel 1:3 -- SPI1_TX (display and flash) */
-void dma1_channel3_isr(void)
+
+/** DMA channel 1:2 -- SPI1_RX (display and flash) */
+void dma1_channel2_isr(void)
 {
 #ifndef HOST
-  dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL3);
+  dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL2);
   dma_disable_channel(DMA1, DMA_CHANNEL3);
   spi_disable_tx_dma(SPI1);
 
@@ -122,6 +123,7 @@ int main(void)
   // without issuing a hard reset.
   systick_interrupt_disable();
   systick_counter_disable();
+  nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
   nvic_disable_irq(NVIC_DMA1_CHANNEL3_IRQ);
   nvic_disable_irq(NVIC_DMA1_CHANNEL4_IRQ);
   nvic_disable_irq(NVIC_DMA1_CHANNEL5_IRQ);
@@ -138,8 +140,6 @@ int main(void)
   DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
 #endif
 
-  Pin_vpullup.Clear();
-
   // Use placement new to run the constructors of static objects,
   // because libopencm3's crt0 and linker scripts aren't made for C++.
   Mode = MODE_CONTROLLER;
@@ -154,13 +154,21 @@ int main(void)
 
   /// \todo We should wake up in some kind of low power mode.
   clockInit();
+
+  Pin_vpullup.Clear();
+  // Chip selects are active-low.
+  Pin_flash_cs.Set();
+  Pin_lcd_cs.Set();
+
   deviceInit();
 
   delay_ms(5);
+
+  Memory.FetchBlock(TMemory::BLOCK_PRODPARAM);
+
   Display.Init();
   //Display.Power(true);
 
-  Memory.FetchBlock(TMemory::BLOCK_PRODPARAM);
   Knobs.InitDma();
   Knobs.StartShifting();
   Sequencer.StartTimer();
@@ -169,14 +177,18 @@ int main(void)
 
   while (true) {
     /* Interrupt "bottom half" processing */
+#ifndef HOST
+    /* We disable the interrupt here to protect DmaEvents, but also
+       because it doesn't work otherwise (which is a bit scary). */
+    nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
     if (DmaEvents) {
-      /// \todo race condition? Is there a test-and-decrement
-      /// instruction?
       DmaEvents--;
       SpiDmaQueue.Finished();
     } else {
       SpiDmaQueue.TryStartJob();
     }
+    nvic_enable_irq(NVIC_DMA1_CHANNEL2_IRQ);
+#endif
 
     /* Poll switches */
     if (Actions & ACTION_POLL_BUTTONS) {
