@@ -2,6 +2,8 @@
 #include "TDisplay.h"
 #include "TBitmask.h"
 #include "TSeqPage.h"
+#include "TControllers.h"
+#include "TSequencer.h"
 
 /*
 void TGui::DrawCharmap()
@@ -29,7 +31,7 @@ void TTopMenu::Render(uint8_t n __attribute__((unused)),
 		      TDisplay::TPageBuffer* line)
 {
   int pos = 3;
-  const int selected = Gui.GetCurrentPage();
+  const int selected = Mode;
   const char* strings[3] = {"CTRL", "SEQ", "SETUP"};
   int shadestart = 0;
   int shadeend = 0;
@@ -55,18 +57,17 @@ void TTopMenu::Render(uint8_t n __attribute__((unused)),
 
 void TTopMenu::Event(TEvent event)
 {
-  uint8_t page = Gui.GetCurrentPage();
   switch (event) {
   case KEY_OK:
-    if (page != TGui::PAGE_LAST) {
-      page++;
-      Gui.SetPage(static_cast<TGui::TPage>(page));
+    if (Mode != MODE_LAST) {
+      Mode++;
+      Gui.SetPage();
     }
     break;
   case KEY_BACK:
-    if (page != TGui::PAGE_FIRST) {
-      page--;
-      Gui.SetPage(static_cast<TGui::TPage>(page));
+    if (Mode != MODE_FIRST) {
+      Mode--;
+      Gui.SetPage();
     }
     break;
   case KEY_DOWN:
@@ -157,20 +158,21 @@ TGui::TGui() :
   DirtyLines(TBitmask::Init(Lines)),
   Focus(FOCUS_MENU)
 {
-  SetPage(PAGE_SEQ);
+  SetPage();
 }
 
-void TGui::SetPage(TPage page)
+void TGui::SetPage()
 {
-  CurrentPage = page;
-  switch (page) {
-  case PAGE_CONTROLLER:
+  switch (Mode) {
+  case MODE_CONTROLLER:
     static_assert(sizeof(TControllerPage) <= sizeof(CurrentPageObject), "Too large object");
     new(CurrentPageObject) TControllerPage();
+    Controllers.UpdateKnobs();
     break;
   default:
     static_assert(sizeof(TSeqPage) <= sizeof(CurrentPageObject), "Too large object");
     new(CurrentPageObject) TSeqPage();
+    Sequencer.UpdateKnobs();
     break;
   }
   UpdateAll();

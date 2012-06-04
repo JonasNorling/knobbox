@@ -18,10 +18,13 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   else if (n == 3) {
     char text[9];
     cheap_strcpy(text, "step xx:");
-    render_uint(text+5, CurrentStep + 1, 2);
+    render_uint(text+5, Sequencer.ActiveStep + 1, 2);
     pos = line->DrawText(text, pos, Focus == FOCUS_STEP && !Blink);
     pos = line->Advance(pos);
-    pos = line->DrawText("Eb3\022", pos, Focus == FOCUS_NOTE);
+
+    cheap_strcpy(text, "N=xxx");
+    render_uint(text+2, Sequencer.Scenes[0].Data[Sequencer.ActiveStep].Note, 3);
+    pos = line->DrawText(text, pos, Focus == FOCUS_NOTE);
   }
   else if (n == 4) {
     line->DrawText("action: start S2", LeftMargin, Focus == FOCUS_ACTION);
@@ -59,7 +62,7 @@ void TSeqPage::Event(TEvent event)
     if (Selected) {
       switch (Focus) {
       case FOCUS_STEP:
-	CurrentStep--;
+	Sequencer.ActiveStep--;
 	break;
       }
     } else if (Focus < FOCUS_LAST) {
@@ -70,7 +73,7 @@ void TSeqPage::Event(TEvent event)
     if (Selected) {
       switch (Focus) {
       case FOCUS_STEP:
-	CurrentStep++;
+	Sequencer.ActiveStep++;
 	break;
       }
     } else {

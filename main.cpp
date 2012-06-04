@@ -48,6 +48,7 @@
  * \endverbatim
  */
 
+int Mode;
 TDisplay Display;
 TSpiDmaQueue SpiDmaQueue;
 TGui Gui;
@@ -141,6 +142,7 @@ int main(void)
 
   // Use placement new to run the constructors of static objects,
   // because libopencm3's crt0 and linker scripts aren't made for C++.
+  Mode = MODE_CONTROLLER;
   new(&Display) TDisplay();
   new(&SpiDmaQueue) TSpiDmaQueue();
   new(&Gui) TGui();

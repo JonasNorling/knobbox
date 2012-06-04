@@ -39,13 +39,7 @@ public:
     Bits((chip << 1) | lcdCd)
   { }
 
-  void Finished() const
-  {
-    if (Callback) {
-      Callback->DmaFinished(Context);
-    }
-  }
-
+  void Finished() const;
   const TBuffer& GetBuffer() const { return Buffer; }
   TChip GetChip() const { return static_cast<TChip>(Bits >> 1); }
   TLcdCd GetLcdData() const { return static_cast<TLcdCd>(Bits & 1); }
@@ -60,7 +54,7 @@ private:
 class TSpiDmaQueue
 {
 public:
-  TSpiDmaQueue() { }
+  TSpiDmaQueue();
   
   bool Enqueue(const TSpiDmaJob& job);
   void TryStartJob();

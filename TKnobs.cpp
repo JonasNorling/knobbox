@@ -1,6 +1,7 @@
 #include "TKnobs.h"
 #include "TGui.h"
 #include "TControllers.h"
+#include "TSequencer.h"
 #include "device.h"
 
 TKnobs::TKnobs()
@@ -141,11 +142,24 @@ void TKnobs::Poll()
     for (int i = 0; i < Knobs; i++) { // for each encoder
       if (!(data.EncoderA & (1 << i))) { // if A is low
 	if (edgesB & (1 << i)) { // B changed
-	  if (data.EncoderB & (1 << i)) { // B went high
-	    Controllers.DecreaseValue(i, 1);
-	  } else { // B went low
-	    Controllers.IncreaseValue(i, 1);
+
+	  /// \todo This should probably be sent through the GUI code,
+	  /// and made overall less cryptic.
+	  if (Mode == MODE_CONTROLLER) {
+	    if (data.EncoderB & (1 << i)) { // B went high
+	      Controllers.DecreaseValue(i, 1);
+	    } else { // B went low
+	      Controllers.IncreaseValue(i, 1);
+	    }
 	  }
+	  else if (Mode == MODE_SEQ) {
+	    if (data.EncoderB & (1 << i)) { // B went high
+	      Sequencer.DecreaseValue(i, 1);
+	    } else { // B went low
+	      Sequencer.IncreaseValue(i, 1);
+	    }
+	  }
+
 	}
       }
     }

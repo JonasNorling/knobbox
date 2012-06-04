@@ -1,5 +1,9 @@
 #include "TSpiDmaJob.h"
 
+TSpiDmaQueue::TSpiDmaQueue()
+{
+}
+
 bool TSpiDmaQueue::Enqueue(const TSpiDmaJob& job)
 {
   if (Jobs.Add(job)) {
@@ -57,4 +61,11 @@ void TSpiDmaQueue::TryStartJob()
     spi_enable_tx_dma(SPI1);
   }
 #endif
+}
+
+void TSpiDmaJob::Finished() const
+{
+  if (Callback) {
+    Callback->DmaFinished(Context);
+  }
 }

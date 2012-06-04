@@ -81,18 +81,23 @@ struct TSequencerScene
   uint8_t Key;
   uint8_t TriggerKey;
   uint8_t Mode;
-  uint8_t StepLength; /// Probably 1 for whole note, 4 for quarter...
+  /// Number of minor ticks to advance per beat clock event. 1 ->
+  /// whole note, 2 -> half note, 3 -> dotted quarter, 4 -> quarter, ...
+  uint8_t StepLength;
+  uint8_t Steps;
   uint8_t Cc;
 
   struct {
+    static const uint32_t FLAG_ON = 0x01;
+
+    uint8_t Flags;
     uint8_t Note;
-    uint8_t Len; /// In 48'ths of StepLength or someting...
+    uint8_t Len; ///< In 48'ths of StepLength or something...
     uint8_t Velocity;
-    uint8_t Offset; /// In 48'ths of StepLength or someting...
+    uint8_t Offset; ///< In 48'ths of StepLength or something...
     uint8_t Cc;
     uint8_t Action;
     uint8_t Reserved1;
-    uint8_t Reserved2;
   } Data[SEQLEN];
 };
 

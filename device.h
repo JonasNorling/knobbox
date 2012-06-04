@@ -65,3 +65,14 @@ void deviceInit();
 static inline void delay_ms(unsigned n) {
   for (unsigned i=0; i < n*7000; i++) __asm__("nop");
 }
+
+enum TMode {
+  MODE_FIRST = 0,
+
+  MODE_CONTROLLER = 0,
+  MODE_SEQ = 1,
+  MODE_SETTINGS = 2,
+
+  MODE_LAST = MODE_SETTINGS
+};
+extern int Mode;
