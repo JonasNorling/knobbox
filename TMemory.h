@@ -114,8 +114,10 @@ public:
   void GetVariable();
   void GetIntSetting();
 
+  void ReadStatus();
+  void Identify();
   void FetchBlock(uint8_t n);
-  uint8_t* Data() { return CachedBlock; }
+  uint8_t* GetCachedBlock() { return CachedBlock; }
 
   static const uint8_t BLOCK_PRODPARAM = 0;
   static const uint8_t BLOCK_SETTINGS = 1;
@@ -123,18 +125,21 @@ public:
   static const uint8_t BLOCK_FIRST_INSTRUMENT = 16;
   static const uint8_t BLOCK_FIRST_PARAM_SCENE = 32;
   static const uint8_t BLOCK_FIRST_SEQ_SCENE = 64;
+  static const uint8_t BLOCK_DEVICE_ID = 0xfe;
+  static const uint8_t BLOCK_STATUS_REG = 0xff;
 
   /* IDmaCallback */
-
   virtual void DmaFinished(void* context);
 
 private:
   static const uint32_t BlockSize = 4096;
-  static const uint32_t CommandSize = 6;
+  static const uint32_t CommandSize = 4;
 
+  /// The command is put at the end of this buffer, so the data is
+  /// written to CachedBlock. Do not rearrange these.
+  uint8_t CommandBuffer[CommandSize];
   uint8_t CachedBlock[BlockSize];
   uint8_t CachedBlockNo;
-  uint8_t CommandBuffer[CommandSize];
 };
 
 extern TMemory Memory;

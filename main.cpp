@@ -164,6 +164,8 @@ int main(void)
 
   delay_ms(5);
 
+  //Memory.Identify();
+  //Memory.ReadStatus();
   Memory.FetchBlock(TMemory::BLOCK_PRODPARAM);
 
   Display.Init();
