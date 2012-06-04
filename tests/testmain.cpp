@@ -12,6 +12,7 @@
 #include "TMemory.h"
 #include "TControllers.h"
 
+int Mode;
 TDisplay Display;
 TSpiDmaQueue SpiDmaQueue;
 TGui Gui;

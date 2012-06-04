@@ -41,7 +41,6 @@ public:
   /// Release a bit, so the FindFree will find it.
   static void Release(uint8_t& mask, const uint8_t& bit)
   {
-    assert(!(mask & (1 << bit)));
     mask |= (1 << bit);
   }
 
