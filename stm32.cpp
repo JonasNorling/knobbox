@@ -7,7 +7,8 @@
 void clockInit()
 {
   /// \todo Want to run at 48 MHz.
-  rcc_clock_setup_in_hse_8mhz_out_24mhz();
+  //rcc_clock_setup_in_hse_8mhz_out_24mhz();
+  rcc_clock_setup_in_hsi_out_48mhz();
 
   /*
    * Systick timer striking every 1ms (1kHz):
@@ -28,6 +29,7 @@ void clockInit()
   rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_USART1EN); // USART1
   rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_USART2EN); // USART2
   rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN); // TIM2
+  rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_OTGFSEN); // USB
 }
 
 

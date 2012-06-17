@@ -7,6 +7,7 @@
 #include "TMidi.h"
 #include "TMemory.h"
 #include "TControllers.h"
+#include "TUsb.h"
 #include <new>
 
 /**
@@ -57,6 +58,7 @@ TSequencer Sequencer;
 TMidi Midi;
 TMemory Memory;
 TControllers Controllers;
+TUsb Usb;
 
 volatile uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
 volatile static uint8_t DmaEvents = 0;
@@ -151,6 +153,7 @@ int main(void)
   new(&Midi) TMidi();
   new(&Memory) TMemory();
   new(&Controllers) TControllers();
+  new(&Usb) TUsb();
 
   /// \todo We should wake up in some kind of low power mode.
   clockInit();
@@ -170,6 +173,7 @@ int main(void)
 
   Display.Init();
   //Display.Power(true);
+  Usb.Init();
 
   Knobs.InitDma();
   Knobs.StartShifting();
@@ -220,6 +224,8 @@ int main(void)
       Actions &= ~ACTION_BLINK_TIMER;
       Gui.Event(BLINK_TIMER);
     }
+
+    Usb.Poll();
 
     /* Update things */
     Gui.Process();

@@ -15,6 +15,8 @@ extern "C" {
 #include <f1/gpio.h>
 #include <f1/dma.h>
 #include <timer.h>
+#include <libopencm3/usb/usbd.h>
+#include <libopencm3/usb/cdc.h>
 
 #ifdef __cplusplus
 }

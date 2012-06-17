@@ -40,6 +40,6 @@ void TControllers::Load()
   cheap_strcpy(Scene.Knobs[3].Name, "FX2 mix");
 
   for (int i = 0; i < 4; i++) {
-    SetValue(i, i*32);
+    SetValue(i, 0);
   }
 }

@@ -8,6 +8,7 @@ SRCS += TMemory.cpp
 SRCS += TSequencer.cpp
 SRCS += TSeqPage.cpp
 SRCS += TSpiDmaJob.cpp
+SRCS += TUsb.cpp
 ARM_SRCS += main.cpp
 ARM_SRCS += stm32.cpp
 HOST_SRCS += main.cpp
