@@ -117,7 +117,6 @@ void tim2_isr(void)
   Sequencer.Step();
 }
 
-
 int main(void)
 {
 #ifndef HOST

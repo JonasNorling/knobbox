@@ -9,6 +9,7 @@ SRCS += TSequencer.cpp
 SRCS += TSeqPage.cpp
 SRCS += TSpiDmaJob.cpp
 SRCS += TUsb.cpp
+ARM_C_SRCS += usbmidi.c
 ARM_SRCS += main.cpp
 ARM_SRCS += stm32.cpp
 HOST_SRCS += main.cpp
@@ -31,7 +32,7 @@ ARMLD = $(PREFIX)-gcc
 ARMOBJCOPY = $(PREFIX)-objcopy
 ARMOBJDUMP = $(PREFIX)-objdump
 
-ARM_LDFLAGS += -lopencm3_stm32f1
+ARM_LDFLAGS += -L$(TOOLCHAIN)/newopencm3/arm-none-eabi/lib -lopencm3_stm32f1
 ARM_LDFLAGS += -lc -lnosys -nostartfiles -Wl,--gc-sections -lstdc++
 ARM_LDFLAGS += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
 ARM_LDFLAGS += -Tstm32vl-discovery.ld
@@ -39,7 +40,8 @@ ARM_LDFLAGS += -Tstm32vl-discovery.ld
 ARM_COMMONFLAGS += -I. -Os -fno-common -g
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
 ARM_COMMONFLAGS += -Wall -Wextra
-ARM_COMMONFLAGS += -I$(TOOLCHAIN)/arm-none-eabi/include/libopencm3/stm32
+#ARM_COMMONFLAGS += -I$(TOOLCHAIN)/arm-none-eabi/include/
+ARM_COMMONFLAGS += -I$(TOOLCHAIN)/newopencm3/arm-none-eabi/include/
 HOST_COMMONFLAGS += -I. -O0 -fno-common -g -Wall -Wextra -DHOST
 
 CFLAGS += -std=c99 -Werror-implicit-function-declaration
@@ -48,6 +50,7 @@ CXXFLAGS += -std=c++0x -fno-exceptions -fno-rtti
 
 ARM_OBJS += $(SRCS:%.cpp=$(BUILDDIR)/%.o)
 ARM_OBJS += $(ARM_SRCS:%.cpp=$(BUILDDIR)/%.o)
+ARM_OBJS += $(ARM_C_SRCS:%.c=$(BUILDDIR)/%.o)
 HOST_OBJS += $(SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 HOST_OBJS += $(HOST_SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 TEST_OBJS += $(SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
