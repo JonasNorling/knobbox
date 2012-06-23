@@ -4,6 +4,7 @@
  */
 
 #include <libopencm3/usb/usbd.h>
+#include "TUsb.h"
 
 static const struct usb_device_descriptor dev = {
   .bLength = USB_DT_DEVICE_SIZE,
@@ -35,13 +36,13 @@ static const struct usb_midi_endpoint_descriptor midi_ep_extra[2] = {{
     .bDescriptorType = 0x25, // CS_ENDPOINT
     .bDescriptorSubType = 0x01, // MS_GENERAL
     .bNumEmbMIDIJack = 1,
-    .BaAssocJackID = { 1 }
+    .BaAssocJackID = { 2 }
   }, {
     .bLength = sizeof(struct usb_midi_endpoint_descriptor),
     .bDescriptorType = 0x25, // CS_ENDPOINT
     .bDescriptorSubType = 0x01, // MS_GENERAL
     .bNumEmbMIDIJack = 1,
-    .BaAssocJackID = { 2 }
+    .BaAssocJackID = { 1 }
   }
 };
 
@@ -57,12 +58,12 @@ static const struct usb_endpoint_descriptor midi_endpoints[] = {{
   }, {
     .bLength = USB_DT_ENDPOINT_SIZE,
     .bDescriptorType = USB_DT_ENDPOINT,
-    .bEndpointAddress = 0x81,
+    .bEndpointAddress = 0x82,
     .bmAttributes = USB_ENDPOINT_ATTR_BULK,
     .wMaxPacketSize = 64,
     .bInterval = 0,
     .extra = &midi_ep_extra[1],
-    .extralen = 0//sizeof(struct usb_midi_endpoint_descriptor)
+    .extralen = sizeof(struct usb_midi_endpoint_descriptor)
   }};
 
 struct usb_audio_class_descriptor_header {
@@ -207,12 +208,16 @@ static const char *usb_strings[] = {
 static int ControlRequest(struct usb_setup_data *req, u8 **buf, u16 *len,
 			  void (**complete)(struct usb_setup_data *req))
 {
+  (void)req;
+  (void)buf;
+  (void)len;
+  (void)complete;
   return 0;
 }
 
 static void SetConfig(uint16_t value __attribute__((unused)))
 {
-  usbd_ep_setup(0x01, USB_ENDPOINT_ATTR_BULK, 64, 0);
+  usbd_ep_setup(0x01, USB_ENDPOINT_ATTR_BULK, 64, UsbDataCallback);
   usbd_ep_setup(0x82, USB_ENDPOINT_ATTR_BULK, 64, 0);
 
   usbd_register_control_callback(USB_REQ_TYPE_CLASS | USB_REQ_TYPE_INTERFACE,
