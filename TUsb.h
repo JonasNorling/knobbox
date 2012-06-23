@@ -1,6 +1,8 @@
 /* -*- c++ -*- */
 #pragma once
 
+#define MIDI_EP_MAX_SIZE 32
+
 #ifdef __cplusplus
 #include "device.h"
 

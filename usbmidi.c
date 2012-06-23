@@ -51,7 +51,7 @@ static const struct usb_endpoint_descriptor midi_endpoints[] = {{
     .bDescriptorType = USB_DT_ENDPOINT,
     .bEndpointAddress = 0x01,
     .bmAttributes = USB_ENDPOINT_ATTR_BULK,
-    .wMaxPacketSize = 64,
+    .wMaxPacketSize = MIDI_EP_MAX_SIZE,
     .bInterval = 0,
     .extra = &midi_ep_extra[0],
     .extralen = sizeof(struct usb_midi_endpoint_descriptor)
@@ -60,7 +60,7 @@ static const struct usb_endpoint_descriptor midi_endpoints[] = {{
     .bDescriptorType = USB_DT_ENDPOINT,
     .bEndpointAddress = 0x82,
     .bmAttributes = USB_ENDPOINT_ATTR_BULK,
-    .wMaxPacketSize = 64,
+    .wMaxPacketSize = MIDI_EP_MAX_SIZE,
     .bInterval = 0,
     .extra = &midi_ep_extra[1],
     .extralen = sizeof(struct usb_midi_endpoint_descriptor)
@@ -217,8 +217,8 @@ static int ControlRequest(struct usb_setup_data *req, u8 **buf, u16 *len,
 
 static void SetConfig(uint16_t value __attribute__((unused)))
 {
-  usbd_ep_setup(0x01, USB_ENDPOINT_ATTR_BULK, 64, UsbDataCallback);
-  usbd_ep_setup(0x82, USB_ENDPOINT_ATTR_BULK, 64, 0);
+  usbd_ep_setup(0x01, USB_ENDPOINT_ATTR_BULK, MIDI_EP_MAX_SIZE, UsbDataCallback);
+  usbd_ep_setup(0x82, USB_ENDPOINT_ATTR_BULK, MIDI_EP_MAX_SIZE, 0);
 
   usbd_register_control_callback(USB_REQ_TYPE_CLASS | USB_REQ_TYPE_INTERFACE,
 				 USB_REQ_TYPE_TYPE | USB_REQ_TYPE_RECIPIENT,
