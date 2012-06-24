@@ -3,6 +3,18 @@
 #include "TGui.h"
 #include "utils.h"
 
+const TSeqPage::eventhandler_t TSeqPage::EventHandler[FOCUS_LAST + 1] = {
+  0,
+  0,
+  0,
+  &TSeqPage::EventHandlerStep,
+  0,
+  0,
+  &TSeqPage::EventHandlerVelo,
+  &TSeqPage::EventHandlerLen,
+  &TSeqPage::EventHandlerOffset,
+  0 };
+
 void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 {
   uint8_t pos = LeftMargin;
@@ -18,27 +30,35 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   else if (n == 3) {
     char text[9];
     cheap_strcpy(text, "step xx:");
-    render_uint(text+5, Sequencer.ActiveStep + 1, 2);
+    render_uint(text+5, CurrentStep + 1, 2);
     pos = line->DrawText(text, pos, Focus == FOCUS_STEP && !Blink);
     pos = line->Advance(pos);
 
-    cheap_strcpy(text, "N=xxx");
-    render_uint(text+2, Sequencer.Scenes[0].Data[Sequencer.ActiveStep].Note, 3);
-    pos = line->DrawText(text, pos, Focus == FOCUS_NOTE);
+    pos = line->DrawText(TSequencer::NoteName(Sequencer.Scenes[0].Data[CurrentStep].Note),
+			 pos, Focus == FOCUS_NOTE);
   }
   else if (n == 4) {
     line->DrawText("action: start S2", LeftMargin, Focus == FOCUS_ACTION);
   }
   else if (n == 5) {
-    pos = line->DrawText("velo 097", pos, Focus == FOCUS_VELO);
+    char text[9];
+    cheap_strcpy(text, "velo xxx");
+    render_uint(text+5, Sequencer.Scenes[0].Data[CurrentStep].Velocity, 3);
+    pos = line->DrawText(text, pos, Focus == FOCUS_VELO && !Blink);
     pos = line->Advance(pos);
-    pos = line->DrawText("len \033", pos, Focus == FOCUS_LEN);
+
+    cheap_strcpy(text, "len xxx");
+    render_uint(text+4, Sequencer.Scenes[0].Data[CurrentStep].Len, 3);
+    pos = line->DrawText(text, pos, Focus == FOCUS_LEN && !Blink);
   }
   else if (n == 6) {
-    pos = line->DrawText("offs +0", pos, Focus == FOCUS_OFFSET);
+    char text[9];
+    cheap_strcpy(text, "offs xxx");
+    render_uint(text+5, Sequencer.Scenes[0].Data[CurrentStep].Offset, 3);
+    pos = line->DrawText(text, pos, Focus == FOCUS_OFFSET && !Blink);
+
     pos = line->Advance(pos);
-    pos = line->Advance(pos);
-    pos = line->DrawText("CC 034", pos, Focus == FOCUS_CC);
+    pos = line->DrawText("CC 034", pos, Focus == FOCUS_CC && !Blink);
   }
   else if (n == 7) {
     char text[20];
@@ -51,36 +71,26 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 
 void TSeqPage::Event(TEvent event)
 {
-  /// \todo This will get a bit messy if we keep on this way. There's
-  /// probably a splendid design pattern that I won't use...
   Gui.UpdateAll();
-  switch (event) {
+
+  eventhandler_t fn = EventHandler[Focus];
+  if (fn && (this->*fn)(event)) {
+    return;
+  }
+
+  switch (event_code(event)) {
   case RECEIVE_FOCUS:
     Focus = FOCUS_SETUPMENU;
     break;
   case KEY_DOWN:
-    if (Selected) {
-      switch (Focus) {
-      case FOCUS_STEP:
-	Sequencer.ActiveStep--;
-	break;
-      }
-    } else if (Focus < FOCUS_LAST) {
+    if (Focus < FOCUS_LAST) {
       Focus++;
     }
     break;
   case KEY_UP:
-    if (Selected) {
-      switch (Focus) {
-      case FOCUS_STEP:
-	Sequencer.ActiveStep++;
-	break;
-      }
-    } else {
-      Focus--;
-      if (Focus == 0) {
-	Gui.ChangeFocus(TGui::FOCUS_MENU);
-      }
+    Focus--;
+    if (Focus == 0) {
+      Gui.ChangeFocus(TGui::FOCUS_MENU);
     }
     break;
   case KEY_OK:
@@ -99,12 +109,100 @@ void TSeqPage::Event(TEvent event)
   case BLINK_TIMER:
     if (Selected) {
       Blink = !Blink;
-      Gui.UpdateAll(); // A bit wasteful
     }
+    break;
+  case KNOB_RIGHT:
+    CurrentStep = event_value(event);
+    Sequencer.ChangeNote(CurrentStep, 1);
+    break;
+  case KNOB_LEFT:
+    CurrentStep = event_value(event);
+    Sequencer.ChangeNote(CurrentStep, -1);
     break;
   default:
     break;
   }
+}
+
+bool TSeqPage::EventHandlerStep(TEvent event)
+{
+  if (Selected) {
+    switch (event_code(event)) {
+    case KEY_DOWN:
+      CurrentStep--;
+      return true;
+    case KEY_UP:
+      CurrentStep++;
+      return true;
+    }
+  }
+  return false;
+}
+
+bool TSeqPage::EventHandlerVelo(TEvent event)
+{
+  if (Selected) {
+    switch (event_code(event)) {
+    case KNOB_LEFT:
+      CurrentStep = event_value(event);
+      // Fall-through
+    case KEY_DOWN:
+      Sequencer.ChangeVelocity(CurrentStep, -1);
+      return true;
+
+    case KNOB_RIGHT:
+      CurrentStep = event_value(event);
+      // Fall-through
+    case KEY_UP:
+      Sequencer.ChangeVelocity(CurrentStep, 1);
+      return true;
+    }
+  }
+  return false;
+}
+
+bool TSeqPage::EventHandlerLen(TEvent event)
+{
+  if (Selected) {
+    switch (event_code(event)) {
+    case KNOB_LEFT:
+      CurrentStep = event_value(event);
+      // Fall-through
+    case KEY_DOWN:
+      Sequencer.ChangeLength(CurrentStep, -1);
+      return true;
+
+    case KNOB_RIGHT:
+      CurrentStep = event_value(event);
+      // Fall-through
+    case KEY_UP:
+      Sequencer.ChangeLength(CurrentStep, 1);
+      return true;
+    }
+  }
+  return false;
+}
+
+bool TSeqPage::EventHandlerOffset(TEvent event)
+{
+  if (Selected) {
+    switch (event_code(event)) {
+    case KNOB_LEFT:
+      CurrentStep = event_value(event);
+      // Fall-through
+    case KEY_DOWN:
+      Sequencer.ChangeOffset(CurrentStep, -1);
+      return true;
+
+    case KNOB_RIGHT:
+      CurrentStep = event_value(event);
+      // Fall-through
+    case KEY_UP:
+      Sequencer.ChangeOffset(CurrentStep, 1);
+      return true;
+    }
+  }
+  return false;
 }
 
 void TSeqPage::GetMenuTitle(char text[MenuTextLen])

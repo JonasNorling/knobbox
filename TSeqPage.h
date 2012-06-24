@@ -26,4 +26,14 @@ private:
   uint8_t CurrentStep;
   bool Selected; /// Focused item is selected and blinking
   bool Blink;
+
+  // Event handlers for the current focus, should return true if the
+  // event was consumed.
+  typedef bool (TSeqPage::*eventhandler_t) (TEvent);
+  const static eventhandler_t EventHandler[FOCUS_LAST + 1];
+
+  bool EventHandlerStep(TEvent event);
+  bool EventHandlerVelo(TEvent event);
+  bool EventHandlerLen(TEvent event);
+  bool EventHandlerOffset(TEvent event);
 };

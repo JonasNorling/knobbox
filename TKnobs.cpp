@@ -154,12 +154,11 @@ void TKnobs::Poll()
 	  }
 	  else if (Mode == MODE_SEQ) {
 	    if (data.EncoderB & (1 << i)) { // B went high
-	      Sequencer.DecreaseValue(i, 1);
+	      Gui.Event(construct_event(KNOB_LEFT, i));
 	    } else { // B went low
-	      Sequencer.IncreaseValue(i, 1);
+	      Gui.Event(construct_event(KNOB_RIGHT, i));
 	    }
 	  }
-
 	}
       }
     }

@@ -2,6 +2,7 @@
 #include "TMidi.h"
 #include "TKnobs.h"
 #include "device.h"
+#include "utils.h"
 #include <algorithm>
 
 void TSequencer::Load()
@@ -28,6 +29,8 @@ void TSequencer::Load()
       Scenes[scene].Data[s].Flags = Scenes[scene].Data[s].FLAG_ON;
       Scenes[scene].Data[s].Note = 0x40;
       Scenes[scene].Data[s].Velocity = 0x40;
+      Scenes[scene].Data[s].Len = 48;
+      Scenes[scene].Data[s].Offset = 0;
     }
   }
 }
@@ -97,7 +100,11 @@ void TSequencer::Step()
   }
 }
 
-void TSequencer::UpdateKnobs() {
+/**
+ * Output the current PWM values to knob LEDs
+ */
+void TSequencer::UpdateKnobs()
+{
   if (Mode == MODE_SEQ) {
     const int scene = 0;
     for (int knob = 0; knob < TKnobs::Knobs; knob++) {
@@ -109,4 +116,54 @@ void TSequencer::UpdateKnobs() {
       Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = 10;
     }
   }
+}
+
+const char* TSequencer::NoteName(uint8_t n)
+{
+  static char name[4];
+
+  if (n < 12 || n > 120) {
+    name[0] = 'X';
+    name[1] = '\0';
+    return name;
+  }
+
+  const int c0 = 12;
+  const int notes_per_octave = 12;
+  static const char* names[notes_per_octave] = {
+    "C", "C#", "D", "Eb", "E", "F",
+    "F#", "G", "G#", "A", "Bb", "B" };
+
+  int octave = (n - c0) / notes_per_octave;
+  const char* notename = names[(n - c0) % notes_per_octave];
+
+  size_t pos = cheap_strcpy(name, notename);
+  render_uint(&name[pos], octave, 1);
+  name[pos+1] = '\0';
+
+  return name;
+}
+
+void TSequencer::ChangeNote(int step, int8_t v)
+{
+  /// \todo Clamping
+  Scenes[0].Data[step].Note += v;
+}
+
+void TSequencer::ChangeVelocity(int step, int8_t v)
+{
+  /// \todo Clamping
+  Scenes[0].Data[step].Velocity += v;
+}
+
+void TSequencer::ChangeLength(int step, int8_t v)
+{
+  /// \todo Clamping
+  Scenes[0].Data[step].Len += v;
+}
+
+void TSequencer::ChangeOffset(int step, int8_t v)
+{
+  /// \todo Clamping
+  Scenes[0].Data[step].Offset += v;
 }

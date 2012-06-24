@@ -26,7 +26,6 @@ public:
   static const uint8_t SceneCount = 4;
 
   TSequencer() :
-    ActiveStep(0),
     Tempo(120),
     Position({ {0, 0}, {0, 0}, {0, 0}, {0, 0} })
   { Load(); }
@@ -35,27 +34,17 @@ public:
   void Step();
   uint8_t GetTempo() const { return Tempo; }
 
-  /**
-   * Output the current PWM values to knob LEDs
-   */
   void UpdateKnobs();
 
-  void IncreaseValue(int step, uint8_t v) {
-    Scenes[0].Data[step].Note += v;
-    ActiveStep = step;
-    Gui.UpdateLine(3);
-  }
-  void DecreaseValue(int step, uint8_t v) {
-    Scenes[0].Data[step].Note -= v;
-    ActiveStep = step;
-    Gui.UpdateLine(3);
-  }
+  static const char* NoteName(uint8_t n);
+
+  void ChangeNote(int step, int8_t v);
+  void ChangeVelocity(int step, int8_t v);
+  void ChangeLength(int step, int8_t v);
+  void ChangeOffset(int step, int8_t v);
 
   /// \todo Hide!
   TSequencerScene Scenes[SceneCount];
-
-  /// Active step in GUI. \todo Hide!
-  uint8_t ActiveStep;
 
 private:
   static const uint8_t MidiTicksPerBeat = 24;
