@@ -88,14 +88,14 @@ struct TSequencerScene
   uint8_t Steps;
   uint8_t Cc;
 
-  struct {
+  struct TData {
     static const uint32_t FLAG_ON = 0x01;
 
     uint8_t Flags;
     uint8_t Note;
-    uint8_t Len; ///< In 48'ths of StepLength or something...
+    uint8_t Len; ///< In 48'ths of a step (48 fills whole step)
     uint8_t Velocity;
-    int8_t Offset; ///< In 48'ths of StepLength or something...
+    int8_t Offset; ///< In 48'ths of a step (+48 delays one step)
     uint8_t Cc;
     uint8_t Action;
     uint8_t Reserved1;

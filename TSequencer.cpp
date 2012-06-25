@@ -29,7 +29,7 @@ void TSequencer::Load()
       Scenes[scene].Data[s].Flags = Scenes[scene].Data[s].FLAG_ON;
       Scenes[scene].Data[s].Note = 0x40;
       Scenes[scene].Data[s].Velocity = 0x40;
-      Scenes[scene].Data[s].Len = 48;
+      Scenes[scene].Data[s].Len = 24;
       Scenes[scene].Data[s].Offset = 0;
     }
   }
@@ -62,6 +62,11 @@ void TSequencer::StartTimer()
 #endif
 }
 
+/**
+ * Called on timer tick 48 times per beat. Update global and
+ * scene-local positions, cause sequencer to think about what to do
+ * next.
+ */
 void TSequencer::Step()
 {
   GlobalPosition.Minor++;
@@ -70,38 +75,80 @@ void TSequencer::Step()
     Midi.SendClockTick();
   }
 
-  const int scene = 0;
-  Position[scene].Minor = (Position[scene].Minor + Scenes[scene].StepLength) % TicksPerWholeNote;
+  for (int scene = 0; scene < SceneCount; scene++) {
+    Position[scene].Minor += Scenes[scene].StepLength;
+    if (Position[scene].Minor >= MinorsPerStep) {
+      Position[scene].Minor -= MinorsPerStep;
+      Position[scene].Step = (Position[scene].Step + 1) % Scenes[scene].Steps;
+    }
+    DoNextEvent(scene);
+  }
 
-  if (Position[scene].Minor == 0) {
-    const uint8_t step = (Position[scene].Step + 1) % Scenes[scene].Steps;
-    Position[scene].Step = step;
-    if (Mode == MODE_SEQ) {
-      for (int knob = 0; knob < TKnobs::Knobs; knob++) {
-	if (step == knob) {
-	  Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 0xff;
-	} else {
-	  Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 10;
-	}
+  UpdateKnobs();
+}
+
+/**
+ * \todo This is obviously extremely naive.
+ */
+void TSequencer::DoNextEvent(int sceneno)
+{
+  // Just play one scene during development, it's complicated enough.
+  if (sceneno != 0) return;
+
+  const TSequencerScene& scene(Scenes[sceneno]);
+  for (int step=0; step < scene.Steps; step++) {
+    const TSequencerScene::TData& data = scene.Data[step];
+
+    /// \todo Might not work for negative offsets.
+    /// \todo Magic constants are ugly.
+    /// \todo Won't wrap properly for negative positions
+    TPosition due;
+    {
+      int8_t offset_step = data.Offset / 48;
+      int8_t offset_minor = data.Offset % 48;
+      if (offset_minor < 0) {
+	offset_step--;
+	offset_minor += 48;
       }
+      due.Step = step + offset_step;
+      due.Minor = offset_minor * 4;
+      /// \todo Wrap step, handle negative step
     }
 
-    // Just send some note events for now. We will need to keep track
-    // of what has been sent, so that the right off-event is sent even
-    // if a knob has been twisted.
+    TPosition due_end;
+    {
+      int8_t len_step = data.Len / 48;
+      int8_t len_minor = data.Len % 48;
+      due_end.Step = due.Step + len_step;
+      due_end.Minor = due.Minor + len_minor * 4;
+      if (due_end.Minor >= MinorsPerStep) {
+	due_end.Step++;
+	due_end.Minor -= MinorsPerStep;
+      }
+      /// \todo Wrap step, handle negative step
+    }
 
-    Midi.EnqueueByte(TMidi::MIDI_NOTE_OFF);
-    Midi.EnqueueByte(Scenes[scene].Data[(step - 1 + Scenes[scene].Steps) % Scenes[scene].Steps].Note);
-    Midi.EnqueueByte(0x40);
-
-    Midi.EnqueueByte(TMidi::MIDI_NOTE_ON);
-    Midi.EnqueueByte(Scenes[scene].Data[step].Note);
-    Midi.EnqueueByte(Scenes[scene].Data[step].Velocity);
+    if (Position[sceneno] == due) {
+      Midi.EnqueueByte(TMidi::MIDI_NOTE_ON);
+      Midi.EnqueueByte(data.Note);
+      Midi.EnqueueByte(data.Velocity);
+      if (Mode == MODE_SEQ) {
+	Knobs.LedIntensity[Knobs.COLOR_GREEN][step] = 0x80;
+      }
+    }
+    if (Position[sceneno] == due_end) {
+      Midi.EnqueueByte(TMidi::MIDI_NOTE_OFF);
+      Midi.EnqueueByte(data.Note);
+      Midi.EnqueueByte(0x40);
+      if (Mode == MODE_SEQ) {
+	Knobs.LedIntensity[Knobs.COLOR_GREEN][step] = 0;
+      }
+    }
   }
 }
 
 /**
- * Output the current PWM values to knob LEDs
+ * Update knob colors. Highlight the knob representing the current beat.
  */
 void TSequencer::UpdateKnobs()
 {
@@ -113,7 +160,6 @@ void TSequencer::UpdateKnobs()
       } else {
 	Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 10;
       }
-      Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = 10;
     }
   }
 }
