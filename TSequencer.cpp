@@ -35,7 +35,7 @@ void TSequencer::Load()
   }
 }
 
-void TSequencer::StartTimer()
+void TSequencer::Start()
 {
 #ifndef HOST
   TIM_CNT(TIM2) = 1;
@@ -60,6 +60,17 @@ void TSequencer::StartTimer()
   timer_enable_irq(TIM2, TIM_DIER_UIE);
   timer_enable_counter(TIM2);
 #endif
+
+  Running = true;
+}
+
+void TSequencer::Stop()
+{
+#ifndef HOST
+  timer_disable_counter(TIM2);
+#endif
+
+  Running = false;
 }
 
 /**
@@ -95,6 +106,11 @@ void TSequencer::DoNextEvent(int sceneno)
   // Just play one scene during development, it's complicated enough.
   if (sceneno != 0) return;
 
+  /*
+   * For each step, find out if it's time to send a note on or off
+   * event. It's not clear how much CPU time this takes, but it's
+   * probably excessive (and we're in interrupt context here).
+   */
   const TSequencerScene& scene(Scenes[sceneno]);
   for (int step=0; step < scene.Steps; step++) {
     const TSequencerScene::TData& data = scene.Data[step];
@@ -224,4 +240,15 @@ void TSequencer::ToggleEnable(int step)
 {
   Scenes[0].Data[step].Flags = Scenes[0].Data[step].Flags ^ TSequencerScene::TData::FLAG_ON;
   /// \todo Kill note and turn off LED if disabled while note is playing.
+  UpdateKnobs();
+}
+
+void TSequencer::ToggleRunning()
+{
+  if (Running) {
+    Stop();
+  }
+  else {
+    Start();
+  }
 }

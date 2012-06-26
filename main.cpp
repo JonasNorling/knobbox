@@ -176,7 +176,6 @@ int main(void)
 
   Knobs.InitDma();
   Knobs.StartShifting();
-  Sequencer.StartTimer();
 
   Pin_vpullup.Set();
 

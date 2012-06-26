@@ -43,10 +43,12 @@ public:
 
   TSequencer() :
     Tempo(120),
+    Running(false),
     Position({ {0, 0}, {0, 0}, {0, 0}, {0, 0} })
   { Load(); }
   void Load();
-  void StartTimer();
+  void Start();
+  void Stop();
   void Step();
   uint8_t GetTempo() const { return Tempo; }
 
@@ -59,6 +61,7 @@ public:
   void ChangeLength(int step, int8_t v);
   void ChangeOffset(int step, int8_t v);
   void ToggleEnable(int step);
+  void ToggleRunning();
 
   /// \todo Hide!
   TSequencerScene Scenes[SceneCount];
@@ -79,6 +82,7 @@ private:
 
   /// Tempo in BPM (quarter notes per second)
   uint8_t Tempo; ///< Maybe want more precision for tap tempo?
+  bool Running;
 
   /// For a quarter note, the sequencer increments the minor step by 4
   /// each tick. So Minor counts up to TicksPerWholeNote (= 192) for

@@ -105,6 +105,7 @@ void TSeqPage::Event(TEvent event)
     }
     break;
   case KEY_BACK:
+    Sequencer.ToggleRunning();
     break;
   case BLINK_TIMER:
     if (Selected) {
