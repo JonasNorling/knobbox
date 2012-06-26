@@ -25,6 +25,9 @@ public:
   static const uint8_t MIDI_NOTE_ON = 0x90;
   static const uint8_t MIDI_CC = 0xb0;
   static const uint8_t MIDI_CLOCK_TICK = 0xf8;
+  static const uint8_t MIDI_NOTE_C0 = 12;
+  static const uint8_t MIDI_NOTE_MIN = MIDI_NOTE_C0;
+  static const uint8_t MIDI_NOTE_MAX = 127;
 
   TMidi() : SendTick(false)  { }
 

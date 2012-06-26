@@ -47,14 +47,14 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     pos = line->DrawText(text, pos, Focus == FOCUS_VELO && !Blink);
     pos = line->Advance(pos);
 
-    cheap_strcpy(text, "len xxx");
-    render_uint(text+4, Sequencer.Scenes[0].Data[CurrentStep].Len, 3);
+    cheap_strcpy(text, "len    ");
+    render_note_time(text+4, Sequencer.Scenes[0].Data[CurrentStep].Len);
     pos = line->DrawText(text, pos, Focus == FOCUS_LEN && !Blink);
   }
   else if (n == 6) {
     char text[9];
-    cheap_strcpy(text, "offs xxx");
-    render_uint(text+5, Sequencer.Scenes[0].Data[CurrentStep].Offset, 3);
+    cheap_strcpy(text, "ofs     ");
+    render_signed_note_time(text+3, Sequencer.Scenes[0].Data[CurrentStep].Offset);
     pos = line->DrawText(text, pos, Focus == FOCUS_OFFSET && !Blink);
 
     pos = line->Advance(pos);

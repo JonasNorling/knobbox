@@ -175,20 +175,19 @@ const char* TSequencer::NoteName(uint8_t n)
 {
   static char name[4];
 
-  if (n < 12 || n > 120) {
+  if (n < TMidi::MIDI_NOTE_MIN || n > TMidi::MIDI_NOTE_MAX) {
     name[0] = 'X';
     name[1] = '\0';
     return name;
   }
 
-  const int c0 = 12;
   const int notes_per_octave = 12;
   static const char* names[notes_per_octave] = {
     "C", "C#", "D", "Eb", "E", "F",
     "F#", "G", "G#", "A", "Bb", "B" };
 
-  int octave = (n - c0) / notes_per_octave;
-  const char* notename = names[(n - c0) % notes_per_octave];
+  int octave = (n - TMidi::MIDI_NOTE_C0) / notes_per_octave;
+  const char* notename = names[(n - TMidi::MIDI_NOTE_C0) % notes_per_octave];
 
   size_t pos = cheap_strcpy(name, notename);
   render_uint(&name[pos], octave, 1);
@@ -199,26 +198,26 @@ const char* TSequencer::NoteName(uint8_t n)
 
 void TSequencer::ChangeNote(int step, int8_t v)
 {
-  /// \todo Clamping
-  Scenes[0].Data[step].Note += v;
+  Scenes[0].Data[step].Note = clamp(Scenes[0].Data[step].Note + v,
+				    TMidi::MIDI_NOTE_MIN, TMidi::MIDI_NOTE_MAX);
 }
 
 void TSequencer::ChangeVelocity(int step, int8_t v)
 {
-  /// \todo Clamping
-  Scenes[0].Data[step].Velocity += v;
+  Scenes[0].Data[step].Velocity = clamp(Scenes[0].Data[step].Velocity + v,
+					0, 127);
 }
 
 void TSequencer::ChangeLength(int step, int8_t v)
 {
-  /// \todo Clamping
-  Scenes[0].Data[step].Len += v;
+  Scenes[0].Data[step].Len = clamp(Scenes[0].Data[step].Len + v,
+				   0, 240);
 }
 
 void TSequencer::ChangeOffset(int step, int8_t v)
 {
-  /// \todo Clamping
-  Scenes[0].Data[step].Offset += v;
+  Scenes[0].Data[step].Offset = clamp(Scenes[0].Data[step].Offset + v,
+				      -120, 120);
 }
 
 void TSequencer::ToggleEnable(int step)
