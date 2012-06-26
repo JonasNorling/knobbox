@@ -119,6 +119,10 @@ void TSeqPage::Event(TEvent event)
     CurrentStep = event_value(event);
     Sequencer.ChangeNote(CurrentStep, -1);
     break;
+  case KNOB_PUSH:
+    CurrentStep = event_value(event);
+    Sequencer.ToggleEnable(CurrentStep);
+    break;
   default:
     break;
   }

@@ -58,6 +58,7 @@ public:
   void ChangeVelocity(int step, int8_t v);
   void ChangeLength(int step, int8_t v);
   void ChangeOffset(int step, int8_t v);
+  void ToggleEnable(int step);
 
   /// \todo Hide!
   TSequencerScene Scenes[SceneCount];
@@ -87,6 +88,9 @@ private:
   TPosition GlobalPosition; ///< \todo Only need minor for MIDI beat
   TPosition Position[SceneCount];
 
+  bool StepIsEnabled(int scene, int step) {
+    return Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON;
+  }
   void DoNextEvent(int sceneno);
 };
 

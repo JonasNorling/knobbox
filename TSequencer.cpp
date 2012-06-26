@@ -128,20 +128,22 @@ void TSequencer::DoNextEvent(int sceneno)
       /// \todo Wrap step, handle negative step
     }
 
-    if (Position[sceneno] == due) {
-      Midi.EnqueueByte(TMidi::MIDI_NOTE_ON);
-      Midi.EnqueueByte(data.Note);
-      Midi.EnqueueByte(data.Velocity);
-      if (Mode == MODE_SEQ) {
-	Knobs.LedIntensity[Knobs.COLOR_GREEN][step] = 0x80;
+    if (StepIsEnabled(sceneno, step)) {
+      if (Position[sceneno] == due) {
+	Midi.EnqueueByte(TMidi::MIDI_NOTE_ON);
+	Midi.EnqueueByte(data.Note);
+	Midi.EnqueueByte(data.Velocity);
+	if (Mode == MODE_SEQ) {
+	  Knobs.LedIntensity[Knobs.COLOR_GREEN][step] = 0x80;
+	}
       }
-    }
-    if (Position[sceneno] == due_end) {
-      Midi.EnqueueByte(TMidi::MIDI_NOTE_OFF);
-      Midi.EnqueueByte(data.Note);
-      Midi.EnqueueByte(0x40);
-      if (Mode == MODE_SEQ) {
-	Knobs.LedIntensity[Knobs.COLOR_GREEN][step] = 0;
+      if (Position[sceneno] == due_end) {
+	Midi.EnqueueByte(TMidi::MIDI_NOTE_OFF);
+	Midi.EnqueueByte(data.Note);
+	Midi.EnqueueByte(0x40);
+	if (Mode == MODE_SEQ) {
+	  Knobs.LedIntensity[Knobs.COLOR_GREEN][step] = 0;
+	}
       }
     }
   }
@@ -158,7 +160,12 @@ void TSequencer::UpdateKnobs()
       if (Position[scene].Step == knob) {
 	Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 0xff;
       } else {
-	Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 10;
+	if (StepIsEnabled(0, knob)) {
+	  Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 10;
+	}
+	else {
+	  Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 0;
+	}
       }
     }
   }
@@ -212,4 +219,10 @@ void TSequencer::ChangeOffset(int step, int8_t v)
 {
   /// \todo Clamping
   Scenes[0].Data[step].Offset += v;
+}
+
+void TSequencer::ToggleEnable(int step)
+{
+  Scenes[0].Data[step].Flags = Scenes[0].Data[step].Flags ^ TSequencerScene::TData::FLAG_ON;
+  /// \todo Kill note and turn off LED if disabled while note is playing.
 }

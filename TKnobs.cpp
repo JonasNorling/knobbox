@@ -164,5 +164,15 @@ void TKnobs::Poll()
     }
   }
 
+  const uint16_t button_edges = data.Button ^ LastEncoderData.Button;
+  if (button_edges) {
+    const uint16_t low_edges = button_edges & ~data.Button;
+    for (int i = 0; i < Knobs; i++) { // for each encoder
+      if (low_edges & (0x80 >> i)) {
+	Gui.Event(construct_event(KNOB_PUSH, i));
+      }
+    }
+  }
+
   LastEncoderData = data;
 }

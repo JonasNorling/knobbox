@@ -9,6 +9,7 @@ const uint8_t RECEIVE_FOCUS = 0x50;
 const uint8_t BLINK_TIMER   = 0x60;
 const uint8_t KNOB_RIGHT    = 0x70;
 const uint8_t KNOB_LEFT     = 0x80;
+const uint8_t KNOB_PUSH     = 0x90;
 
 typedef uint8_t TEvent;
 
