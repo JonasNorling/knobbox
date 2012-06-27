@@ -34,6 +34,7 @@ void dma1_channel2_isr()
 
 #include "TestCircularBuffer.cpp"
 #include "TestMidi.cpp"
+#include "TestSequencer.cpp"
 
 int main(int, char**)
 {
@@ -42,6 +43,7 @@ int main(int, char**)
   int failures = 0;
   failures += TestCircularBuffer();
   failures += TestMidi();
+  failures += TestSequencer();
 
   if (failures == 0) {
     fprintf(stderr, "Tests OK.\n");

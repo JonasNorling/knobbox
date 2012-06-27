@@ -88,8 +88,8 @@ void TSequencer::Step()
 
   for (int scene = 0; scene < SceneCount; scene++) {
     Position[scene].Minor += Scenes[scene].StepLength;
-    if (Position[scene].Minor >= MinorsPerStep) {
-      Position[scene].Minor -= MinorsPerStep;
+    if (Position[scene].Minor >= TPosition::MinorsPerStep) {
+      Position[scene].Minor -= TPosition::MinorsPerStep;
       Position[scene].Step = (Position[scene].Step + 1) % Scenes[scene].Steps;
     }
     DoNextEvent(scene);
@@ -110,39 +110,20 @@ void TSequencer::DoNextEvent(int sceneno)
    * For each step, find out if it's time to send a note on or off
    * event. It's not clear how much CPU time this takes, but it's
    * probably excessive (and we're in interrupt context here).
+   *
+   * \todo It would be better to calculate a sorted list of events
+   * when a change happens (not in interrupt context), and just pop
+   * off the next event when the time advances.
    */
   const TSequencerScene& scene(Scenes[sceneno]);
   for (int step=0; step < scene.Steps; step++) {
     const TSequencerScene::TData& data = scene.Data[step];
 
-    /// \todo Might not work for negative offsets.
-    /// \todo Magic constants are ugly.
-    /// \todo Won't wrap properly for negative positions
-    TPosition due;
-    {
-      int8_t offset_step = data.Offset / 48;
-      int8_t offset_minor = data.Offset % 48;
-      if (offset_minor < 0) {
-	offset_step--;
-	offset_minor += 48;
-      }
-      due.Step = step + offset_step;
-      due.Minor = offset_minor * 4;
-      /// \todo Wrap step, handle negative step
-    }
+    TPosition due({static_cast<uint8_t>(step), 0});
+    due.AddMinorsAndWrap(data.Offset * 4, scene.Steps);
 
-    TPosition due_end;
-    {
-      int8_t len_step = data.Len / 48;
-      int8_t len_minor = data.Len % 48;
-      due_end.Step = due.Step + len_step;
-      due_end.Minor = due.Minor + len_minor * 4;
-      if (due_end.Minor >= MinorsPerStep) {
-	due_end.Step++;
-	due_end.Minor -= MinorsPerStep;
-      }
-      /// \todo Wrap step, handle negative step
-    }
+    TPosition due_end(due);
+    due_end.AddMinorsAndWrap(data.Len * 4, scene.Steps);
 
     if (StepIsEnabled(sceneno, step)) {
       if (Position[sceneno] == due) {

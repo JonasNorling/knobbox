@@ -4,6 +4,41 @@
 #include "TMemory.h"
 #include "TGui.h"
 
+static const uint8_t MidiTicksPerBeat = 24;
+static const uint8_t TicksPerBeat = 48; ///< Number of timer events per beat
+
+class TPosition {
+public:
+
+  /// For a quarter note, the sequencer increments the minor step by 4
+  /// each tick. So Minor counts up to TicksPerWholeNote (= 192) for
+  /// each step.
+  static const uint8_t MinorsPerStep = TicksPerBeat * 4;
+
+  uint8_t Step;
+  uint8_t Minor;
+    
+  bool operator==(const TPosition& o) const {
+    return o.Step == Step && o.Minor == Minor;
+  }
+
+  void AddMinorsAndWrap(int m, uint8_t wrapstep) {
+    m += Minor;
+
+    if (m < 0) {
+      const int wrapminors = wrapstep * MinorsPerStep;
+      m = wrapminors + (m % wrapminors);
+    }
+    Minor = m % MinorsPerStep;
+    Step = (Step + m / MinorsPerStep) % wrapstep;
+  }
+
+  void Wrap(int steps) {
+    Step %= steps;
+  }
+};
+
+
 /**
  * The step sequencer master mind.
  *
@@ -35,7 +70,6 @@
  * 32'th    0   32   64   96  128  160  192 wrap ...................  192 wrap
  *
  */
-
 class TSequencer
 {
 public:
@@ -67,27 +101,9 @@ public:
   TSequencerScene Scenes[SceneCount];
 
 private:
-  static const uint8_t MidiTicksPerBeat = 24;
-  static const uint8_t TicksPerBeat = 48; ///< Number of timer events per beat
-
-  class TPosition {
-  public:
-    uint8_t Step;
-    uint8_t Minor;
-    
-    bool operator==(const TPosition& o) const {
-      return o.Step == Step && o.Minor == Minor;
-    }
-  };
-
   /// Tempo in BPM (quarter notes per second)
   uint8_t Tempo; ///< Maybe want more precision for tap tempo?
   bool Running;
-
-  /// For a quarter note, the sequencer increments the minor step by 4
-  /// each tick. So Minor counts up to TicksPerWholeNote (= 192) for
-  /// each step.
-  static const uint8_t MinorsPerStep = TicksPerBeat * 4;
 
   TPosition GlobalPosition; ///< \todo Only need minor for MIDI beat
   TPosition Position[SceneCount];
