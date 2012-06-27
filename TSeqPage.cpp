@@ -13,7 +13,8 @@ const TSeqPage::eventhandler_t TSeqPage::EventHandler[FOCUS_LAST + 1] = {
   &TSeqPage::EventHandlerVelo,
   &TSeqPage::EventHandlerLen,
   &TSeqPage::EventHandlerOffset,
-  0 };
+  0,
+  &TSeqPage::EventHandlerTempo };
 
 void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 {
@@ -61,10 +62,10 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     pos = line->DrawText("CC 034", pos, Focus == FOCUS_CC && !Blink);
   }
   else if (n == 7) {
-    char text[20];
-    cheap_strcpy(text, "\033=     USB  MIDI");
+    char text[9];
+    cheap_strcpy(text, "\033=xxx");
     render_uint(text+2, Sequencer.GetTempo(), 3);
-    line->DrawText(text, LeftMargin);
+    pos = line->DrawText(text, pos, Focus == FOCUS_TEMPO && !Blink);
     line->Invert(0, line->GetLength());
   }
 }
@@ -210,6 +211,24 @@ bool TSeqPage::EventHandlerOffset(TEvent event)
   return false;
 }
 
+bool TSeqPage::EventHandlerTempo(TEvent event)
+{
+  if (Selected) {
+    switch (event_code(event)) {
+    case KNOB_LEFT:
+    case KEY_DOWN:
+      Sequencer.ChangeTempo(-1);
+      return true;
+
+    case KNOB_RIGHT:
+    case KEY_UP:
+      Sequencer.ChangeTempo(1);
+      return true;
+    }
+  }
+  return false;
+}
+
 void TSeqPage::GetMenuTitle(char text[MenuTextLen])
 {
   switch (Focus) {
@@ -223,20 +242,38 @@ void TSeqPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
 {
   switch (Focus) {
   case FOCUS_SETUPMENU: {
-    const int item_count = 6;
-    const char* items[item_count] = { "MODE: lin 12",
-				      "TEMPO: \033=120",
-				      "INSTR: 7",
-				      "CHANNEL: \03714",
-				      "STEP: \033 1/4",
-				      "CC: 14 Attack" };
-    if (n >= item_count) return;
-    cheap_strcpy(text, items[n]);
-    break;
+    switch (n) {
+    case 0: cheap_strcpy(text, "MODE: lin-12"); break;
+    case 1: cheap_strcpy(text, "TEMPO: \033=xxx"); break;
+    case 2: cheap_strcpy(text, "INSTR: x"); break;
+    case 3: cheap_strcpy(text, "CHANNEL: \037xx"); break;
+    case 4: {
+      cheap_strcpy(text, "STEP: 1/xx   ");
+      int step = Sequencer.GetStepLength();
+      render_uint(text+8, step, 2);   
+      switch (step) {
+      case 1:  text[11] = '\035'; break;
+      case 2:  text[11] = '\034'; break;
+      case 3:  text[11] = '\034'; text[12] = '3'; break;
+      case 4:  text[11] = '\033'; break;
+      case 6:  text[11] = '\033'; text[12] = '3'; break;
+      case 8:  text[11] = '\032'; break;
+      case 12: text[11] = '\032'; text[12] = '3'; break;
+      case 16: text[11] = '\031'; break;
+      case 24: text[11] = '\031'; text[12] = '3'; break;
+      case 32: text[11] = '\030'; break;
+      case 48: text[11] = '\030'; text[12] = '3'; break;
+      }
+      break;
+    }
+    case 5: cheap_strcpy(text, "CC: 14 Attack"); break;
+    }
+    return;
   }
   }
 }
 
-void TSeqPage::MenuItemSelected(uint8_t /*n*/)
+bool TSeqPage::MenuItemSelected(uint8_t /*n*/)
 {
+  return false;
 }

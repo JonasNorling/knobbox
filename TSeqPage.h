@@ -10,7 +10,8 @@ public:
   enum TFocus { FOCUS_NONE, FOCUS_SETUPMENU, FOCUS_ACTIONMENU,
 		FOCUS_STEP, FOCUS_NOTE, FOCUS_ACTION,
 		FOCUS_VELO, FOCUS_LEN, FOCUS_OFFSET, FOCUS_CC,
-		FOCUS_LAST = FOCUS_CC };
+		FOCUS_TEMPO,
+		FOCUS_LAST = FOCUS_TEMPO };
 
   TSeqPage() : Focus(FOCUS_NONE), CurrentStep(0),
 	       Selected(false), Blink(false) { }
@@ -19,7 +20,7 @@ public:
 
   void GetMenuTitle(char text[MenuTextLen]);
   void GetMenuItem(uint8_t n, char text[MenuTextLen]);
-  void MenuItemSelected(uint8_t n);
+  bool MenuItemSelected(uint8_t n);
 
 private:
   uint8_t Focus;
@@ -36,4 +37,5 @@ private:
   bool EventHandlerVelo(TEvent event);
   bool EventHandlerLen(TEvent event);
   bool EventHandlerOffset(TEvent event);
+  bool EventHandlerTempo(TEvent event);
 };

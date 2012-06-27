@@ -142,8 +142,9 @@ void TPopup::Event(TEvent event)
     }
     break;
   case KEY_OK:
-    Gui.GetCurrentPageObject()->MenuItemSelected(Focus);
-    Gui.ChangeFocus(TGui::FOCUS_PAGE);
+    if (Gui.GetCurrentPageObject()->MenuItemSelected(Focus)) {
+      Gui.ChangeFocus(TGui::FOCUS_PAGE);
+    }
     break;
   case KEY_BACK:
     Gui.ChangeFocus(TGui::FOCUS_PAGE);

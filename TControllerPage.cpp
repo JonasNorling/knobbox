@@ -115,7 +115,8 @@ void TControllerPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
   }
 }
 
-void TControllerPage::MenuItemSelected(uint8_t n)
+bool TControllerPage::MenuItemSelected(uint8_t n)
 {
   CurrentChannel = n;
+  return true;
 }

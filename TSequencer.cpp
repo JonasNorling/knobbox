@@ -158,7 +158,7 @@ void TSequencer::UpdateKnobs()
 	Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 0xff;
       } else {
 	if (StepIsEnabled(0, knob)) {
-	  Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 10;
+	  Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 5;
 	}
 	else {
 	  Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 0;
@@ -215,6 +215,12 @@ void TSequencer::ChangeOffset(int step, int8_t v)
 {
   Scenes[0].Data[step].Offset = clamp(Scenes[0].Data[step].Offset + v,
 				      -120, 120);
+}
+
+void TSequencer::ChangeTempo(int8_t v)
+{
+  Tempo = clamp(Tempo + v, 20, 255);
+  if (Running) Start(); // Reconfigure timer
 }
 
 void TSequencer::ToggleEnable(int step)

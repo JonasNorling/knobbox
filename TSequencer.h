@@ -94,8 +94,11 @@ public:
   void ChangeVelocity(int step, int8_t v);
   void ChangeLength(int step, int8_t v);
   void ChangeOffset(int step, int8_t v);
+  void ChangeTempo(int8_t v);
   void ToggleEnable(int step);
   void ToggleRunning();
+
+  uint8_t GetStepLength() const { return Scenes[0].StepLength; }
 
   /// \todo Hide!
   TSequencerScene Scenes[SceneCount];
