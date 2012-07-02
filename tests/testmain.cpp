@@ -17,8 +17,8 @@ TDisplay Display;
 TSpiDmaQueue SpiDmaQueue;
 TGui Gui;
 TKnobs Knobs;
-TSequencer Sequencer;
 TMidi Midi;
+TSequencer Sequencer(Midi);
 TMemory Memory;
 TControllers Controllers;
 

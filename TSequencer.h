@@ -3,6 +3,7 @@
 #include <cstdint>
 #include "TMemory.h"
 #include "TGui.h"
+#include "IMidi.h"
 
 static const uint8_t MidiTicksPerBeat = 24;
 static const uint8_t TicksPerBeat = 48; ///< Number of timer events per beat
@@ -75,13 +76,14 @@ class TSequencer
 public:
   static const uint8_t SceneCount = 4;
 
-  TSequencer() :
+  TSequencer(IMidi& midiOutput) :
+    MidiOutput(midiOutput),
     Tempo(120),
     Running(false),
     Position({ {0, 0}, {0, 0}, {0, 0}, {0, 0} })
   { Load(); }
   void Load();
-  void Start();
+  void Start(); ///< Start running, send first event immediately
   void Stop();
   void Step();
   uint8_t GetTempo() const { return Tempo; }
@@ -105,6 +107,8 @@ public:
   TSequencerScene Scenes[SceneCount];
 
 private:
+  IMidi& MidiOutput;
+
   /// Tempo in BPM (quarter notes per second)
   uint8_t Tempo; ///< Maybe want more precision for tap tempo?
   bool Running;
@@ -112,6 +116,7 @@ private:
   TPosition GlobalPosition; ///< \todo Only need minor for MIDI beat
   TPosition Position[SceneCount];
 
+  void ConfigureTimer();
   bool StepIsEnabled(int scene, int step) {
     return Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON;
   }

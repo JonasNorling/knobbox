@@ -1,6 +1,8 @@
 #include "TSequencer.h"
 
-int TestSequencer()
+#include <list>
+
+int TestPosition()
 {
   const int halfstep = TPosition::MinorsPerStep / 2; // probably 96
 
@@ -50,4 +52,135 @@ int TestSequencer()
   }
 
   return 0;
+}
+
+class TMidiBuffer : public IMidi
+{
+public:
+  struct TEvent {
+    uint8_t Data[3];
+  };
+
+  int Ticks;
+  std::list<TEvent> Events;
+
+  TMidiBuffer() : Ticks(0) {}
+  void SendClockTick() {
+    Ticks++;
+  }
+  void SendEvent(uint8_t type, uint8_t arg1, uint8_t arg2) {
+    TEvent event = {{type, arg1, arg2}};
+    Events.push_back(event);
+  }
+};
+
+int TestSequence()
+{
+  TMidiBuffer buffer;
+  TSequencer s(buffer);
+
+  s.Scenes[0].StepLength = 4;
+  s.Scenes[0].Steps = 4;
+  s.Scenes[0].Data[0].Flags = TSequencerScene::TData::FLAG_ON;
+  s.Scenes[0].Data[0].Note = 60;
+  s.Scenes[0].Data[0].Len = 24;
+  s.Scenes[0].Data[0].Velocity = 100;
+
+  test_assert(s.GetStepLength() == 4);
+
+  // 48 TicksPerBeat, 24 MidiTicksPerBeat
+  // Start will send first event immediately
+  s.Start();
+  test_assert(buffer.Ticks == 1);
+  test_assert(!buffer.Events.empty());
+  test_assert(buffer.Events.front().Data[0] == 0x90); // Note on
+  buffer.Events.pop_front();
+
+  s.Step();
+  test_assert(buffer.Ticks == 1);
+  s.Step();
+  test_assert(buffer.Ticks == 2);
+  s.Step();
+  test_assert(buffer.Ticks == 2);
+
+  for (int i = 3; i < 25; i++) s.Step();
+  test_assert(buffer.Ticks == 13);
+  test_assert(!buffer.Events.empty());
+  test_assert(buffer.Events.front().Data[0] == 0x80); // Note off
+  buffer.Events.pop_front();
+  test_assert(buffer.Events.empty());
+
+  return 0;
+}
+
+int TestSequenceQuick()
+{
+  TMidiBuffer buffer;
+  TSequencer s(buffer);
+
+#warning This test fails for StepLength=5 or 9...
+  s.Scenes[0].StepLength = 6;
+  s.Scenes[0].Steps = 3;
+  s.Scenes[0].Data[0].Flags = TSequencerScene::TData::FLAG_ON;
+  s.Scenes[0].Data[0].Note = 60;
+  s.Scenes[0].Data[0].Len = 24;
+  s.Scenes[0].Data[0].Velocity = 100;
+  s.Scenes[0].Data[1].Flags = TSequencerScene::TData::FLAG_ON;
+  s.Scenes[0].Data[1].Note = 61;
+  s.Scenes[0].Data[1].Len = 24;
+  s.Scenes[0].Data[1].Velocity = 100;
+  s.Scenes[0].Data[2].Flags = TSequencerScene::TData::FLAG_ON;
+  s.Scenes[0].Data[2].Note = 62;
+  s.Scenes[0].Data[2].Len = 24;
+  s.Scenes[0].Data[2].Velocity = 100;
+  s.Scenes[0].Data[3].Flags = TSequencerScene::TData::FLAG_ON;
+  s.Scenes[0].Data[3].Note = 63;
+  s.Scenes[0].Data[3].Len = 24;
+  s.Scenes[0].Data[3].Velocity = 100;
+
+  s.Start();
+  for (int i = 0; i < 4 * TicksPerBeat - 1; i++) s.Step();
+  test_assert(buffer.Ticks == 4 * MidiTicksPerBeat);
+  test_assert(buffer.Events.size() / 2 == s.Scenes[0].StepLength);
+
+  test_assert(buffer.Events.front().Data[0] == 0x90); // Note on
+  test_assert(buffer.Events.front().Data[1] == 60);
+  buffer.Events.pop_front();
+  test_assert(!buffer.Events.empty());
+  test_assert(buffer.Events.front().Data[0] == 0x80); // Note off
+  test_assert(buffer.Events.front().Data[1] == 60);
+  buffer.Events.pop_front();
+  test_assert(!buffer.Events.empty());
+  test_assert(buffer.Events.front().Data[0] == 0x90); // Note on
+  test_assert(buffer.Events.front().Data[1] == 61);
+  buffer.Events.pop_front();
+  test_assert(!buffer.Events.empty());
+  test_assert(buffer.Events.front().Data[0] == 0x80); // Note off
+  test_assert(buffer.Events.front().Data[1] == 61);
+  buffer.Events.pop_front();
+  test_assert(!buffer.Events.empty());
+  test_assert(buffer.Events.front().Data[0] == 0x90); // Note on
+  test_assert(buffer.Events.front().Data[1] == 62);
+  buffer.Events.pop_front();
+  test_assert(!buffer.Events.empty());
+  test_assert(buffer.Events.front().Data[0] == 0x80); // Note off
+  test_assert(buffer.Events.front().Data[1] == 62);
+  buffer.Events.pop_front();
+  test_assert(!buffer.Events.empty());
+  test_assert(buffer.Events.front().Data[0] == 0x90); // Note on
+  test_assert(buffer.Events.front().Data[1] == 60);
+  buffer.Events.pop_front();
+  test_assert(!buffer.Events.empty());
+  test_assert(buffer.Events.front().Data[0] == 0x80); // Note off
+  test_assert(buffer.Events.front().Data[1] == 60);
+  buffer.Events.pop_front();
+
+  return 0;
+}
+
+int TestSequencer()
+{
+  return TestPosition() +
+    TestSequence() +
+    TestSequenceQuick();
 }

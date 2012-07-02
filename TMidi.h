@@ -1,5 +1,6 @@
 /* -*- c++ -*- */
 #pragma once
+#include "IMidi.h"
 #include "device.h"
 #include "TCircularBuffer.h"
 
@@ -14,7 +15,7 @@
  *
  * Status: Not tested with real device. MIDI IN not implemented.
  */
-class TMidi
+class TMidi : public IMidi
 {
 private:
   static const int QueueLen = 32;
@@ -42,6 +43,13 @@ public:
   {
     SendTick = true;
     EnableTxInterrupt();
+  }
+
+  void SendEvent(uint8_t type, uint8_t arg1, uint8_t arg2)
+  {
+    EnqueueByte(type);
+    EnqueueByte(arg1);
+    EnqueueByte(arg2);
   }
 
   bool EnqueueByte(uint8_t d)

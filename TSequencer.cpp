@@ -37,6 +37,24 @@ void TSequencer::Load()
 
 void TSequencer::Start()
 {
+  ConfigureTimer();
+
+  Running = true;
+
+  if ((GlobalPosition.Minor % (TicksPerBeat / MidiTicksPerBeat)) == 0) {
+    // MIDI clock 24 times per beat
+    MidiOutput.SendClockTick();
+  }
+
+  for (int scene = 0; scene < SceneCount; scene++) {
+    DoNextEvent(scene);
+  }
+
+  UpdateKnobs();
+}
+
+void TSequencer::ConfigureTimer()
+{
 #ifndef HOST
   TIM_CNT(TIM2) = 1;
 
@@ -60,8 +78,6 @@ void TSequencer::Start()
   timer_enable_irq(TIM2, TIM_DIER_UIE);
   timer_enable_counter(TIM2);
 #endif
-
-  Running = true;
 }
 
 void TSequencer::Stop()
@@ -83,7 +99,7 @@ void TSequencer::Step()
   GlobalPosition.Minor++;
   if ((GlobalPosition.Minor % (TicksPerBeat / MidiTicksPerBeat)) == 0) {
     // MIDI clock 24 times per beat
-    Midi.SendClockTick();
+    MidiOutput.SendClockTick();
   }
 
   for (int scene = 0; scene < SceneCount; scene++) {
@@ -127,17 +143,17 @@ void TSequencer::DoNextEvent(int sceneno)
 
     if (StepIsEnabled(sceneno, step)) {
       if (Position[sceneno] == due) {
-	Midi.EnqueueByte(TMidi::MIDI_NOTE_ON);
-	Midi.EnqueueByte(data.Note);
-	Midi.EnqueueByte(data.Velocity);
+	MidiOutput.SendEvent(TMidi::MIDI_NOTE_ON | scene.Channel,
+			     data.Note,
+			     data.Velocity);
 	if (Mode == MODE_SEQ) {
 	  Knobs.LedIntensity[Knobs.COLOR_GREEN][step] = 0x80;
 	}
       }
       if (Position[sceneno] == due_end) {
-	Midi.EnqueueByte(TMidi::MIDI_NOTE_OFF);
-	Midi.EnqueueByte(data.Note);
-	Midi.EnqueueByte(0x40);
+	MidiOutput.SendEvent(TMidi::MIDI_NOTE_OFF | scene.Channel,
+			     data.Note,
+			     0x40);
 	if (Mode == MODE_SEQ) {
 	  Knobs.LedIntensity[Knobs.COLOR_GREEN][step] = 0;
 	}
