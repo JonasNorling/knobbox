@@ -59,7 +59,7 @@ void TKnobs::StartShifting()
 
   // LED driver: clock in the last sent data, always enable outputs.
   Pin_shift_out_load.Set();
-  Pin_shift_out_en.Clear();
+  __asm__("nop;");
   Pin_shift_out_load.Clear();
 
   Pin_shift_in_en.Set();

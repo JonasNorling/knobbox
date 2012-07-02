@@ -141,6 +141,22 @@ int main(void)
   DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
 #endif
 
+  /// \todo We should wake up in some kind of low power mode.
+  clockInit();
+  deviceInit();
+
+  Pin_vpullup.Clear();
+  Pin_lcd_rst.Clear();
+  // Chip selects are active-low.
+  Pin_flash_cs.Set();
+  Pin_lcd_cs.Set();
+  Pin_shift_out_load.Set();
+  Pin_shift_out_en.Set();
+  Pin_shift_in_en.Set();
+  Pin_shift_in_load.Set();
+
+  delay_ms(5);
+
   // Use placement new to run the constructors of static objects,
   // because libopencm3's crt0 and linker scripts aren't made for C++.
   Mode = MODE_CONTROLLER;
@@ -154,30 +170,22 @@ int main(void)
   new(&Controllers) TControllers();
   new(&Usb) TUsb();
 
-  /// \todo We should wake up in some kind of low power mode.
-  clockInit();
-
-  Pin_vpullup.Clear();
-  // Chip selects are active-low.
-  Pin_flash_cs.Set();
-  Pin_lcd_cs.Set();
-
-  deviceInit();
-
-  delay_ms(5);
-
   //Memory.Identify();
   //Memory.ReadStatus();
   Memory.FetchBlock(TMemory::BLOCK_PRODPARAM);
 
-  Display.Init();
-  //Display.Power(true);
   Usb.Init();
+
+  // Stay quiet for a while to let power stabilise
+  delay_ms(150);
+  Pin_vpullup.Set();
+  delay_ms(150);
+
+  Display.Init();
 
   Knobs.InitDma();
   Knobs.StartShifting();
-
-  Pin_vpullup.Set();
+  Pin_shift_out_en.Clear(); // Turn on LED driver
 
   while (true) {
     /* Interrupt "bottom half" processing */
