@@ -23,7 +23,7 @@ public:
 
   void GetMenuTitle(char text[MenuTextLen]);
   void GetMenuItem(uint8_t n, char text[MenuTextLen]);
-  bool MenuItemSelected(uint8_t n);
+  void MenuItemSelected(uint8_t n);
 
 private:
   uint8_t CurrentChannel; ///< This shouldn't be here

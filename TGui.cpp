@@ -78,83 +78,6 @@ void TTopMenu::Event(TEvent event)
 }
 
 
-void TPopup::Render(uint8_t n, TDisplay::TPageBuffer* line)
-{
-  if (n == 0) {
-    line->Clear(Margin, line->GetLength());
-    char text[IDisplayPage::MenuTextLen];
-    text[0] = '\0';
-    Gui.GetCurrentPageObject()->GetMenuTitle(text);
-    line->DrawText(text, Margin + TDisplay::GlyphWidth);
-    line->Invert(Margin, line->GetLength());
-  }
-  else {
-    const uint8_t item = Scroll + n-1;
-    line->Clear(Margin, line->GetLength());
-    char text[IDisplayPage::MenuTextLen + 1];
-    text[0] = '\003';
-    text[1] = '\0';
-
-    if (item < ItemCount) {
-      Gui.GetCurrentPageObject()->GetMenuItem(item, text + 1);
-
-      if (text[1] == '\0') {
-	// We discovered that this is past the end of the list.
-	// If this item was selected, move selection up and repaint.
-	ItemCount = item;
-	if (Focus >= ItemCount) {
-	  Focus = ItemCount - 1;
-	  Gui.UpdateLine(n-1);
-	}
-      }
-
-      line->DrawText(text, Margin);
-      if (Focus == item) {
-	line->Invert(Margin + TDisplay::GlyphWidth, line->GetLength());
-      }
-    }
-
-    if (item >= ItemCount) {
-      text[1] = '-';
-      line->DrawText(text, Margin);
-    }
-  }
-}
-
-void TPopup::Event(TEvent event)
-{
-  Gui.UpdateAll();
-  switch (event) {
-  case KEY_UP:
-    if (Focus > 0) {
-      Focus--;
-      if (Focus < Scroll) {
-	Scroll = Focus;
-      }
-    }
-    break;
-  case KEY_DOWN:
-    if (Focus < ItemCount-1) {
-      Focus++;
-      if (Focus - Scroll >= Lines) {
-	Scroll = Focus - Lines + 1;
-      }
-    }
-    break;
-  case KEY_OK:
-    if (Gui.GetCurrentPageObject()->MenuItemSelected(Focus)) {
-      Gui.ChangeFocus(TGui::FOCUS_PAGE);
-    }
-    break;
-  case KEY_BACK:
-    Gui.ChangeFocus(TGui::FOCUS_PAGE);
-    break;
-  default:
-    break;
-  }
-}
-
-
 TGui::TGui() :
   DirtyLines(TBitmask::Init(Lines)),
   Focus(FOCUS_MENU)
@@ -192,7 +115,9 @@ void TGui::Process()
 	GetCurrentPageObject()->Render(n, line);
       }
       if (Focus == FOCUS_POPUP) {
-	Popup.Render(n, line);
+	if (GetCurrentPopupObject()) {
+	  GetCurrentPopupObject()->Render(n, line);
+	}
       }
       Display.OutputBuffer(line, line->GetLength(), n, 0);
     } else {
@@ -212,8 +137,6 @@ void TGui::ChangeFocus(TFocus focus)
     GetCurrentPageObject()->Event(RECEIVE_FOCUS);
     break;
   case FOCUS_POPUP:
-    Popup.Reset();
-    Popup.Event(RECEIVE_FOCUS);
     break;
   }
 }

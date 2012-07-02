@@ -239,3 +239,8 @@ void TSequencer::ToggleRunning()
     Start();
   }
 }
+
+void TSequencer::ChangeStepLength(int8_t v)
+{
+  Scenes[0].StepLength = clamp(Scenes[0].StepLength + v, 0, 96);
+}

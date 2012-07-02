@@ -84,7 +84,7 @@ void TControllerPage::Event(TEvent event)
     if (Focus == 0) Gui.ChangeFocus(TGui::FOCUS_MENU);
     break;
   case KEY_OK:
-    Gui.ChangeFocus(TGui::FOCUS_POPUP);
+    Gui.DisplayPopup<TSelectPopup>();
     break;
   default:
     break;
@@ -115,8 +115,7 @@ void TControllerPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
   }
 }
 
-bool TControllerPage::MenuItemSelected(uint8_t n)
+void TControllerPage::MenuItemSelected(uint8_t n)
 {
   CurrentChannel = n;
-  return true;
 }

@@ -5,8 +5,18 @@
 #include "TBitmask.h"
 #include "TDisplay.h"
 #include "TControllerPage.h"
+#include "TPopup.h"
 
-/*
+class TTopMenu
+{
+public:
+  TTopMenu() { }
+  void Render(uint8_t n, TDisplay::TPageBuffer* line);
+  void Event(TEvent event);
+};
+
+
+/**
  * TGui keeps stuff together. There is a TTopMenu that renders the
  * mode menu. It can be given focus. There is a set of IDisplayPage
  * instances that handle individual modes' displays (controller,
@@ -19,38 +29,7 @@
  * placement newed. TGui keeps a IDisplayPage* pointer to that address
  * and the TPopupMenu can make calls to the IDisplayPage when asking
  * for items and when an item has been selected.
- *
- * We could do the same with popups: we'll need different kinds, such
- * as menu (list) and ok/cancel type boxes.
  */
-
-
-class TTopMenu
-{
-public:
-  TTopMenu() { }
-  void Render(uint8_t n, TDisplay::TPageBuffer* line);
-  void Event(TEvent event);
-};
-
-
-class TPopup
-{
-public:
-  TPopup() { Reset(); }
-  void Reset() { Scroll = 0; Focus = 0; ItemCount = 255; }
-  void Render(uint8_t n, TDisplay::TPageBuffer* line);
-  void Event(TEvent event);
-
-private:
-  static const uint8_t Margin = 13;
-  static const uint8_t Lines = 7;
-  uint8_t Scroll;
-  uint8_t Focus;
-  uint8_t ItemCount;
-};
-
-
 class TGui
 {
 public:
@@ -66,12 +45,19 @@ public:
     switch (Focus) {
     case FOCUS_MENU: TopMenu.Event(event); break;
     case FOCUS_PAGE: GetCurrentPageObject()->Event(event); break;
-    case FOCUS_POPUP: Popup.Event(event); break;
+    case FOCUS_POPUP: GetCurrentPopupObject()->Event(event); break;
     }
   }
+  template<typename T> void DisplayPopup();
   void ChangeFocus(TFocus focus);
   TFocus GetFocus() const { return Focus; }
-  IDisplayPage* GetCurrentPageObject() { return reinterpret_cast<IDisplayPage*>(CurrentPageObject); }
+  IDisplayPage* GetCurrentPageObject() {
+    return reinterpret_cast<IDisplayPage*>(CurrentPageObject);
+  }
+  TPopup* GetCurrentPopupObject() {
+    return reinterpret_cast<TPopup*>(CurrentPopupObject);
+  }
+
   void SetPage();
 
 private:
@@ -81,7 +67,14 @@ private:
   TTopMenu TopMenu;
   // The current IDisplayPage implementation is put here with placement new. Delete is never called.
   uint8_t CurrentPageObject[sizeof(TControllerPage)];
-  TPopup Popup;
+  uint8_t CurrentPopupObject[sizeof(TSelectPopup)];
 };
 
 extern TGui Gui;
+
+template<typename T> void TGui::DisplayPopup()
+{
+  static_assert(sizeof(T) <= sizeof(CurrentPopupObject), "Too large object");
+  Focus = FOCUS_POPUP;
+  new(CurrentPopupObject) T();
+}

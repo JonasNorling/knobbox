@@ -98,6 +98,7 @@ public:
   void ToggleEnable(int step);
   void ToggleRunning();
 
+  void ChangeStepLength(int8_t v);
   uint8_t GetStepLength() const { return Scenes[0].StepLength; }
 
   /// \todo Hide!

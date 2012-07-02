@@ -25,6 +25,8 @@ public:
   /// Called by TPopup when rendering a popup menu. If n is the last entry, just return.
   virtual void GetMenuItem(uint8_t /* n */,
 			   char text[MenuTextLen] __attribute__((unused))) { }
-  /// Called by TPopup when an item was selected. Return true to close popup.
-  virtual bool MenuItemSelected(uint8_t /* n */) { return true; }
+  /// Called by TPopup when an item was selected.
+  virtual void MenuItemSelected(uint8_t /* n */) { }
+  /// Called by TPopup when an item was changed.
+  virtual void MenuItemChanged(uint8_t /* n */, int8_t /* value */) { }
 };

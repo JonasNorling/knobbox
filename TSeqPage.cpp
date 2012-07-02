@@ -97,7 +97,7 @@ void TSeqPage::Event(TEvent event)
   case KEY_OK:
     switch (Focus) {
     case FOCUS_SETUPMENU:
-      Gui.ChangeFocus(TGui::FOCUS_POPUP);
+      Gui.DisplayPopup<TSettingsPopup>();
       break;
     default:
       Selected = !Selected;
@@ -244,7 +244,10 @@ void TSeqPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
   case FOCUS_SETUPMENU: {
     switch (n) {
     case 0: cheap_strcpy(text, "MODE: lin-12"); break;
-    case 1: cheap_strcpy(text, "TEMPO: \033=xxx"); break;
+    case 1:
+      cheap_strcpy(text, "TEMPO: \033=xxx");
+      render_uint(text+9, Sequencer.GetTempo(), 3);      
+      break;
     case 2: cheap_strcpy(text, "INSTR: x"); break;
     case 3: cheap_strcpy(text, "CHANNEL: \037xx"); break;
     case 4: {
@@ -273,7 +276,18 @@ void TSeqPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
   }
 }
 
-bool TSeqPage::MenuItemSelected(uint8_t /*n*/)
+void TSeqPage::MenuItemSelected(uint8_t /*n*/)
 {
-  return false;
+}
+
+void TSeqPage::MenuItemChanged(uint8_t n, int8_t value)
+{
+  switch (n) {
+  case 1:
+    Sequencer.ChangeTempo(value);
+    break;
+  case 4:
+    Sequencer.ChangeStepLength(value);
+    break;
+  }
 }

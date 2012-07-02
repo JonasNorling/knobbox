@@ -20,7 +20,8 @@ public:
 
   void GetMenuTitle(char text[MenuTextLen]);
   void GetMenuItem(uint8_t n, char text[MenuTextLen]);
-  bool MenuItemSelected(uint8_t n);
+  void MenuItemSelected(uint8_t n);
+  void MenuItemChanged(uint8_t n, int8_t value);
 
 private:
   uint8_t Focus;

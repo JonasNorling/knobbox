@@ -5,6 +5,7 @@ SRCS += TDisplay.cpp
 SRCS += TGui.cpp
 SRCS += TKnobs.cpp
 SRCS += TMemory.cpp
+SRCS += TPopup.cpp
 SRCS += TSequencer.cpp
 SRCS += TSeqPage.cpp
 SRCS += TSpiDmaJob.cpp
