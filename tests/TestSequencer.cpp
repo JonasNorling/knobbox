@@ -1,6 +1,7 @@
 #include "TSequencer.h"
 
 #include <list>
+#include <cstring>
 
 int TestPosition()
 {
@@ -79,6 +80,7 @@ int TestSequence()
   TMidiBuffer buffer;
   TSequencer s(buffer);
 
+  memset(s.Scenes, 0, sizeof(s.Scenes));
   s.Scenes[0].StepLength = 4;
   s.Scenes[0].Steps = 4;
   s.Scenes[0].Data[0].Flags = TSequencerScene::TData::FLAG_ON;
@@ -119,6 +121,7 @@ int TestSequenceQuick()
   TSequencer s(buffer);
 
 #warning This test fails for StepLength=5 or 9...
+  memset(s.Scenes, 0, sizeof(s.Scenes));
   s.Scenes[0].StepLength = 6;
   s.Scenes[0].Steps = 3;
   s.Scenes[0].Data[0].Flags = TSequencerScene::TData::FLAG_ON;
