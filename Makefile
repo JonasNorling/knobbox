@@ -62,7 +62,7 @@ TEST_OBJS += $(TEST_SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 all: $(HOSTBUILDDIR) $(HOSTBUILDDIR)/$(PROJECT).elf
 all: $(BUILDDIR) $(BUILDDIR)/$(PROJECT).bin $(BUILDDIR)/$(PROJECT).asm
 	@size $(BUILDDIR)/$(PROJECT).elf
-	@$(ARMOBJDUMP) -t -j .bss -C $(BUILDDIR)/$(PROJECT).elf | \
+#	@$(ARMOBJDUMP) -t -j .bss -C $(BUILDDIR)/$(PROJECT).elf | \
 		awk '{n = strtonum("0x"$$5); if (n!=0) printf("%20s %5d bytes\n", $$6, n);}'
 
 $(BUILDDIR) $(HOSTBUILDDIR):

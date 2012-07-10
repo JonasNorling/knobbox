@@ -23,20 +23,20 @@ public:
     return o.Step == Step && o.Minor == Minor;
   }
 
-  void AddMinorsAndWrap(int m, uint8_t wrapstep) {
-    m += Minor;
-
-    if (m < 0) {
-      const int wrapminors = wrapstep * MinorsPerStep;
-      m = wrapminors + (m % wrapminors);
-    }
-    Minor = m % MinorsPerStep;
-    Step = (Step + m / MinorsPerStep) % wrapstep;
+  bool operator>(const TPosition& o) const {
+    return (Step > o.Step ||
+	    (Step == o.Step && Minor > o.Minor));
   }
 
-  void Wrap(int steps) {
-    Step %= steps;
+  bool operator>=(const TPosition& o) const {
+    return (Step > o.Step ||
+	    (Step == o.Step && Minor >= o.Minor));
   }
+
+  /// p1 < *this <= p2, with circular wrapping
+  inline bool isBetween(const TPosition& p1,
+			const TPosition& p2) const;
+  inline void AddMinorsAndWrap(int m, uint8_t wrapstep);
 };
 
 
@@ -80,14 +80,15 @@ public:
     MidiOutput(midiOutput),
     Tempo(120),
     Running(false),
+    GlobalPosition({0, 0}),
     Position({ {0, 0}, {0, 0}, {0, 0}, {0, 0} })
   { Load(); }
   void Load();
   void Start(); ///< Start running, send first event immediately
   void Stop();
   void Step();
-  uint8_t GetTempo() const { return Tempo; }
-
+  
+  void CalculateSchedule(uint8_t sceneno);
   void UpdateKnobs();
 
   static const char* NoteName(uint8_t n);
@@ -96,6 +97,7 @@ public:
   void ChangeVelocity(int step, int8_t v);
   void ChangeLength(int step, int8_t v);
   void ChangeOffset(int step, int8_t v);
+  uint8_t GetTempo() const { return Tempo; }
   void ChangeTempo(int8_t v);
   void ToggleEnable(int step);
   void ToggleRunning();
@@ -107,6 +109,29 @@ public:
   TSequencerScene Scenes[SceneCount];
 
 private:
+  class TEventSchedule {
+  public:
+    static const int8_t NO_EVENT = -1;
+
+    struct TEntry
+    {
+      TPosition Position;
+      bool IsOn;    ///< Event is a note-on
+      uint8_t Step; ///< Step number reference
+      int8_t Next;  ///< Link to next event, or NO_EVENT for the last event
+      bool LaterThan(const TEntry& o) { return Position > o.Position; }
+    };
+    static_assert(sizeof(TEntry) == 5, "Strange");
+
+    TEntry Schedule[SEQLEN * 2]; ///< Space for linked entry list
+    uint8_t NextFree;  ///< Next available index in Schedule
+    int8_t FirstEvent; ///< First event (index) in linked list
+
+    void Clear();
+    void Insert(const TEntry& entry);
+    void Dump();
+  };
+
   IMidi& MidiOutput;
 
   /// Tempo in BPM (quarter notes per second)
@@ -115,12 +140,17 @@ private:
 
   TPosition GlobalPosition; ///< \todo Only need minor for MIDI beat
   TPosition Position[SceneCount];
+  TPosition LastPosition[SceneCount];
+
+  TEventSchedule Schedule[SceneCount];
+  int8_t NextEvent[SceneCount];
 
   void ConfigureTimer();
   bool StepIsEnabled(int scene, int step) {
     return Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON;
   }
   void DoNextEvent(int sceneno);
+  void PlayEvent(int sceneno, const TEventSchedule::TEntry& event);
 };
 
 extern TSequencer Sequencer;
