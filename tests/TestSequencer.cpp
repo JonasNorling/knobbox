@@ -93,9 +93,9 @@ int TestSequence()
   test_assert(s.GetStepLength() == 4);
 
   // 48 TicksPerBeat, 24 MidiTicksPerBeat
-  // Start will send first event immediately
   s.Start();
-  test_assert(buffer.Ticks == 1);
+  s.Step();
+  test_assert(buffer.Ticks == 0);
   test_assert(!buffer.Events.empty());
   test_assert(buffer.Events.front().Data[0] == 0x90); // Note on
   buffer.Events.pop_front();
@@ -103,7 +103,7 @@ int TestSequence()
   s.Step();
   test_assert(buffer.Ticks == 1);
   s.Step();
-  test_assert(buffer.Ticks == 2);
+  test_assert(buffer.Ticks == 1);
   s.Step();
   test_assert(buffer.Ticks == 2);
 
@@ -145,7 +145,7 @@ int TestSequenceQuick()
   s.CalculateSchedule(0);
 
   s.Start();
-  for (int i = 0; i < 4 * TicksPerBeat - 1; i++) s.Step();
+  for (int i = 0; i < 4 * TicksPerBeat; i++) s.Step();
   test_assert(buffer.Ticks == 4 * MidiTicksPerBeat);
   test_assert(buffer.Events.size() / 2 == s.Scenes[0].StepLength);
 
@@ -210,7 +210,7 @@ int TestSequenceComplex()
 
   s.Start();
   for (int i = 0; i < 4 * TicksPerBeat - 1; i++) s.Step();
-  test_assert(buffer.Ticks == 4 * MidiTicksPerBeat);
+  test_assert(buffer.Ticks == 4 * MidiTicksPerBeat - 1);
   test_assert(buffer.Events.size() / 2 == s.Scenes[0].StepLength);
 
   test_assert(buffer.Events.front().Data[0] == 0x90); // Note on

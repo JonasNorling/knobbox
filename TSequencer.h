@@ -16,7 +16,7 @@ public:
   /// each step.
   static const uint8_t MinorsPerStep = TicksPerBeat * 4;
 
-  uint8_t Step;
+  int8_t Step;
   uint8_t Minor;
     
   bool operator==(const TPosition& o) const {
@@ -81,10 +81,12 @@ public:
     Tempo(120),
     Running(false),
     GlobalPosition({0, 0}),
-    Position({ {0, 0}, {0, 0}, {0, 0}, {0, 0} })
-  { Load(); }
+    Position({ {0, 0}, {0, 0}, {0, 0}, {0, 0} }),
+    LastPosition({ {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0} }),
+    ScheduleLocked(false)
+  { }
   void Load();
-  void Start(); ///< Start running, send first event immediately
+  void Start(); ///< Start running
   void Stop();
   void Step();
   
@@ -140,10 +142,11 @@ private:
 
   TPosition GlobalPosition; ///< \todo Only need minor for MIDI beat
   TPosition Position[SceneCount];
-  TPosition LastPosition[SceneCount];
+  TPosition LastPosition[SceneCount]; ///< Last pos that was actually played out
 
   TEventSchedule Schedule[SceneCount];
   int8_t NextEvent[SceneCount];
+  bool ScheduleLocked; ///< Mutex when writing new schedule.
 
   void ConfigureTimer();
   bool StepIsEnabled(int scene, int step) {

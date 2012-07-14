@@ -181,6 +181,7 @@ int main(void)
   Pin_vpullup.Set();
   delay_ms(150);
 
+  Sequencer.Load();
   Display.Init();
 
   Knobs.InitDma();

@@ -65,22 +65,13 @@ void TSequencer::Load()
   }
 }
 
+/**
+ * Start the sequencer timer. The next event will be triggered soon.
+ */
 void TSequencer::Start()
 {
-  ConfigureTimer();
-
   Running = true;
-
-  if ((GlobalPosition.Minor % (TicksPerBeat / MidiTicksPerBeat)) == 0) {
-    // MIDI clock 24 times per beat
-    MidiOutput.SendClockTick();
-  }
-
-  for (int scene = 0; scene < SceneCount; scene++) {
-    DoNextEvent(scene);
-  }
-
-  UpdateKnobs();
+  ConfigureTimer();
 }
 
 void TSequencer::ConfigureTimer()
@@ -123,6 +114,8 @@ void TSequencer::Stop()
  * Called on timer tick 48 times per beat. Update global and
  * scene-local positions, cause sequencer to think about what to do
  * next.
+ *
+ * WE ARE IN TIM2 INTERRUPT CONTEXT HERE
  */
 void TSequencer::Step()
 {
@@ -134,7 +127,6 @@ void TSequencer::Step()
 
   for (int scene = 0; scene < SceneCount; scene++) {
     TPosition& position = Position[scene];
-    LastPosition[scene] = position;
     position.Minor += Scenes[scene].StepLength;
     if (position.Minor >= TPosition::MinorsPerStep) {
       position.Minor -= TPosition::MinorsPerStep;
@@ -156,6 +148,7 @@ void TSequencer::Step()
  */
 void TSequencer::CalculateSchedule(uint8_t sceneno)
 {
+  ScheduleLocked = true;
   TEventSchedule& schedule = Schedule[sceneno];
   schedule.Clear();
 
@@ -177,17 +170,18 @@ void TSequencer::CalculateSchedule(uint8_t sceneno)
   }
 
   // Find the next event to play
-  int8_t nextEvent = schedule.FirstEvent;
+  int8_t event = schedule.FirstEvent;
   NextEvent[sceneno] = schedule.FirstEvent;
-  while (nextEvent != TEventSchedule::NO_EVENT) {
-    if (schedule.Schedule[nextEvent].Position >=
+  while (event != TEventSchedule::NO_EVENT) {
+    if (schedule.Schedule[event].Position >=
 	Position[sceneno]) {
-      NextEvent[sceneno] = nextEvent;
+      NextEvent[sceneno] = event;
       break;
     }
-    nextEvent = schedule.Schedule[nextEvent].Next;
+    event = schedule.Schedule[event].Next;
   }
 
+  ScheduleLocked = false;
   //schedule.Dump();
 }
 
@@ -198,21 +192,24 @@ void TSequencer::CalculateSchedule(uint8_t sceneno)
  * value or length or offset: Keep a list (bitmask) of currently
  * playing steps. Check this list when updating a step, and send a
  * note-off if necessary.
+ *
+ * WE MIGHT BE IN TIM2 INTERRUPT CONTEXT HERE
  */
 void TSequencer::DoNextEvent(int sceneno)
 {
   // Just play one scene during development, it's complicated enough.
   if (sceneno != 0) return;
 
-  const TPosition& pos = Position[sceneno];
-  const TPosition& lastpos = LastPosition[sceneno];
+  // If the schedule is being updated we'll have to wait for the next tick.
+  if (ScheduleLocked) return;
 
   int8_t& nextEvent = NextEvent[sceneno];
   while (nextEvent != TEventSchedule::NO_EVENT) {
     const TEventSchedule& schedule = Schedule[sceneno];
     const TEventSchedule::TEntry& next = schedule.Schedule[nextEvent];
 
-    if (next.Position.isBetween(lastpos, pos)) {
+    if (next.Position.isBetween(LastPosition[sceneno],
+				Position[sceneno])) {
       /* LOG("Playing %s %d:%d when pos=%d:%d\n",
 	  next.IsOn ? " on" : "off",
 	  next.Position.Step, next.Position.Minor,
@@ -236,6 +233,7 @@ void TSequencer::DoNextEvent(int sceneno)
       break;
     }
   }
+  LastPosition[sceneno] = Position[sceneno];
 }
 
 void TSequencer::PlayEvent(int sceneno, const TEventSchedule::TEntry& event)
@@ -263,6 +261,8 @@ void TSequencer::PlayEvent(int sceneno, const TEventSchedule::TEntry& event)
 
 /**
  * Update knob colors. Highlight the knob representing the current beat.
+ *
+ * WE MIGHT BE IN TIM2 INTERRUPT CONTEXT HERE
  */
 void TSequencer::UpdateKnobs()
 {
@@ -337,7 +337,7 @@ void TSequencer::ChangeOffset(int step, int8_t v)
 void TSequencer::ChangeTempo(int8_t v)
 {
   Tempo = clamp(Tempo + v, 20, 255);
-  if (Running) Start(); // Reconfigure timer
+  if (Running) ConfigureTimer();
 }
 
 void TSequencer::ToggleEnable(int step)
