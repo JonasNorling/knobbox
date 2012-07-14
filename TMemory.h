@@ -72,10 +72,12 @@ struct TParamScene
 struct TSequencerScene
 {
   static const uint32_t MAGIC = 0xf00d0002;
-  static const uint32_t FLAG_DIRTY = 0x00000001;
+  static const uint32_t FLAG_DIRTY   = 0x00000001;
+  static const uint32_t FLAG_ENABLED = 0x00000002;
 
   uint32_t Magic;
   uint32_t Flags;
+  uint8_t SyncStartTo; ///< To seq1..4, global, free running???
   char Name[NAMELEN];
   uint8_t Instrument;
   uint8_t Channel;

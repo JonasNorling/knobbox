@@ -51,6 +51,8 @@ void TSequencer::Load()
     Scenes[scene].Name[10] = 'n';
     Scenes[scene].Name[11] = 'e';
 
+    Scenes[scene].Flags = scene == 0 ? TSequencerScene::FLAG_ENABLED : 0;
+    Scenes[scene].Channel = 0;
     Scenes[scene].StepLength = 4; // quarter note
     Scenes[scene].Steps = 4;
     
@@ -153,19 +155,22 @@ void TSequencer::CalculateSchedule(uint8_t sceneno)
   schedule.Clear();
 
   const TSequencerScene& scene(Scenes[sceneno]);
-  for (uint8_t step=0; step < scene.Steps; step++) {
-    const TSequencerScene::TData& data = scene.Data[step];
-    if (StepIsEnabled(sceneno, step)) {
-      TPosition starttime({static_cast<uint8_t>(step), 0});
-      starttime.AddMinorsAndWrap(data.Offset * 4, scene.Steps);
-      TPosition endtime(starttime);
-      endtime.AddMinorsAndWrap(data.Len * 4, scene.Steps);
 
-      TEventSchedule::TEntry onEvent = { starttime, true, step, -1 };
-      TEventSchedule::TEntry offEvent = { endtime, false, step, -1 };
+  if (scene.Flags & TSequencerScene::FLAG_ENABLED) {
+    for (uint8_t step=0; step < scene.Steps; step++) {
+      const TSequencerScene::TData& data = scene.Data[step];
+      if (StepIsEnabled(sceneno, step)) {
+	TPosition starttime({static_cast<uint8_t>(step), 0});
+	starttime.AddMinorsAndWrap(data.Offset * 4, scene.Steps);
+	TPosition endtime(starttime);
+	endtime.AddMinorsAndWrap(data.Len * 4, scene.Steps);
 
-      schedule.Insert(onEvent);
-      schedule.Insert(offEvent);
+	TEventSchedule::TEntry onEvent = { starttime, true, step, -1 };
+	TEventSchedule::TEntry offEvent = { endtime, false, step, -1 };
+
+	schedule.Insert(onEvent);
+	schedule.Insert(offEvent);
+      }
     }
   }
 
@@ -197,9 +202,6 @@ void TSequencer::CalculateSchedule(uint8_t sceneno)
  */
 void TSequencer::DoNextEvent(int sceneno)
 {
-  // Just play one scene during development, it's complicated enough.
-  if (sceneno != 0) return;
-
   // If the schedule is being updated we'll have to wait for the next tick.
   if (ScheduleLocked) return;
 
@@ -338,6 +340,12 @@ void TSequencer::ChangeTempo(int8_t v)
 {
   Tempo = clamp(Tempo + v, 20, 255);
   if (Running) ConfigureTimer();
+}
+
+void TSequencer::ChangeSteps(int8_t v)
+{
+  Scenes[0].Steps = clamp(Scenes[0].Steps + v, 1, 16);
+  CalculateSchedule(0);
 }
 
 void TSequencer::ToggleEnable(int step)

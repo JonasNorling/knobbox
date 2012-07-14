@@ -79,8 +79,10 @@ int TestSequence()
 {
   TMidiBuffer buffer;
   TSequencer s(buffer);
+  s.Load();
 
   memset(s.Scenes, 0, sizeof(s.Scenes));
+  s.Scenes[0].Flags = TSequencerScene::FLAG_ENABLED;
   s.Scenes[0].StepLength = 4;
   s.Scenes[0].Steps = 4;
   s.Scenes[0].Data[0].Flags = TSequencerScene::TData::FLAG_ON;
@@ -121,8 +123,10 @@ int TestSequenceQuick()
 {
   TMidiBuffer buffer;
   TSequencer s(buffer);
+  s.Load();
 
   memset(s.Scenes, 0, sizeof(s.Scenes));
+  s.Scenes[0].Flags = TSequencerScene::FLAG_ENABLED;
   s.Scenes[0].StepLength = 5;
   s.Scenes[0].Steps = 3;
   s.Scenes[0].Data[0].Flags = TSequencerScene::TData::FLAG_ON;
@@ -188,8 +192,10 @@ int TestSequenceComplex()
 {
   TMidiBuffer buffer;
   TSequencer s(buffer);
+  s.Load();
 
   memset(s.Scenes, 0, sizeof(s.Scenes));
+  s.Scenes[0].Flags = TSequencerScene::FLAG_ENABLED;
   s.Scenes[0].StepLength = 4;
   s.Scenes[0].Steps = 4;
   s.Scenes[0].Data[0].Flags = TSequencerScene::TData::FLAG_ON;

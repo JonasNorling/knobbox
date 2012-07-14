@@ -83,7 +83,7 @@ void TSettingsPopup::Event(TEvent event)
 {
   Gui.UpdateAll();
   switch (event_code(event)) {
-  case KNOB_LEFT:
+  case KNOB_RIGHT:
   case KEY_UP:
     if (Selected) {
       Gui.GetCurrentPageObject()->MenuItemChanged(Focus, 1);
@@ -97,7 +97,7 @@ void TSettingsPopup::Event(TEvent event)
       }
     }
     break;
-  case KNOB_RIGHT:
+  case KNOB_LEFT:
   case KEY_DOWN:
     if (Selected) {
       Gui.GetCurrentPageObject()->MenuItemChanged(Focus, -1);

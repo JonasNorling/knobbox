@@ -243,13 +243,21 @@ void TSeqPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
   switch (Focus) {
   case FOCUS_SETUPMENU: {
     switch (n) {
-    case 0: cheap_strcpy(text, "MODE: lin-12"); break;
+    case 0:
+      cheap_strcpy(text, "STEPS: xx");
+      render_uint(text+7, Sequencer.Scenes[0].Steps, 2);
+      break;
     case 1:
       cheap_strcpy(text, "TEMPO: \033=xxx");
-      render_uint(text+9, Sequencer.GetTempo(), 3);      
+      render_uint(text+9, Sequencer.GetTempo(), 3);
       break;
-    case 2: cheap_strcpy(text, "INSTR: x"); break;
-    case 3: cheap_strcpy(text, "CHANNEL: \037xx"); break;
+    case 2:
+      cheap_strcpy(text, "INSTR: x");
+      break;
+    case 3:
+      cheap_strcpy(text, "CHANNEL: \037xx");
+      render_uint(text+10, Sequencer.Scenes[0].Channel + 1, 2);
+      break;
     case 4: {
       cheap_strcpy(text, "STEP: 1/xx   ");
       int step = Sequencer.GetStepLength();
@@ -269,7 +277,12 @@ void TSeqPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
       }
       break;
     }
-    case 5: cheap_strcpy(text, "CC: 14 Attack"); break;
+    case 5:
+      cheap_strcpy(text, "CC: 14 Attack");
+      break;
+    case 6:
+      cheap_strcpy(text, "MODE: linear");
+      break;
     }
     return;
   }
@@ -283,8 +296,14 @@ void TSeqPage::MenuItemSelected(uint8_t /*n*/)
 void TSeqPage::MenuItemChanged(uint8_t n, int8_t value)
 {
   switch (n) {
+  case 0:
+    Sequencer.ChangeSteps(value);
+    break;
   case 1:
     Sequencer.ChangeTempo(value);
+    break;
+  case 3:
+    Sequencer.Scenes[0].Channel = clamp(Sequencer.Scenes[0].Channel + value, 0, 15);
     break;
   case 4:
     Sequencer.ChangeStepLength(value);

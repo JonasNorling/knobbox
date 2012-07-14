@@ -101,6 +101,7 @@ public:
   void ChangeOffset(int step, int8_t v);
   uint8_t GetTempo() const { return Tempo; }
   void ChangeTempo(int8_t v);
+  void ChangeSteps(int8_t v);
   void ToggleEnable(int step);
   void ToggleRunning();
 
@@ -150,7 +151,8 @@ private:
 
   void ConfigureTimer();
   bool StepIsEnabled(int scene, int step) {
-    return Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON;
+    return step < Scenes[scene].Steps &&
+      Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON;
   }
   void DoNextEvent(int sceneno);
   void PlayEvent(int sceneno, const TEventSchedule::TEntry& event);
