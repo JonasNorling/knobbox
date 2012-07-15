@@ -71,7 +71,7 @@ public:
  * 32'th    0   32   64   96  128  160  192 wrap ...................  192 wrap
  *
  */
-class TSequencer
+class TSequencer : public IMemoryCallback
 {
 public:
   static const uint8_t SceneCount = 4;
@@ -86,6 +86,7 @@ public:
     ScheduleLocked(false)
   { }
   void Load();
+  void LoadFromMemory(uint8_t scene, uint8_t patchno);
   void Start(); ///< Start running
   void Stop();
   void Step();
@@ -95,21 +96,26 @@ public:
 
   static const char* NoteName(uint8_t n);
 
+  // Theses methods apply to the active scene
   void ChangeNote(int step, int8_t v);
   void ChangeVelocity(int step, int8_t v);
   void ChangeLength(int step, int8_t v);
   void ChangeOffset(int step, int8_t v);
-  uint8_t GetTempo() const { return Tempo; }
-  void ChangeTempo(int8_t v);
   void ChangeSteps(int8_t v);
   void ToggleEnable(int step);
-  void ToggleRunning();
-
   void ChangeStepLength(int8_t v);
   uint8_t GetStepLength() const { return Scenes[0].StepLength; }
 
+  // These methods apply to all scenes
+  uint8_t GetTempo() const { return Tempo; }
+  void ChangeTempo(int8_t v);
+  void ToggleRunning();
+
   /// \todo Hide!
   TSequencerScene Scenes[SceneCount];
+
+  // Interface IMemoryCallback
+  void MemoryOperationFinished(uint8_t block);
 
 private:
   class TEventSchedule {

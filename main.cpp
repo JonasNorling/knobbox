@@ -172,7 +172,7 @@ int main(void)
 
   //Memory.Identify();
   //Memory.ReadStatus();
-  Memory.FetchBlock(TMemory::BLOCK_PRODPARAM);
+  Memory.FetchBlock(TMemory::BLOCK_PRODPARAM, 0);
 
   Usb.Init();
 

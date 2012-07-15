@@ -67,6 +67,21 @@ void TSequencer::Load()
   }
 }
 
+void TSequencer::LoadFromMemory(uint8_t scene, uint8_t patchno)
+{
+  // Suck in the block from memory. When that's done, a
+  // MemoryOperationFinished() will be triggered.
+  //
+  // \todo How is the GUI indicating that a load is in progress? What
+  // happens on failure? Magic number must be verified.
+  Memory.FetchBlock(TMemory::BLOCK_FIRST_SEQ_SCENE + patchno, this);
+}
+
+void TSequencer::MemoryOperationFinished(uint8_t block)
+{
+  Gui.UpdateAll();
+}
+
 /**
  * Start the sequencer timer. The next event will be triggered soon.
  */

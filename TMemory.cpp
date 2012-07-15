@@ -5,23 +5,36 @@ static const uint8_t COMMAND_DEVICE_ID = 0x9f;
 static const uint8_t COMMAND_READ_STATUS = 0x05;
 static const uint8_t COMMAND_READ_ARRAY = 0x03;
 
-void TMemory::FetchBlock(uint8_t page)
+bool TMemory::FetchBlock(uint8_t n, IMemoryCallback* cb)
 {
-  /// \todo We're reading only the first 128 bytes here. Need to chain
-  /// reads to get the whole block, and keep status of where we are.
-  const uint16_t byteno = 0;
+  if (CurrentOperation.State != TOperation::OP_NONE) return false;
+  CurrentOperation.State = TOperation::OP_READ;
+  CurrentOperation.BlockNo = n;
+  CurrentOperation.NextChunk = 0;
+  CurrentOperation.Callback = cb;
+
+  FetchNextChunk();
+  return true;
+}
+
+void TMemory::FetchNextChunk()
+{
+  const uint8_t page = CurrentOperation.BlockNo;
+  const uint16_t byteno = CurrentOperation.NextChunk * DmaChunkSize;
   CommandBuffer[0] = COMMAND_READ_ARRAY;
   CommandBuffer[1] = page >> 4;
   CommandBuffer[2] = (page << 4) | byteno >> 8;
   CommandBuffer[3] = byteno & 0xff;
 
+  CurrentOperation.NextChunk++;
+  const bool moreToRead = CurrentOperation.NextChunk * DmaChunkSize < BlockSize;
+
   SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 4),
 				 TSpiDmaJob::CS_FLASH, TSpiDmaJob::LCD_DATA,
-				 this, 0));
+				 0, 0));
   SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CachedBlock, 128),
 				 TSpiDmaJob::CS_FLASH, TSpiDmaJob::LCD_DATA,
-				 this, 0));
-  CachedBlockNo = page;
+				 this, reinterpret_cast<void*>(moreToRead)));
 }
 
 void TMemory::ReadStatus()
@@ -32,7 +45,7 @@ void TMemory::ReadStatus()
   SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer + 3, 3),
 				 TSpiDmaJob::CS_FLASH, TSpiDmaJob::LCD_DATA,
 				 this, 0));
-  CachedBlockNo = BLOCK_STATUS_REG;
+  CurrentOperation.BlockNo = BLOCK_STATUS_REG;
 }
 
 void TMemory::Identify()
@@ -42,9 +55,20 @@ void TMemory::Identify()
   SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer + 3, 6),
 				 TSpiDmaJob::CS_FLASH, TSpiDmaJob::LCD_DATA,
 				 this, 0));
-  CachedBlockNo = BLOCK_DEVICE_ID;
+  CurrentOperation.BlockNo = BLOCK_DEVICE_ID;
 }
 
-void TMemory::DmaFinished(void* /*context*/)
+void TMemory::DmaFinished(void* context)
 {
+  const bool moreToRead = static_cast<bool>(context);
+  if (moreToRead) {
+    FetchNextChunk();
+  }
+  else {
+    if (CurrentOperation.Callback) {
+      CurrentOperation.Callback->MemoryOperationFinished(CurrentOperation.BlockNo);
+      CurrentOperation.Callback = 0;
+    }
+    CurrentOperation.State = TOperation::OP_NONE;
+  }
 }

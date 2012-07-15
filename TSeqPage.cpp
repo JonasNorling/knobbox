@@ -283,6 +283,9 @@ void TSeqPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
     case 6:
       cheap_strcpy(text, "MODE: linear");
       break;
+    case 7:
+      cheap_strcpy(text, "LOAD...");
+      break;
     }
     return;
   }
@@ -307,6 +310,9 @@ void TSeqPage::MenuItemChanged(uint8_t n, int8_t value)
     break;
   case 4:
     Sequencer.ChangeStepLength(value);
+    break;
+  case 7:
+    Sequencer.LoadFromMemory(/*scene*/ 0, /*patchno*/ 0);
     break;
   }
 }

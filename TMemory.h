@@ -104,21 +104,32 @@ struct TSequencerScene
   } Data[SEQLEN];
 };
 
+class IMemoryCallback
+{
+public:
+  virtual void MemoryOperationFinished(uint8_t block) = 0;
+};
+
 /**
- * This class talks to the SPI flash memory.
+ * This class talks to the SPI flash memory (Atmel AT25DF081A).
+ *
+ * TMemory has space for an entire cached 4k block. Reads and writes
+ * can be made against this cache. The SPI memory chip allows reads of
+ * only 128 bytes at a time, so transactions have to be chained
+ * together. When writing: a full 4k block is cleared, wait 4 ms, 128
+ * byte writes are made until finished.
  *
  * Status: Just a dummy.
  */
 class TMemory : public IDmaCallback
 {
 public:
-  TMemory() : CachedBlockNo(0) {}
   void GetVariable();
   void GetIntSetting();
 
   void ReadStatus();
   void Identify();
-  void FetchBlock(uint8_t n);
+  bool FetchBlock(uint8_t n, IMemoryCallback* cb);
   uint8_t* GetCachedBlock() { return CachedBlock; }
 
   static const uint8_t BLOCK_PRODPARAM = 0;
@@ -129,19 +140,34 @@ public:
   static const uint8_t BLOCK_FIRST_SEQ_SCENE = 64;
   static const uint8_t BLOCK_DEVICE_ID = 0xfe;
   static const uint8_t BLOCK_STATUS_REG = 0xff;
+  static const uint32_t BlockSize = 4096;
+  static const uint8_t DmaChunkSize = 128;
 
   /* IDmaCallback */
   virtual void DmaFinished(void* context);
 
 private:
-  static const uint32_t BlockSize = 4096;
   static const uint32_t CommandSize = 4;
+
+  struct TOperation {
+    TOperation() : State(OP_NONE), BlockNo(0), Callback(0) {}
+    enum {
+      OP_NONE = 0,
+      OP_READ,
+      OP_WRITE
+    } State;
+    uint8_t BlockNo;   ///< Requested block number
+    uint8_t NextChunk; ///< Read/write DmaChunkSize sized chunks
+    IMemoryCallback* Callback;
+  };
+  TOperation CurrentOperation;
 
   /// The command is put at the end of this buffer, so the data is
   /// written to CachedBlock. Do not rearrange these.
   uint8_t CommandBuffer[CommandSize];
   uint8_t CachedBlock[BlockSize];
-  uint8_t CachedBlockNo;
+
+  void FetchNextChunk();
 };
 
 extern TMemory Memory;
