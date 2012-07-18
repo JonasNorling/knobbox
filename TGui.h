@@ -38,7 +38,7 @@ public:
   TGui();
 
   void Process();
-  void UpdateAll() { DirtyLines = TBitmask::Init(Lines); }
+  void UpdateAll();
   void UpdateLine(uint8_t n) { TBitmask::Set(DirtyLines, n); }
   void Event(TEvent event)
   {

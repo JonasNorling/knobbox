@@ -24,8 +24,8 @@ void TSpiDmaQueue::TryStartJob()
   // Start the next DMA job in the queue if the SPI interface is
   // available (TXE=1 and BSY=0)
 
-  if ((SPI_SR(SPI1) & SPI_SR_TXE) &&
-      !(SPI_SR(SPI1) & SPI_SR_BSY)) {
+  if ( SPI_SR(SPI1) & SPI_SR_TXE &&
+      ~SPI_SR(SPI1) & SPI_SR_BSY) {
 
     if (Jobs.Empty()) {
       // No transfers planned -- deassert CS lines

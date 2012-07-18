@@ -11,6 +11,10 @@
 extern "C" {
 #endif
   // Need to declare ISRs as extern "C" for the linker to find them:
+  void hard_fault_handler(void);
+  void mem_manage_handler(void);
+  void bus_fault_handler(void);
+  void usage_fault_handler(void);
   void dma1_channel1_isr(void);
   void dma1_channel2_isr(void); // SPI1_RX
   void dma1_channel3_isr(void); // SPI1_TX

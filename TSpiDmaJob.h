@@ -62,13 +62,25 @@ public:
   /** Called when interrupt is received. */
   void Finished()
   {
-    Jobs.First().Finished();
+    TSpiDmaJob job = Jobs.First();
     Jobs.Remove();
+
+    if (Jobs.Empty()) {
+      // Deassert CS lines if no more transactions are planned. We
+      // need to do this before the callback, because that can enqueue
+      // more transactions. CS needs to be deasserted between each
+      // memory access.
+      Pin_flash_cs.Set();
+      Pin_lcd_cs.Set();
+    }
+
+    job.Finished();
   }
 
 private:
-  // Max jobs needed: 2 for each TDisplay buffer + 1 for each flash operation
-  static const int MaxJobs = 5;
+  // Max jobs needed: 2 for each TDisplay buffer + 2 for each flash
+  // operation
+  static const int MaxJobs = 6;
   TCircularBuffer<TSpiDmaJob, MaxJobs> Jobs;
 };
 

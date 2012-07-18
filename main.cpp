@@ -66,6 +66,27 @@ volatile static uint8_t Actions; // Signalling from interrupts to bottom halves
 static const uint8_t ACTION_POLL_BUTTONS = 0x01;
 static const uint8_t ACTION_BLINK_TIMER = 0x02;
 
+/* Spinning fault handlers, so gdb tells us what we got. */
+
+void hard_fault_handler(void)
+{
+  while (1);
+}
+
+void mem_manage_handler(void)
+{
+  while (1);
+}
+
+void bus_fault_handler(void)
+{
+  while (1);
+}
+
+void usage_fault_handler(void)
+{
+  while (1);
+}
 
 /** DMA channel 1:2 -- SPI1_RX (display and flash) */
 void dma1_channel2_isr(void)
@@ -170,9 +191,7 @@ int main(void)
   new(&Controllers) TControllers();
   new(&Usb) TUsb();
 
-  //Memory.Identify();
-  //Memory.ReadStatus();
-  Memory.FetchBlock(TMemory::BLOCK_PRODPARAM, 0);
+  //Memory.FetchBlock(TMemory::BLOCK_PRODPARAM, 0);
 
   Usb.Init();
 

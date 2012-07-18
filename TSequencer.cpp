@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "logging.h"
 #include <algorithm>
+#include <cstring>
 
 void TPosition::AddMinorsAndWrap(int m, uint8_t wrapstep)
 {
@@ -77,9 +78,31 @@ void TSequencer::LoadFromMemory(uint8_t scene, uint8_t patchno)
   Memory.FetchBlock(TMemory::BLOCK_FIRST_SEQ_SCENE + patchno, this);
 }
 
-void TSequencer::MemoryOperationFinished(uint8_t block)
+void TSequencer::StoreInMemory(uint8_t scene, uint8_t patchno)
 {
-  Gui.UpdateAll();
+  ::memset(Memory.GetCachedBlock(), 0xff, TMemory::BlockSize);
+  ::memcpy(Memory.GetCachedBlock(), &Scenes[0],
+	   sizeof(TSequencerScene));
+  Memory.WriteBlock(TMemory::BLOCK_FIRST_SEQ_SCENE + patchno, this);
+}
+
+void TSequencer::MemoryOperationFinished(TMemory::OperationType type,
+					 uint8_t /*block*/)
+{
+  if (type == TMemory::OP_READ) {
+    const TSequencerScene* s =
+      reinterpret_cast<TSequencerScene*>(Memory.GetCachedBlock());
+    if (s->Magic == TSequencerScene::MAGIC) {
+      ::memcpy(&Scenes[0], s, sizeof(TSequencerScene));
+      CalculateSchedule(0);
+    }
+    else {
+     ::memcpy(&Scenes[0], s, sizeof(TSequencerScene));
+    }
+    Gui.UpdateAll();
+  }
+  else if (type == TMemory::OP_WRITE) {
+  }
 }
 
 /**

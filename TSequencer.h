@@ -87,6 +87,7 @@ public:
   { }
   void Load();
   void LoadFromMemory(uint8_t scene, uint8_t patchno);
+  void StoreInMemory(uint8_t scene, uint8_t patchno);
   void Start(); ///< Start running
   void Stop();
   void Step();
@@ -111,11 +112,18 @@ public:
   void ChangeTempo(int8_t v);
   void ToggleRunning();
 
+  const TPosition& GetGlobalPosition() const
+  { return GlobalPosition; }
+
+  const TPosition& GetPosition(uint8_t scene) const
+  { return Position[scene]; }
+
   /// \todo Hide!
   TSequencerScene Scenes[SceneCount];
 
   // Interface IMemoryCallback
-  void MemoryOperationFinished(uint8_t block);
+  void MemoryOperationFinished(TMemory::OperationType type,
+			       uint8_t block);
 
 private:
   class TEventSchedule {

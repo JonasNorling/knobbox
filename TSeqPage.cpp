@@ -63,8 +63,10 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   }
   else if (n == 7) {
     char text[9];
-    cheap_strcpy(text, "\033=xxx");
+    cheap_strcpy(text, "\033=xxx xx:xx");
     render_uint(text+2, Sequencer.GetTempo(), 3);
+    render_uint(text+6, Sequencer.GetPosition(0).Step, 2);
+    render_hexbyte(text+9, Sequencer.GetPosition(0).Minor);
     pos = line->DrawText(text, pos, Focus == FOCUS_TEMPO && !Blink);
     line->Invert(0, line->GetLength());
   }
@@ -286,14 +288,27 @@ void TSeqPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
     case 7:
       cheap_strcpy(text, "LOAD...");
       break;
+    case 8:
+      cheap_strcpy(text, "STORE...");
+      break;
     }
     return;
   }
   }
 }
 
-void TSeqPage::MenuItemSelected(uint8_t /*n*/)
+void TSeqPage::MenuItemSelected(uint8_t n)
 {
+  switch (n) {
+  case 7:
+    Gui.ChangeFocus(TGui::FOCUS_PAGE);
+    Sequencer.LoadFromMemory(/*scene*/ 0, /*patchno*/ 0);
+    break;
+  case 8:
+    Gui.ChangeFocus(TGui::FOCUS_PAGE);
+    Sequencer.StoreInMemory(/*scene*/ 0, /*patchno*/ 0);
+    break;
+  }
 }
 
 void TSeqPage::MenuItemChanged(uint8_t n, int8_t value)
@@ -310,9 +325,6 @@ void TSeqPage::MenuItemChanged(uint8_t n, int8_t value)
     break;
   case 4:
     Sequencer.ChangeStepLength(value);
-    break;
-  case 7:
-    Sequencer.LoadFromMemory(/*scene*/ 0, /*patchno*/ 0);
     break;
   }
 }

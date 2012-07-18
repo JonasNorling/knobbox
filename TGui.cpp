@@ -126,6 +126,11 @@ void TGui::Process()
   }
 }
 
+void TGui::UpdateAll()
+{
+  DirtyLines = TBitmask::Init(Lines);
+}
+
 void TGui::ChangeFocus(TFocus focus)
 {
   Focus = focus;

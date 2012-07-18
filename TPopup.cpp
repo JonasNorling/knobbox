@@ -114,6 +114,9 @@ void TSettingsPopup::Event(TEvent event)
   case KNOB_PUSH:
   case KEY_OK:
     Selected = !Selected;
+    if (Selected) {
+      Gui.GetCurrentPageObject()->MenuItemSelected(Focus);
+    }
     break;
   case KEY_BACK:
     Gui.ChangeFocus(TGui::FOCUS_PAGE);

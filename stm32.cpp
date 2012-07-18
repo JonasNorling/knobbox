@@ -136,6 +136,13 @@ void deviceInit()
    * are 16 priority levels in this device.
    */
 
+  // Enable can't-happen faults so we don't just get a hard fault
+  nvic_enable_irq(NVIC_NMI_IRQ);
+  nvic_enable_irq(NVIC_HARD_FAULT_IRQ);
+  nvic_enable_irq(NVIC_MEM_MANAGE_IRQ);
+  nvic_enable_irq(NVIC_BUS_FAULT_IRQ);
+  nvic_enable_irq(NVIC_USAGE_FAULT_IRQ);
+
   // SPI DMA transmission done interrupt
   nvic_set_priority(NVIC_DMA1_CHANNEL3_IRQ, 4);
   nvic_enable_irq(NVIC_DMA1_CHANNEL3_IRQ);

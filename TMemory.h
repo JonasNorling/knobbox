@@ -104,11 +104,7 @@ struct TSequencerScene
   } Data[SEQLEN];
 };
 
-class IMemoryCallback
-{
-public:
-  virtual void MemoryOperationFinished(uint8_t block) = 0;
-};
+class IMemoryCallback;
 
 /**
  * This class talks to the SPI flash memory (Atmel AT25DF081A).
@@ -124,12 +120,17 @@ public:
 class TMemory : public IDmaCallback
 {
 public:
+  enum OperationType {
+    OP_NONE = 0,
+    OP_READ,
+    OP_WRITE
+  };
+
   void GetVariable();
   void GetIntSetting();
 
-  void ReadStatus();
-  void Identify();
   bool FetchBlock(uint8_t n, IMemoryCallback* cb);
+  bool WriteBlock(uint8_t n, IMemoryCallback* cb);
   uint8_t* GetCachedBlock() { return CachedBlock; }
 
   static const uint8_t BLOCK_PRODPARAM = 0;
@@ -146,28 +147,55 @@ public:
   /* IDmaCallback */
   virtual void DmaFinished(void* context);
 
+  // \todo Remove me
+  int GetState() const { return CurrentOperation.State; }
+
 private:
   static const uint32_t CommandSize = 4;
 
   struct TOperation {
-    TOperation() : State(OP_NONE), BlockNo(0), Callback(0) {}
-    enum {
-      OP_NONE = 0,
-      OP_READ,
-      OP_WRITE
-    } State;
+    TOperation() : Type(OP_NONE), BlockNo(0),
+		   State(STATE_START_WRITE), Callback(0) {}
+    OperationType Type;
     uint8_t BlockNo;   ///< Requested block number
     uint8_t NextChunk; ///< Read/write DmaChunkSize sized chunks
+    enum {
+      STATE_START_WRITE=0,
+      STATE_WAIT_TO_UNPROTECT,
+      STATE_UNPROTECT_WE_SENT,
+      STATE_UNPROTECT_SENT,
+      STATE_WAIT_TO_ERASE,
+      STATE_ERASE_WE_SENT,
+      STATE_ERASE_SENT,
+      STATE_WAIT_TO_WRITE_DATA,
+      STATE_CHUNK_WE_SENT,
+      STATE_CHUNK_SENT,
+      STATE_LAST_CHUNK_SENT
+    } State;
     IMemoryCallback* Callback;
   };
   TOperation CurrentOperation;
 
-  /// The command is put at the end of this buffer, so the data is
-  /// written to CachedBlock. Do not rearrange these.
+  // CommandBuffer is for outgoing commands, but status register data
+  // is read into it from the SPI bus too.
   uint8_t CommandBuffer[CommandSize];
   uint8_t CachedBlock[BlockSize];
 
   void FetchNextChunk();
+  void NudgeWriteMachine(); ///< Next hop in the write state machine
+  void ReadStatus();
+  void Identify();
+  void SendWriteEnable();
+  void SendUnprotectSector();
+  void SendErasePage();
+  void SendWriteData();
+};
+
+class IMemoryCallback
+{
+public:
+  virtual void MemoryOperationFinished(TMemory::OperationType type,
+				       uint8_t block) = 0;
 };
 
 extern TMemory Memory;
