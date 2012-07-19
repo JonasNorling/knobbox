@@ -15,6 +15,7 @@
 const uint32_t NAMELEN = 12;
 const int KNOBS = 16;
 const int SEQLEN = 16;
+const uint32_t FLASH_BLOCK_SIZE = 4096;
 
 struct TProductionData
 {
@@ -104,6 +105,22 @@ struct TSequencerScene
   } Data[SEQLEN];
 };
 
+struct TNameList
+{
+  static const uint32_t MAGIC = 0xf00d0002;
+  typedef char TName[NAMELEN+1]; // Additional pos for a \0
+
+  uint32_t Magic;
+  uint32_t StartAddress;
+  uint32_t Steplen;
+  uint8_t Len;
+  uint8_t Count;
+  uint8_t FetchedCount;
+  TName Names[128];
+};
+static_assert(sizeof(TNameList) <= FLASH_BLOCK_SIZE,
+	      "Too big struct");
+
 class IMemoryCallback;
 
 /**
@@ -123,13 +140,19 @@ public:
   enum OperationType {
     OP_NONE = 0,
     OP_READ,
-    OP_WRITE
+    OP_WRITE,
+    OP_READ_NAMELIST
   };
 
   void GetVariable();
   void GetIntSetting();
 
   bool FetchBlock(uint8_t n, IMemoryCallback* cb);
+  /// Fetch names scattered in flash. A TNameList will be available in
+  /// CachedBlock when this is finished.
+  bool FetchNames(uint32_t startaddr, uint8_t len,
+		  uint8_t count, uint32_t steplen,
+		  IMemoryCallback* cb);
   bool WriteBlock(uint8_t n, IMemoryCallback* cb);
   uint8_t* GetCachedBlock() { return CachedBlock; }
 
@@ -137,18 +160,18 @@ public:
   static const uint8_t BLOCK_SETTINGS = 1;
   static const uint8_t BLOCK_NAMES = 2;
   static const uint8_t BLOCK_FIRST_INSTRUMENT = 16;
+  static const uint8_t INSTRUMENT_COUNT = 16;
   static const uint8_t BLOCK_FIRST_PARAM_SCENE = 32;
+  static const uint8_t PARAM_SCENE_COUNT = 32;
   static const uint8_t BLOCK_FIRST_SEQ_SCENE = 64;
+  static const uint8_t SEQ_SCENE_COUNT = 32; // Low for now...
   static const uint8_t BLOCK_DEVICE_ID = 0xfe;
   static const uint8_t BLOCK_STATUS_REG = 0xff;
-  static const uint32_t BlockSize = 4096;
+  static const uint32_t BlockSize = FLASH_BLOCK_SIZE;
   static const uint8_t DmaChunkSize = 128;
 
   /* IDmaCallback */
   virtual void DmaFinished(void* context);
-
-  // \todo Remove me
-  int GetState() const { return CurrentOperation.State; }
 
 private:
   static const uint32_t CommandSize = 4;
@@ -156,10 +179,7 @@ private:
   struct TOperation {
     TOperation() : Type(OP_NONE), BlockNo(0),
 		   State(STATE_START_WRITE), Callback(0) {}
-    OperationType Type;
-    uint8_t BlockNo;   ///< Requested block number
-    uint8_t NextChunk; ///< Read/write DmaChunkSize sized chunks
-    enum {
+    enum TWriteState {
       STATE_START_WRITE=0,
       STATE_WAIT_TO_UNPROTECT,
       STATE_UNPROTECT_WE_SENT,
@@ -171,7 +191,12 @@ private:
       STATE_CHUNK_WE_SENT,
       STATE_CHUNK_SENT,
       STATE_LAST_CHUNK_SENT
-    } State;
+    };
+
+    OperationType Type;
+    uint8_t BlockNo;   ///< Requested block number
+    uint8_t NextChunk; ///< Read/write DmaChunkSize sized chunks
+    TWriteState State;
     IMemoryCallback* Callback;
   };
   TOperation CurrentOperation;
@@ -182,6 +207,7 @@ private:
   uint8_t CachedBlock[BlockSize];
 
   void FetchNextChunk();
+  void FetchNextName();
   void NudgeWriteMachine(); ///< Next hop in the write state machine
   void ReadStatus();
   void Identify();

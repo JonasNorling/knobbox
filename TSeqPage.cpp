@@ -62,13 +62,17 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     pos = line->DrawText("CC 034", pos, Focus == FOCUS_CC && !Blink);
   }
   else if (n == 7) {
-    char text[9];
+    pos = line->DrawText(Sequencer.Scenes[0].Name, pos);
+    line->Invert(0, line->GetLength());
+    /*
+    char text[12];
     cheap_strcpy(text, "\033=xxx xx:xx");
     render_uint(text+2, Sequencer.GetTempo(), 3);
     render_uint(text+6, Sequencer.GetPosition(0).Step, 2);
     render_hexbyte(text+9, Sequencer.GetPosition(0).Minor);
     pos = line->DrawText(text, pos, Focus == FOCUS_TEMPO && !Blink);
     line->Invert(0, line->GetLength());
+    */
   }
 }
 
@@ -234,9 +238,15 @@ bool TSeqPage::EventHandlerTempo(TEvent event)
 void TSeqPage::GetMenuTitle(char text[MenuTextLen])
 {
   switch (Focus) {
-  case FOCUS_SETUPMENU: {
+  case FOCUS_SETUPMENU:
     cheap_strcpy(text, "Setup seq");
-  }
+    break;
+  case FOCUS_LOAD_SLOT:
+    cheap_strcpy(text, "Whence, sir?");
+    break;
+  case FOCUS_STORE_SLOT:
+    cheap_strcpy(text, "Where, sir?");
+    break;
   }
 }
 
@@ -292,39 +302,90 @@ void TSeqPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
       cheap_strcpy(text, "STORE...");
       break;
     }
-    return;
+    break;
+  }
+  case FOCUS_LOAD_SLOT:
+  case FOCUS_STORE_SLOT: {
+    if (n < TMemory::SEQ_SCENE_COUNT) {
+      const TNameList* l = reinterpret_cast<TNameList*>(Memory.GetCachedBlock());
+      if (l->Magic == TNameList::MAGIC) {
+	if (n < l->FetchedCount) {
+	  render_uint(text, n, 2);
+	  cheap_strncpy(text+2, l->Names[n],
+			IDisplayPage::MenuTextLen-1);
+	  break;
+	}
+      }
+      cheap_strcpy(text, "Slot xxx");
+      render_uint(text+5, n, 3);
+    }
+    break;
   }
   }
 }
 
 void TSeqPage::MenuItemSelected(uint8_t n)
 {
-  switch (n) {
-  case 7:
-    Gui.ChangeFocus(TGui::FOCUS_PAGE);
-    Sequencer.LoadFromMemory(/*scene*/ 0, /*patchno*/ 0);
+  switch (Focus) {
+  case FOCUS_SETUPMENU: {
+    switch (n) {
+    case 7:
+      Focus = FOCUS_LOAD_SLOT;
+      Memory.FetchNames((TMemory::BlockSize *
+			 TMemory::BLOCK_FIRST_SEQ_SCENE +
+			 offsetof(TSequencerScene, Name)),
+			NAMELEN,
+			8, //TMemory::SEQ_SCENE_COUNT,
+			TMemory::BlockSize,
+			0 /* callback */);
+      Gui.DisplayPopup<TSelectPopup>();
+      break;
+    case 8:
+      Focus = FOCUS_STORE_SLOT;
+      Memory.FetchNames((TMemory::BlockSize *
+			 TMemory::BLOCK_FIRST_SEQ_SCENE +
+			 offsetof(TSequencerScene, Name)),
+			NAMELEN,
+			TMemory::SEQ_SCENE_COUNT,
+			TMemory::BlockSize,
+			0 /* callback */);
+      Gui.DisplayPopup<TSelectPopup>();
+      break;
+    }
     break;
-  case 8:
-    Gui.ChangeFocus(TGui::FOCUS_PAGE);
-    Sequencer.StoreInMemory(/*scene*/ 0, /*patchno*/ 0);
+  }
+  case FOCUS_LOAD_SLOT: {
+    Focus = FOCUS_SETUPMENU;
+    Sequencer.LoadFromMemory(/*scene*/ 0, /*patchno*/ n);
     break;
+  }
+  case FOCUS_STORE_SLOT: {
+    Focus = FOCUS_SETUPMENU;
+    Sequencer.StoreInMemory(/*scene*/ 0, /*patchno*/ n);
+    break;
+  }
   }
 }
 
 void TSeqPage::MenuItemChanged(uint8_t n, int8_t value)
 {
-  switch (n) {
-  case 0:
-    Sequencer.ChangeSteps(value);
+  switch (Focus) {
+  case FOCUS_SETUPMENU: {
+    switch (n) {
+    case 0:
+      Sequencer.ChangeSteps(value);
+      break;
+    case 1:
+      Sequencer.ChangeTempo(value);
+      break;
+    case 3:
+      Sequencer.Scenes[0].Channel = clamp(Sequencer.Scenes[0].Channel + value, 0, 15);
+      break;
+    case 4:
+      Sequencer.ChangeStepLength(value);
+      break;
+    }
     break;
-  case 1:
-    Sequencer.ChangeTempo(value);
-    break;
-  case 3:
-    Sequencer.Scenes[0].Channel = clamp(Sequencer.Scenes[0].Channel + value, 0, 15);
-    break;
-  case 4:
-    Sequencer.ChangeStepLength(value);
-    break;
+  }
   }
 }

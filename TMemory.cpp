@@ -1,6 +1,7 @@
 #include "TMemory.h"
 #include "TSpiDmaJob.h"
 #include "TGui.h"
+#include <cstring>
 
 static const uint8_t COMMAND_DEVICE_ID = 0x9f;
 static const uint8_t COMMAND_READ_STATUS = 0x05;
@@ -48,6 +49,60 @@ void TMemory::FetchNextChunk()
 					0));
   ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CachedBlock + byteno,
 						DmaChunkSize),
+					TSpiDmaJob::CS_FLASH,
+					TSpiDmaJob::LCD_DATA,
+					this,
+					reinterpret_cast<void*>(moreToRead)));
+  if (!ret) {
+    // A hang here indicates that there aren't enough SPI DMA
+    // buffers. That can't happen.
+    while (true);
+  }
+}
+
+bool TMemory::FetchNames(uint32_t startaddr, uint8_t len,
+			 uint8_t count, uint32_t steplen,
+			 IMemoryCallback* cb)
+{
+  if (CurrentOperation.Type != OP_NONE) return false;
+  CurrentOperation.Type = OP_READ_NAMELIST;
+  CurrentOperation.Callback = cb;
+
+  ::memset(CachedBlock, 'x', sizeof(CachedBlock));
+  TNameList* l = reinterpret_cast<TNameList*>(CachedBlock);
+  l->StartAddress = startaddr;
+  l->Len = len;
+  l->Count = count;
+  l->FetchedCount = 0;
+  l->Steplen = steplen;
+  l->Magic = TNameList::MAGIC;
+
+  FetchNextName();
+
+  return true;
+}
+
+void TMemory::FetchNextName()
+{
+  TNameList* l = reinterpret_cast<TNameList*>(CachedBlock);
+  const uint32_t address = l->StartAddress +
+    l->Steplen * l->FetchedCount;
+  CommandBuffer[0] = COMMAND_READ_ARRAY;
+  CommandBuffer[1] = (address >> 16) & 0xff;
+  CommandBuffer[2] = (address >> 8)  & 0xff;
+  CommandBuffer[3] = address & 0xff;
+
+  const bool moreToRead = (l->FetchedCount + 1) < l->Count;
+
+  bool ret = true;
+  ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 4),
+					TSpiDmaJob::CS_FLASH,
+					TSpiDmaJob::LCD_DATA,
+					0,
+					0));
+  ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(
+    reinterpret_cast<uint8_t*>(l->Names[l->FetchedCount]),
+    l->Len),
 					TSpiDmaJob::CS_FLASH,
 					TSpiDmaJob::LCD_DATA,
 					this,
@@ -277,6 +332,22 @@ void TMemory::DmaFinished(void* context)
     }
     else {
       NudgeWriteMachine();
+    }
+  }
+  else if (CurrentOperation.Type == OP_READ_NAMELIST) {
+    TNameList* l = reinterpret_cast<TNameList*>(CachedBlock);
+    l->FetchedCount++;
+    const bool moreToRead = static_cast<bool>(context);
+    if (moreToRead) {
+      FetchNextName();
+    }
+    else {
+      if (CurrentOperation.Callback) {
+	CurrentOperation.Callback->
+	  MemoryOperationFinished(CurrentOperation.Type, 0);
+	CurrentOperation.Callback = 0;
+      }
+      CurrentOperation.Type = OP_NONE;
     }
   }
 }

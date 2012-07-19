@@ -7,11 +7,18 @@
 class TSeqPage : public IDisplayPage
 {
 public:
-  enum TFocus { FOCUS_NONE, FOCUS_SETUPMENU, FOCUS_ACTIONMENU,
-		FOCUS_STEP, FOCUS_NOTE, FOCUS_ACTION,
-		FOCUS_VELO, FOCUS_LEN, FOCUS_OFFSET, FOCUS_CC,
-		FOCUS_TEMPO,
-		FOCUS_LAST = FOCUS_TEMPO };
+  enum TFocus {
+    // Currently focused field
+    FOCUS_NONE, FOCUS_SETUPMENU, FOCUS_ACTIONMENU,
+    FOCUS_STEP, FOCUS_NOTE, FOCUS_ACTION,
+    FOCUS_VELO, FOCUS_LEN, FOCUS_OFFSET, FOCUS_CC,
+    FOCUS_TEMPO,
+    FOCUS_LAST = FOCUS_TEMPO,
+
+    // Current focus in auxilliary menues and stuff
+    FOCUS_LOAD_SLOT,
+    FOCUS_STORE_SLOT
+  };
 
   TSeqPage() : Focus(FOCUS_NONE), CurrentStep(0),
 	       Selected(false), Blink(false) { }

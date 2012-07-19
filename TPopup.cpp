@@ -14,7 +14,7 @@ void TPopup::Render(uint8_t n, TDisplay::TPageBuffer* line)
   else {
     const uint8_t item = Scroll + n-1;
     line->Clear(Margin, line->GetLength());
-    char text[IDisplayPage::MenuTextLen + 1];
+    char text[IDisplayPage::MenuTextLen + 2];
     text[0] = '\003';
     text[1] = '\0';
 

@@ -22,6 +22,15 @@ inline static size_t cheap_strcpy(char* out, const char* in)
   return i;
 }
 
+inline static size_t cheap_strncpy(char* out, const char* in,
+				   size_t n)
+{
+  size_t i = 0;
+  for (; in[i] != '\0' && i < (n-1); i++) out[i] = in[i];
+  out[i] = '\0';
+  return i;
+}
+
 /**
  * Render a number to a string.
  * \todo Consider not making inline.
