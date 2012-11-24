@@ -17,8 +17,6 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Linker script for ST STM32VLDISCOVERY (STM32F100RB, 128K flash, 8K RAM). */
-
 /* Define memory regions. */
 MEMORY
 {

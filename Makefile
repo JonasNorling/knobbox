@@ -32,17 +32,17 @@ ARMCC = $(PREFIX)-gcc
 ARMLD = $(PREFIX)-gcc
 ARMOBJCOPY = $(PREFIX)-objcopy
 ARMOBJDUMP = $(PREFIX)-objdump
+LIBOPENCM3 = libopencm3
 
-ARM_LDFLAGS += -L$(TOOLCHAIN)/newopencm3/arm-none-eabi/lib -lopencm3_stm32f1
+ARM_LDFLAGS += -L$(LIBOPENCM3)/lib/stm32/f1/ -lopencm3_stm32f1
 ARM_LDFLAGS += -lc -lnosys -nostartfiles -Wl,--gc-sections -lstdc++
 ARM_LDFLAGS += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
-ARM_LDFLAGS += -Tstm32vl-discovery.ld
+ARM_LDFLAGS += -Tstm32f1.ld
 
 ARM_COMMONFLAGS += -I. -Os -fno-common -g
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
 ARM_COMMONFLAGS += -Wall -Wextra
-#ARM_COMMONFLAGS += -I$(TOOLCHAIN)/arm-none-eabi/include/
-ARM_COMMONFLAGS += -I$(TOOLCHAIN)/newopencm3/arm-none-eabi/include/
+ARM_COMMONFLAGS += -I$(LIBOPENCM3)/include/
 HOST_COMMONFLAGS += -I. -O0 -fno-common -g -Wall -Wextra -DHOST
 
 CFLAGS += -std=c99 -Werror-implicit-function-declaration
@@ -69,23 +69,46 @@ $(BUILDDIR) $(HOSTBUILDDIR):
 	mkdir $@ $@/tests
 
 liquid-2.0: external/liquid-2.0.tgz external/liquid.patch Makefile
+	@echo
+	@echo "##### Unpacking liquid font"
+	@echo
 	tar xf $<
 	@patch -d $@ < external/liquid.patch
 
 liquid-2.0/fontliqsting.inc: liquid-2.0
 
+# libopencm3 from 2012-05-26
+LIBOPENCM3_V=154f67598bb06c0c152bf121979c2292f7f10a84
+
+libopencm3: external/libopencm3-$(LIBOPENCM3_V).zip Makefile
+	@echo
+	@echo "##### Unpacking libopencm3"
+	@echo
+	rm -rf libopencm3 libopencm3-$(LIBOPENCM3_V)
+	unzip -q $<
+	mv libopencm3-$(LIBOPENCM3_V) $@
+	patch -d $@ -p1 < external/libopencm3.patch
+	@touch $@
+
+libopencm3/lib/stm32/f1/libopencm3_stm32f1.a libopencm3/include: libopencm3
+	@echo
+	@echo "##### Building libopencm3"
+	@echo
+	cd libopencm3; PREFIX=$(PREFIX) $(MAKE) lib
+	touch libopencm3/lib/stm32/f1/libopencm3_stm32f1.a libopencm3/include
+
 # -------------------------------------
 # ARM rules
 
-$(BUILDDIR)/%.o: %.c Makefile
+$(BUILDDIR)/%.o: %.c Makefile $(LIBOPENCM3)/include
 	@echo ARMCC $< --\> $@
 	@$(ARMCC) -MD $(ARM_COMMONFLAGS) $(CFLAGS) -c -o $@ $<
 
-$(BUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc
+$(BUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc $(LIBOPENCM3)/include
 	@echo ARMCC $< --\> $@
 	@$(ARMCC) -MD $(ARM_COMMONFLAGS) $(CXXFLAGS) -c -o $@ $<
 
-$(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS)
+$(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS) $(LIBOPENCM3)/lib/stm32/f1/libopencm3_stm32f1.a
 	@echo ARMLD $@
 	@$(ARMLD) -o $@ $(ARM_OBJS) $(ARM_LDFLAGS) -Wl,-Map,$(BUILDDIR)/$(PROJECT).map
 
@@ -136,6 +159,7 @@ doc: $(SRCS) $(ARM_SRCS) $(HOST_SRCS) doc/Doxyfile
 -include $(HOSTBUILDDIR)/*.d
 
 clean:
-	rm -rf $(BUILDDIR) $(HOSTBUILDDIR)
+	rm -rf $(BUILDDIR) libopencm3-$(LIBOPENCM3_V)
+	rm -rf liquid-2.0 libopencm3
 
 .PHONY: clean all tests doc

@@ -1,0 +1,37 @@
+diff --git a/include/libopencm3/usb/usbstd.h b/include/libopencm3/usb/usbstd.h
+index 8610fdb..ef0ab21 100644
+--- a/include/libopencm3/usb/usbstd.h
++++ b/include/libopencm3/usb/usbstd.h
+@@ -179,8 +179,12 @@ struct usb_endpoint_descriptor {
+ 	u8 bmAttributes;
+ 	u16 wMaxPacketSize;
+ 	u8 bInterval;
++
++	/* Descriptor ends here.  The following are used internally: */
++	const void *extra;
++	int extralen;
+ } __attribute__((packed));
+-#define USB_DT_ENDPOINT_SIZE		sizeof(struct usb_endpoint_descriptor)
++#define USB_DT_ENDPOINT_SIZE		        7
+ 
+ /* USB Endpoint Descriptor bmAttributes bit definitions */
+ #define USB_ENDPOINT_ATTR_CONTROL		0x00
+diff --git a/lib/usb/usb_standard.c b/lib/usb/usb_standard.c
+index 2d7c619..42e2999 100644
+--- a/lib/usb/usb_standard.c
++++ b/lib/usb/usb_standard.c
+@@ -77,6 +77,14 @@ static u16 build_config_descriptor(u8 index, u8 *buf, u16 len)
+ 				len -= count;
+ 				total += count;
+ 				totallen += ep->bLength;
++
++				/* Copy extra bytes. */
++				memcpy(buf, ep->extra,
++				       count = MIN(len, ep->extralen));
++				buf += count;
++				len -= count;
++				total += count;
++				totallen += ep->extralen;				
+ 			}
+ 		}
+ 	}
