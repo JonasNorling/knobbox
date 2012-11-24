@@ -331,9 +331,7 @@ void TSeqPage::MenuItemSelected(uint8_t n)
     switch (n) {
     case 7:
       Focus = FOCUS_LOAD_SLOT;
-      Memory.FetchNames((TMemory::BlockSize *
-			 TMemory::BLOCK_FIRST_SEQ_SCENE +
-			 offsetof(TSequencerScene, Name)),
+      Memory.FetchNames((TMemory::BlockSize * TMemory::BLOCK_FIRST_SEQ_SCENE + offsetof(TSequencerScene, Name)),
 			NAMELEN,
 			8, //TMemory::SEQ_SCENE_COUNT,
 			TMemory::BlockSize,
@@ -342,9 +340,7 @@ void TSeqPage::MenuItemSelected(uint8_t n)
       break;
     case 8:
       Focus = FOCUS_STORE_SLOT;
-      Memory.FetchNames((TMemory::BlockSize *
-			 TMemory::BLOCK_FIRST_SEQ_SCENE +
-			 offsetof(TSequencerScene, Name)),
+      Memory.FetchNames((TMemory::BlockSize * TMemory::BLOCK_FIRST_SEQ_SCENE + offsetof(TSequencerScene, Name)),
 			NAMELEN,
 			TMemory::SEQ_SCENE_COUNT,
 			TMemory::BlockSize,

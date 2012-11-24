@@ -136,8 +136,7 @@ void TMemory::NudgeWriteMachine()
     break;
   case TOperation::STATE_WAIT_TO_UNPROTECT:
     // Status is in CommandBuffer[1..2]
-    if ( CommandBuffer[1] & SREG_WPP &&
-	~CommandBuffer[1] & SREG_BSY) {
+    if ((CommandBuffer[1] & SREG_WPP) && (~CommandBuffer[1] & SREG_BSY)) {
       SendWriteEnable();
       CurrentOperation.State = TOperation::STATE_UNPROTECT_WE_SENT;
     }
@@ -156,8 +155,7 @@ void TMemory::NudgeWriteMachine()
     break;
   case TOperation::STATE_WAIT_TO_ERASE:
     // Status is in CommandBuffer[1..2]
-    if ( CommandBuffer[1] & SREG_WPP &&
-	~CommandBuffer[1] & SREG_BSY) {
+    if ((CommandBuffer[1] & SREG_WPP) && (~CommandBuffer[1] & SREG_BSY)) {
       SendWriteEnable();
       CurrentOperation.State = TOperation::STATE_ERASE_WE_SENT;
     }
@@ -176,8 +174,7 @@ void TMemory::NudgeWriteMachine()
     break;
   case TOperation::STATE_WAIT_TO_WRITE_DATA:
     // Status is in CommandBuffer[1..2]
-    if ( CommandBuffer[1] & SREG_WPP &&
-	~CommandBuffer[1] & SREG_BSY) {
+    if ((CommandBuffer[1] & SREG_WPP) && (~CommandBuffer[1] & SREG_BSY)) {
       SendWriteEnable();
       CurrentOperation.State = TOperation::STATE_CHUNK_WE_SENT;
     }
@@ -249,7 +246,7 @@ void TMemory::SendWriteData()
   const uint16_t byteno = CurrentOperation.NextChunk * DmaChunkSize;
   CommandBuffer[0] = COMMAND_PAGE_PROGRAM;
   CommandBuffer[1] = page >> 4;
-  CommandBuffer[2] = (page << 4) | byteno >> 8;
+  CommandBuffer[2] = (page << 4) | (byteno >> 8);
   CommandBuffer[3] = byteno & 0xff;
 
   CurrentOperation.NextChunk++;

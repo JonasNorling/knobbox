@@ -38,7 +38,7 @@ void TKnobs::InitDma()
  * channel setup and it's probably not a good idea to make all those
  * library calls that aren't inlined.
  *
- * \todo We shouldn't trigger intterupts for both RX and TX here,
+ * \todo We shouldn't trigger interrupts for both RX and TX here,
  * that's just stupid.
  */
 void TKnobs::StartShifting()

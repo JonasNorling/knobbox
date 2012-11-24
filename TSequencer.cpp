@@ -39,18 +39,18 @@ void TSequencer::Load()
 {
   for (int scene = 0; scene < SceneCount; scene++) {
     Scenes[scene].Magic = TSequencerScene::MAGIC;
-    Scenes[scene].Name[0] = 'A';
-    Scenes[scene].Name[1] = ' ';
-    Scenes[scene].Name[2] = 't';
-    Scenes[scene].Name[3] = 'e';
-    Scenes[scene].Name[4] = 's';
-    Scenes[scene].Name[5] = 't';
-    Scenes[scene].Name[6] = ' ';
-    Scenes[scene].Name[7] = 's';
-    Scenes[scene].Name[8] = 'c';
-    Scenes[scene].Name[9] = 'e';
-    Scenes[scene].Name[10] = 'n';
-    Scenes[scene].Name[11] = 'e';
+    Scenes[scene].Name[0] = 'N';
+    Scenes[scene].Name[1] = 'o';
+    Scenes[scene].Name[2] = ' ';
+    Scenes[scene].Name[3] = 's';
+    Scenes[scene].Name[4] = 'c';
+    Scenes[scene].Name[5] = 'e';
+    Scenes[scene].Name[6] = 'n';
+    Scenes[scene].Name[7] = 'e';
+    Scenes[scene].Name[8] = '\0';
+    Scenes[scene].Name[9] = '\0';
+    Scenes[scene].Name[10] = '\0';
+    Scenes[scene].Name[11] = '\0';
 
     Scenes[scene].Flags = scene == 0 ? TSequencerScene::FLAG_ENABLED : 0;
     Scenes[scene].Channel = 0;
@@ -80,7 +80,7 @@ void TSequencer::LoadFromMemory(uint8_t scene, uint8_t patchno)
 
 void TSequencer::StoreInMemory(uint8_t scene, uint8_t patchno)
 {
-  ::memset(Memory.GetCachedBlock(), 0xff, TMemory::BlockSize);
+  ::memset(Memory.GetCachedBlock(), patchno, TMemory::BlockSize);
   ::memcpy(Memory.GetCachedBlock(), &Scenes[0],
 	   sizeof(TSequencerScene));
   Memory.WriteBlock(TMemory::BLOCK_FIRST_SEQ_SCENE + patchno, this);
@@ -95,9 +95,6 @@ void TSequencer::MemoryOperationFinished(TMemory::OperationType type,
     if (s->Magic == TSequencerScene::MAGIC) {
       ::memcpy(&Scenes[0], s, sizeof(TSequencerScene));
       CalculateSchedule(0);
-    }
-    else {
-     ::memcpy(&Scenes[0], s, sizeof(TSequencerScene));
     }
     Gui.UpdateAll();
   }
