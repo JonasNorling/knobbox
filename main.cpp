@@ -61,9 +61,9 @@ TControllers Controllers;
 TUsb Usb;
 
 enum {
-  SPI_DMA_STATE_IDLE = 0,
-  SPI_DMA_STATE_RUNNING,
-  SPI_DMA_STATE_FINISHED
+	SPI_DMA_STATE_IDLE = 0,
+	SPI_DMA_STATE_RUNNING,
+	SPI_DMA_STATE_FINISHED
 };
 
 volatile uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
@@ -76,224 +76,216 @@ static const uint8_t ACTION_BLINK_TIMER = 0x02;
 
 void hard_fault_handler(void)
 {
-  while (1);
+	while (1);
 }
 
 void mem_manage_handler(void)
 {
-  while (1);
+	while (1);
 }
 
 void bus_fault_handler(void)
 {
-  while (1);
+	while (1);
 }
 
 void usage_fault_handler(void)
 {
-  while (1);
+	while (1);
 }
 
 /** DMA channel 1:2 -- SPI1_RX (display and flash) */
 void dma1_channel2_isr(void)
 {
 #ifndef HOST
-  dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL2);
-  dma_disable_channel(DMA1, DMA_CHANNEL3);
-  spi_disable_tx_dma(SPI1);
+	dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL2);
+	dma_disable_channel(DMA1, DMA_CHANNEL3);
+	spi_disable_tx_dma(SPI1);
 
-  // Note: we have to wait until TXE=1 and BSY=0 before changing CS lines.
+	// Note: we have to wait until TXE=1 and BSY=0 before changing CS lines.
 #endif
-  if (SpiDmaState != SPI_DMA_STATE_RUNNING) {
-      // Error!
-      while (1);
-  }
-  SpiDmaState = SPI_DMA_STATE_FINISHED;
+	assert(SpiDmaState == SPI_DMA_STATE_RUNNING);
+
+	SpiDmaState = SPI_DMA_STATE_FINISHED;
 }
 
 /** DMA channel 1:5 -- USART1_RX (shift registers) */
 void dma1_channel5_isr(void)
 {
 #ifndef HOST
-  dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL5);
+	dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL5);
 #endif
-  /// \todo Once we get the latency in the main loop down, perhaps
-  /// this could be moved to a bottom-half?
-  Knobs.StartShifting();
+	/// \todo Once we get the latency in the main loop down, perhaps
+	/// this could be moved to a bottom-half?
+	Knobs.StartShifting();
 }
 
 void usart2_isr(void)
 {
-  Midi.GotInterrupt();
+	Midi.GotInterrupt();
 }
 
 /** ARM systick timer: millisecond counter */
 void sys_tick_handler(void)
 {
-  SystemTime++;
-  if (!(SystemTime % 1000)) {
-  }
-  if (!(SystemTime % 128)) {
-    Actions |= ACTION_BLINK_TIMER;
-  }
-  Actions |= ACTION_POLL_BUTTONS;
+	SystemTime++;
+	if (!(SystemTime % 1000)) {
+	}
+	if (!(SystemTime % 128)) {
+		Actions |= ACTION_BLINK_TIMER;
+	}
+	Actions |= ACTION_POLL_BUTTONS;
 }
 
 /** TIM2: sequencer 48th beat counter */
 void tim2_isr(void)
 {
 #ifndef HOST
-  TIM_SR(TIM2) &= ~TIM_SR_UIF; // Clear interrupt
+	TIM_SR(TIM2) &= ~TIM_SR_UIF; // Clear interrupt
 #endif
-  Sequencer.Step();
+	Sequencer.Step();
 }
 
 int main(void)
 {
 #ifndef HOST
-  // Reset some peripherals, this helps when reloading software
-  // without issuing a hard reset.
-  systick_interrupt_disable();
-  systick_counter_disable();
-  nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
-  nvic_disable_irq(NVIC_DMA1_CHANNEL3_IRQ);
-  nvic_disable_irq(NVIC_DMA1_CHANNEL4_IRQ);
-  nvic_disable_irq(NVIC_DMA1_CHANNEL5_IRQ);
-  nvic_disable_irq(NVIC_TIM2_IRQ);
-  const uint32_t resets2 =
-    RCC_APB2RSTR_USART1RST |
-    RCC_APB2RSTR_SPI1RST;
-  const uint32_t resets1 =
-    RCC_APB1RSTR_USART2RST;
-  rcc_peripheral_reset(&RCC_APB2RSTR, resets2);
-  rcc_peripheral_reset(&RCC_APB1RSTR, resets1);
-  rcc_peripheral_clear_reset(&RCC_APB2RSTR, resets2);
-  rcc_peripheral_clear_reset(&RCC_APB1RSTR, resets1);
-  DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
+	// Reset some peripherals, this helps when reloading software
+	// without issuing a hard reset.
+	systick_interrupt_disable();
+	systick_counter_disable();
+	nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
+	nvic_disable_irq(NVIC_DMA1_CHANNEL3_IRQ);
+	nvic_disable_irq(NVIC_DMA1_CHANNEL4_IRQ);
+	nvic_disable_irq(NVIC_DMA1_CHANNEL5_IRQ);
+	nvic_disable_irq(NVIC_TIM2_IRQ);
+	const uint32_t resets2 =
+			RCC_APB2RSTR_USART1RST |
+			RCC_APB2RSTR_SPI1RST;
+	const uint32_t resets1 =
+			RCC_APB1RSTR_USART2RST;
+	rcc_peripheral_reset(&RCC_APB2RSTR, resets2);
+	rcc_peripheral_reset(&RCC_APB1RSTR, resets1);
+	rcc_peripheral_clear_reset(&RCC_APB2RSTR, resets2);
+	rcc_peripheral_clear_reset(&RCC_APB1RSTR, resets1);
+	DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
 #endif
 
-  /// \todo We should wake up in some kind of low power mode.
-  clockInit();
-  deviceInit();
+	/// \todo We should wake up in some kind of low power mode.
+	clockInit();
+	deviceInit();
 
-  Pin_vpullup.Clear();
-  Pin_lcd_rst.Clear();
-  // Chip selects are active-low.
-  Pin_flash_cs.Set();
-  Pin_lcd_cs.Set();
-  Pin_shift_out_load.Set();
-  Pin_shift_out_en.Set();
-  Pin_shift_in_en.Set();
-  Pin_shift_in_load.Set();
+	Pin_vpullup.Clear();
+	Pin_lcd_rst.Clear();
+	// Chip selects are active-low.
+	Pin_flash_cs.Set();
+	Pin_lcd_cs.Set();
+	Pin_shift_out_load.Set();
+	Pin_shift_out_en.Set();
+	Pin_shift_in_en.Set();
+	Pin_shift_in_load.Set();
 
-  delay_ms(5);
+	delay_ms(5);
 
-  // Use placement new to run the constructors of static objects,
-  // because libopencm3's crt0 and linker scripts aren't made for C++.
-  Mode = MODE_CONTROLLER;
-  new(&Display) TDisplay();
-  new(&SpiDmaQueue) TSpiDmaQueue();
-  new(&Gui) TGui();
-  new(&Knobs) TKnobs();
-  new(&Midi) TMidi();
-  new(&Sequencer) TSequencer(Midi);
-  new(&Memory) TMemory();
-  new(&Controllers) TControllers();
-  new(&Usb) TUsb();
+	// Use placement new to run the constructors of static objects,
+	// because libopencm3's crt0 and linker scripts aren't made for C++.
+	Mode = MODE_CONTROLLER;
+	new(&Display) TDisplay();
+	new(&SpiDmaQueue) TSpiDmaQueue();
+	new(&Gui) TGui();
+	new(&Knobs) TKnobs();
+	new(&Midi) TMidi();
+	new(&Sequencer) TSequencer(Midi);
+	new(&Memory) TMemory();
+	new(&Controllers) TControllers();
+	new(&Usb) TUsb();
 
-  //Memory.FetchBlock(TMemory::BLOCK_PRODPARAM, 0);
+	//Memory.FetchBlock(TMemory::BLOCK_PRODPARAM, 0);
 
-  Usb.Init();
+	Usb.Init();
 
-  // Stay quiet for a while to let power stabilise
-  delay_ms(150);
-  Pin_vpullup.Set();
-  delay_ms(150);
+	// Stay quiet for a while to let power stabilise
+	delay_ms(150);
+	Pin_vpullup.Set();
+	delay_ms(150);
 
-  Sequencer.Load();
-  Display.Init();
+	Sequencer.Load();
+	Display.Init();
 
-  Knobs.InitDma();
-  Knobs.StartShifting();
-  Pin_shift_out_en.Clear(); // Turn on LED driver
+	Knobs.InitDma();
+	Knobs.StartShifting();
+	Pin_shift_out_en.Clear(); // Turn on LED driver
 
-  while (true) {
-    /* Interrupt "bottom half" processing */
+	while (true) {
+		/* Interrupt "bottom half" processing */
 #ifndef HOST
-    /* We disable the interrupt here to protect SpiDmaState, but also
+		/* We disable the interrupt here to protect SpiDmaState, but also
        because it doesn't work otherwise (which is a bit scary). */
-    nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
-    switch (SpiDmaState) {
-    case SPI_DMA_STATE_RUNNING:
-      break;
-    case SPI_DMA_STATE_FINISHED:
-      SpiDmaQueue.Finished();
-      SpiDmaState = SPI_DMA_STATE_IDLE;
-      break;
-    case SPI_DMA_STATE_IDLE:
-      if (SpiDmaQueue.TryStartJob()) {
-          SpiDmaState = SPI_DMA_STATE_RUNNING;
-      }
-      break;
-    }
-    nvic_enable_irq(NVIC_DMA1_CHANNEL2_IRQ);
+		nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
+		switch (SpiDmaState) {
+		case SPI_DMA_STATE_RUNNING:
+			break;
+		case SPI_DMA_STATE_FINISHED:
+			SpiDmaQueue.Finished();
+			SpiDmaState = SPI_DMA_STATE_IDLE;
+			break;
+		case SPI_DMA_STATE_IDLE:
+			if (SpiDmaQueue.TryStartJob()) {
+				SpiDmaState = SPI_DMA_STATE_RUNNING;
+			}
+			break;
+		}
+		nvic_enable_irq(NVIC_DMA1_CHANNEL2_IRQ);
 #endif
 
-    /* Poll switches */
-    if (Actions & ACTION_POLL_BUTTONS) {
-      Actions &= ~ACTION_POLL_BUTTONS;
+		/* Poll switches */
+		if (Actions & ACTION_POLL_BUTTONS) {
+			Actions &= ~ACTION_POLL_BUTTONS;
 
-      // Tact switches
-      static uint16_t lastState = 0;
-      const uint16_t state = gpio_port_read(Pin_sw_1.Port);
-      const uint16_t pinMask = Pin_sw_1.Pin | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
-      if ((state ^ lastState) & pinMask) {
-	if (state & Pin_sw_1.Pin) {
-	  Gui.Event(KEY_OK);
-	} else if (state & Pin_sw_2.Pin) {
-	  Gui.Event(KEY_UP);
-	} else if (state & Pin_sw_3.Pin) {
-	  Gui.Event(KEY_DOWN);
-	} else if (state & Pin_sw_4.Pin) {
-	  Gui.Event(KEY_BACK);
-	}
-      }
-      lastState = state;
+			// Tact switches
+			static uint16_t lastState = 0;
+			const uint16_t state = gpio_port_read(Pin_sw_1.Port);
+			const uint16_t pinMask = Pin_sw_1.Pin | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
+			if ((state ^ lastState) & pinMask) {
+				if (state & Pin_sw_1.Pin) {
+					Gui.Event(KEY_OK);
+				} else if (state & Pin_sw_2.Pin) {
+					Gui.Event(KEY_UP);
+				} else if (state & Pin_sw_3.Pin) {
+					Gui.Event(KEY_DOWN);
+				} else if (state & Pin_sw_4.Pin) {
+					Gui.Event(KEY_BACK);
+				}
+			}
+			lastState = state;
 
-      // Encoders and encoder push buttons
-      Knobs.Poll();
-    }
-    else if (Actions & ACTION_BLINK_TIMER) {
-      Actions &= ~ACTION_BLINK_TIMER;
-      Gui.Event(BLINK_TIMER);
-    }
+			// Encoders and encoder push buttons
+			Knobs.Poll();
+		}
+		else if (Actions & ACTION_BLINK_TIMER) {
+			Actions &= ~ACTION_BLINK_TIMER;
+			Gui.Event(BLINK_TIMER);
+		}
 
-    Usb.Poll();
+		Usb.Poll();
 
-    /* Update things */
-    Gui.Process();
+		/* Update things */
+		Gui.Process();
 
-    /* Sanity check */
 #ifndef HOST
-    if (DMA_ISR(DMA1) & DMA_ISR_TEIF4) {
-      while (true);
-    }
-    if (DMA_ISR(DMA1) & DMA_ISR_TEIF3) {
-      while (true);
-    }
-    if (DMA_ISR(DMA1) & DMA_ISR_TEIF5) {
-      while (true);
-    }
+		/* Sanity check */
+		assert(!(DMA_ISR(DMA1) & DMA_ISR_TEIF4));
+		assert(!(DMA_ISR(DMA1) & DMA_ISR_TEIF3));
+		assert(!(DMA_ISR(DMA1) & DMA_ISR_TEIF5));
 #endif
 
 #ifdef HOST
-    static int counter = 0;
-    if (counter++ > 1000) {
-      Display.DumpPixels();
-      return 0;
-    }
+		static int counter = 0;
+		if (counter++ > 1000) {
+			Display.DumpPixels();
+			return 0;
+		}
 #endif
-  }
+	}
 
-  return 0;
+	return 0;
 }

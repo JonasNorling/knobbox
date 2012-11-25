@@ -14,19 +14,19 @@
 class TUsb
 {
 public:
-  TUsb() { }
-  void Init();
+	TUsb() { }
+	void Init();
 
-  void Poll() {
+	void Poll() {
 #ifndef HOST
-    usbd_poll();
+		usbd_poll();
 #endif
-  }
+	}
 
-  static void DataCallback(uint8_t ep);
+	static void DataCallback(uint8_t ep);
 
 private:
-  static void SetConfig(uint16_t value);
+	static void SetConfig(uint16_t value);
 };
 
 #endif

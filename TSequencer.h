@@ -11,32 +11,29 @@ static const uint8_t TicksPerBeat = 48; ///< Number of timer events per beat
 class TPosition {
 public:
 
-  /// For a quarter note, the sequencer increments the minor step by 4
-  /// each tick. So Minor counts up to TicksPerWholeNote (= 192) for
-  /// each step.
-  static const uint8_t MinorsPerStep = TicksPerBeat * 4;
+	/// For a quarter note, the sequencer increments the minor step by 4
+	/// each tick. So Minor counts up to TicksPerWholeNote (= 192) for
+	/// each step.
+	static const uint8_t MinorsPerStep = TicksPerBeat * 4;
 
-  int8_t Step;
-  uint8_t Minor;
-    
-  bool operator==(const TPosition& o) const {
-    return o.Step == Step && o.Minor == Minor;
-  }
+	int8_t Step;
+	uint8_t Minor;
 
-  bool operator>(const TPosition& o) const {
-    return (Step > o.Step ||
-	    (Step == o.Step && Minor > o.Minor));
-  }
+	bool operator==(const TPosition& o) const {
+		return o.Step == Step && o.Minor == Minor;
+	}
 
-  bool operator>=(const TPosition& o) const {
-    return (Step > o.Step ||
-	    (Step == o.Step && Minor >= o.Minor));
-  }
+	bool operator>(const TPosition& o) const {
+		return (Step > o.Step || (Step == o.Step && Minor > o.Minor));
+	}
 
-  /// p1 < *this <= p2, with circular wrapping
-  inline bool isBetween(const TPosition& p1,
-			const TPosition& p2) const;
-  inline void AddMinorsAndWrap(int m, uint8_t wrapstep);
+	bool operator>=(const TPosition& o) const {
+		return (Step > o.Step || (Step == o.Step && Minor >= o.Minor));
+	}
+
+	/// p1 < *this <= p2, with circular wrapping
+	inline bool isBetween(const TPosition& p1, const TPosition& p2) const;
+	inline void AddMinorsAndWrap(int m, uint8_t wrapstep);
 };
 
 
@@ -74,101 +71,101 @@ public:
 class TSequencer : public IMemoryCallback
 {
 public:
-  static const uint8_t SceneCount = 4;
+	static const uint8_t SceneCount = 4;
 
-  TSequencer(IMidi& midiOutput) :
-    MidiOutput(midiOutput),
-    Tempo(120),
-    Running(false),
-    GlobalPosition({0, 0}),
-    Position({ {0, 0}, {0, 0}, {0, 0}, {0, 0} }),
-    LastPosition({ {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0} }),
-    ScheduleLocked(false)
-  { }
-  void Load();
-  void LoadFromMemory(uint8_t scene, uint8_t patchno);
-  void StoreInMemory(uint8_t scene, uint8_t patchno);
-  void Start(); ///< Start running
-  void Stop();
-  void Step();
-  
-  void CalculateSchedule(uint8_t sceneno);
-  void UpdateKnobs();
+	TSequencer(IMidi& midiOutput) :
+		MidiOutput(midiOutput),
+		Tempo(120),
+		Running(false),
+		GlobalPosition({0, 0}),
+		Position({ {0, 0}, {0, 0}, {0, 0}, {0, 0} }),
+		LastPosition({ {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0} }),
+		ScheduleLocked(false)
+	{ }
+	void Load();
+	void LoadFromMemory(uint8_t scene, uint8_t patchno);
+	void StoreInMemory(uint8_t scene, uint8_t patchno);
+	void Start(); ///< Start running
+	void Stop();
+	void Step();
 
-  static const char* NoteName(uint8_t n);
+	void CalculateSchedule(uint8_t sceneno);
+	void UpdateKnobs();
 
-  // Theses methods apply to the active scene
-  void ChangeNote(int step, int8_t v);
-  void ChangeVelocity(int step, int8_t v);
-  void ChangeLength(int step, int8_t v);
-  void ChangeOffset(int step, int8_t v);
-  void ChangeSteps(int8_t v);
-  void ToggleEnable(int step);
-  void ChangeStepLength(int8_t v);
-  uint8_t GetStepLength() const { return Scenes[0].StepLength; }
+	static const char* NoteName(uint8_t n);
 
-  // These methods apply to all scenes
-  uint8_t GetTempo() const { return Tempo; }
-  void ChangeTempo(int8_t v);
-  void ToggleRunning();
+	// Theses methods apply to the active scene
+	void ChangeNote(int step, int8_t v);
+	void ChangeVelocity(int step, int8_t v);
+	void ChangeLength(int step, int8_t v);
+	void ChangeOffset(int step, int8_t v);
+	void ChangeSteps(int8_t v);
+	void ToggleEnable(int step);
+	void ChangeStepLength(int8_t v);
+	uint8_t GetStepLength() const { return Scenes[0].StepLength; }
 
-  const TPosition& GetGlobalPosition() const
-  { return GlobalPosition; }
+	// These methods apply to all scenes
+	uint8_t GetTempo() const { return Tempo; }
+	void ChangeTempo(int8_t v);
+	void ToggleRunning();
 
-  const TPosition& GetPosition(uint8_t scene) const
-  { return Position[scene]; }
+	const TPosition& GetGlobalPosition() const
+	{ return GlobalPosition; }
 
-  /// \todo Hide!
-  TSequencerScene Scenes[SceneCount];
+	const TPosition& GetPosition(uint8_t scene) const
+	{ return Position[scene]; }
 
-  // Interface IMemoryCallback
-  void MemoryOperationFinished(TMemory::OperationType type, uint8_t block);
+	/// \todo Hide!
+	TSequencerScene Scenes[SceneCount];
+
+	// Interface IMemoryCallback
+	void MemoryOperationFinished(TMemory::OperationType type, uint8_t block);
 
 private:
-  class TEventSchedule {
-  public:
-    static const int8_t NO_EVENT = -1;
+	class TEventSchedule {
+	public:
+		static const int8_t NO_EVENT = -1;
 
-    struct TEntry
-    {
-      TPosition Position;
-      bool IsOn;    ///< Event is a note-on
-      uint8_t Step; ///< Step number reference
-      int8_t Next;  ///< Link to next event, or NO_EVENT for the last event
-      bool LaterThan(const TEntry& o) { return Position > o.Position; }
-    };
-    static_assert(sizeof(TEntry) == 5, "Strange");
+		struct TEntry
+		{
+			TPosition Position;
+			bool IsOn;    ///< Event is a note-on
+			uint8_t Step; ///< Step number reference
+			int8_t Next;  ///< Link to next event, or NO_EVENT for the last event
+			bool LaterThan(const TEntry& o) { return Position > o.Position; }
+		};
+		static_assert(sizeof(TEntry) == 5, "Strange");
 
-    TEntry Schedule[SEQLEN * 2]; ///< Space for linked entry list
-    uint8_t NextFree;  ///< Next available index in Schedule
-    int8_t FirstEvent; ///< First event (index) in linked list
+		TEntry Schedule[SEQLEN * 2]; ///< Space for linked entry list
+		uint8_t NextFree;  ///< Next available index in Schedule
+		int8_t FirstEvent; ///< First event (index) in linked list
 
-    void Clear();
-    void Insert(const TEntry& entry);
-    void Dump();
-  };
+		void Clear();
+		void Insert(const TEntry& entry);
+		void Dump();
+	};
 
-  IMidi& MidiOutput;
+	IMidi& MidiOutput;
 
-  /// Tempo in BPM (quarter notes per second)
-  uint8_t Tempo; ///< Maybe want more precision for tap tempo?
-  bool Running;
+	/// Tempo in BPM (quarter notes per second)
+	uint8_t Tempo; ///< Maybe want more precision for tap tempo?
+	bool Running;
 
-  TPosition GlobalPosition; ///< \todo Only need minor for MIDI beat
-  TPosition Position[SceneCount];
-  TPosition LastPosition[SceneCount]; ///< Last pos that was actually played out
+	TPosition GlobalPosition; ///< \todo Only need minor for MIDI beat
+	TPosition Position[SceneCount];
+	TPosition LastPosition[SceneCount]; ///< Last pos that was actually played out
 
-  TEventSchedule Schedule[SceneCount];
-  int8_t NextEvent[SceneCount];
-  bool ScheduleLocked; ///< Mutex when writing new schedule.
+	TEventSchedule Schedule[SceneCount];
+	int8_t NextEvent[SceneCount];
+	bool ScheduleLocked; ///< Mutex when writing new schedule.
 
-  void ConfigureTimer();
-  bool StepIsEnabled(int scene, int step) {
-    return step < Scenes[scene].Steps &&
-      Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON;
-  }
-  void DoNextEvent(int sceneno);
-  void PlayEvent(int sceneno, const TEventSchedule::TEntry& event);
+	void ConfigureTimer();
+	bool StepIsEnabled(int scene, int step) {
+		return step < Scenes[scene].Steps &&
+				Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON;
+	}
+	void DoNextEvent(int sceneno);
+	void PlayEvent(int sceneno, const TEventSchedule::TEntry& event);
 };
 
 extern TSequencer Sequencer;
