@@ -131,8 +131,6 @@ class IMemoryCallback;
  * only 128 bytes at a time, so transactions have to be chained
  * together. When writing: a full 4k block is cleared, wait 4 ms, 128
  * byte writes are made until finished.
- *
- * Status: Just a dummy.
  */
 class TMemory : public IDmaCallback
 {
@@ -180,7 +178,7 @@ private:
     TOperation() : Type(OP_NONE), BlockNo(0),
 		   State(STATE_START_WRITE), Callback(0) {}
     enum TWriteState {
-      STATE_START_WRITE=0,
+      STATE_START_WRITE = 0,
       STATE_WAIT_TO_UNPROTECT,
       STATE_UNPROTECT_WE_SENT,
       STATE_UNPROTECT_SENT,

@@ -2,11 +2,6 @@
 #include "TBitmask.h"
 #include "device.h"
 #include "logging.h"
-#ifdef HOST
-#include <cassert>
-#else
-#define assert(x)
-#endif
 
 static const uint8_t DOGM_SYSTEM_RESET =          0xe2;
 static const uint8_t DOGM_POWER_CONTROL =         0x28;
@@ -62,16 +57,22 @@ bool TDisplay::EnqueueDmaJob(TPageBuffer* pageBuffer,
 {
   if (true /* DMA queue space is available */) {
     uint8_t bufferid = pageBuffer - Buffers;
+    bool ret = true;
     if (len > 0) {
-      SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
+      ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
 				     TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL));
-      SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Data, len),
+      ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Data, len),
 				     TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_DATA,
 				     this, reinterpret_cast<void*>(bufferid)));
     } else {
-      SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
+      ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(pageBuffer->Control, ctrllen),
 				     TSpiDmaJob::CS_LCD, TSpiDmaJob::LCD_CONTROL,
 				     this, reinterpret_cast<void*>(bufferid)));
+    }
+    if (!ret) {
+      // A hang here indicates that there aren't enough SPI DMA
+      // buffers. That can't happen.
+      while (true);
     }
     return true;
   } else {

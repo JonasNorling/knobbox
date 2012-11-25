@@ -64,4 +64,10 @@ public:
     //gpio_clear(Port, Pin);
     GPIO_BRR(Port) = Pin;
   }
+
+  bool Read() const
+    __attribute__((always_inline))
+  {
+    return GPIO_IDR(Port) & Pin;
+  }
 };

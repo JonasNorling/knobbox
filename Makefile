@@ -2,12 +2,14 @@ PROJECT = knobbox
 SRCS += TControllerPage.cpp
 SRCS += TControllers.cpp
 SRCS += TDisplay.cpp
+SRCS += TFlashTest.cpp
 SRCS += TGui.cpp
 SRCS += TKnobs.cpp
 SRCS += TMemory.cpp
 SRCS += TPopup.cpp
 SRCS += TSequencer.cpp
 SRCS += TSeqPage.cpp
+SRCS += TSettingsPage.cpp
 SRCS += TSpiDmaJob.cpp
 SRCS += TUsb.cpp
 ARM_C_SRCS += usbmidi.c
@@ -39,7 +41,7 @@ ARM_LDFLAGS += -lc -lnosys -nostartfiles -Wl,--gc-sections -lstdc++
 ARM_LDFLAGS += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
 ARM_LDFLAGS += -Tstm32f1.ld
 
-ARM_COMMONFLAGS += -I. -Os -fno-common -g
+ARM_COMMONFLAGS += -I. -O1 -fno-common -g
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
 ARM_COMMONFLAGS += -Wall -Wextra
 ARM_COMMONFLAGS += -I$(LIBOPENCM3)/include/
@@ -60,12 +62,13 @@ TEST_OBJS += $(TEST_SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 # -------------------------------------
 
 all: $(HOSTBUILDDIR) $(HOSTBUILDDIR)/$(PROJECT).elf
+all: $(BUILDDIR)/flashtest $(BUILDDIR)/flashtest.elf
 all: $(BUILDDIR) $(BUILDDIR)/$(PROJECT).bin $(BUILDDIR)/$(PROJECT).asm
 	@size $(BUILDDIR)/$(PROJECT).elf
 #	@$(ARMOBJDUMP) -t -j .bss -C $(BUILDDIR)/$(PROJECT).elf | \
 		awk '{n = strtonum("0x"$$5); if (n!=0) printf("%20s %5d bytes\n", $$6, n);}'
 
-$(BUILDDIR) $(HOSTBUILDDIR):
+$(BUILDDIR) $(HOSTBUILDDIR) $(BUILDDIR)/flashtest:
 	mkdir $@ $@/tests
 
 liquid-2.0: external/liquid-2.0.tgz external/liquid.patch Makefile
@@ -119,6 +122,13 @@ $(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS) $(LIBOPENCM3)/lib/stm32/f1/libopencm3_st
 %.asm: %.elf
 	@echo disassembling $@
 	@$(ARMOBJDUMP) -d -S $< > $@
+
+# -------------------------------------
+# ARM test program rules
+
+$(BUILDDIR)/flashtest.elf: $(BUILDDIR)/flashtest/flashtest.o
+	@echo ARMLD $@
+	$(ARMLD) -o $@ $< $(ARM_LDFLAGS)
 
 # -------------------------------------
 # Host rules

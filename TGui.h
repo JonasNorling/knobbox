@@ -5,6 +5,7 @@
 #include "TBitmask.h"
 #include "TDisplay.h"
 #include "TControllerPage.h"
+#include "TSettingsPage.h"
 #include "TPopup.h"
 
 class TTopMenu
@@ -66,7 +67,7 @@ private:
 
   TTopMenu TopMenu;
   // The current IDisplayPage implementation is put here with placement new. Delete is never called.
-  uint8_t CurrentPageObject[sizeof(TControllerPage)];
+  uint8_t CurrentPageObject[sizeof(TSettingsPage)];
   uint8_t CurrentPopupObject[sizeof(TSelectPopup)];
 };
 

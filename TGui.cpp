@@ -2,6 +2,7 @@
 #include "TDisplay.h"
 #include "TBitmask.h"
 #include "TSeqPage.h"
+#include "TSettingsPage.h"
 #include "TControllers.h"
 #include "TSequencer.h"
 
@@ -72,6 +73,7 @@ void TTopMenu::Event(TEvent event)
     break;
   case KEY_DOWN:
     Gui.ChangeFocus(TGui::FOCUS_PAGE);
+    break;
   default:
     break;
   }
@@ -93,10 +95,14 @@ void TGui::SetPage()
     new(CurrentPageObject) TControllerPage();
     Controllers.UpdateKnobs();
     break;
-  default:
+  case MODE_SEQ:
     static_assert(sizeof(TSeqPage) <= sizeof(CurrentPageObject), "Too large object");
     new(CurrentPageObject) TSeqPage();
     Sequencer.UpdateKnobs();
+    break;
+  case MODE_SETTINGS:
+    static_assert(sizeof(TSettingsPage) <= sizeof(CurrentPageObject), "Too large object");
+    new(CurrentPageObject) TSettingsPage();
     break;
   }
   UpdateAll();

@@ -122,8 +122,7 @@ public:
   TSequencerScene Scenes[SceneCount];
 
   // Interface IMemoryCallback
-  void MemoryOperationFinished(TMemory::OperationType type,
-			       uint8_t block);
+  void MemoryOperationFinished(TMemory::OperationType type, uint8_t block);
 
 private:
   class TEventSchedule {

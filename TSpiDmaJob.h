@@ -18,8 +18,10 @@ class TSpiDmaJob
 {
 public:
   enum TChip {
-    CS_FLASH = 0,
-    CS_LCD = 1
+    CS_FLASH_START =   0x01,
+    CS_FLASH_END =     0x02,
+    CS_FLASH_ONESHOT = 0x03,
+    CS_LCD =           0x04
   };
   enum TLcdCd {
     LCD_CONTROL = 0,
@@ -57,7 +59,7 @@ public:
   TSpiDmaQueue();
   
   bool Enqueue(const TSpiDmaJob& job);
-  void TryStartJob();
+  bool TryStartJob();
 
   /** Called when interrupt is received. */
   void Finished()
@@ -65,11 +67,9 @@ public:
     TSpiDmaJob job = Jobs.First();
     Jobs.Remove();
 
-    if (Jobs.Empty()) {
-      // Deassert CS lines if no more transactions are planned. We
-      // need to do this before the callback, because that can enqueue
-      // more transactions. CS needs to be deasserted between each
-      // memory access.
+    if (job.GetChip() != TSpiDmaJob::CS_FLASH_START) {
+      // Deassert CS lines if no more transactions are planned.
+      // CS needs to be deasserted between each memory access.
       Pin_flash_cs.Set();
       Pin_lcd_cs.Set();
     }

@@ -60,8 +60,14 @@ TMemory Memory;
 TControllers Controllers;
 TUsb Usb;
 
+enum {
+  SPI_DMA_STATE_IDLE = 0,
+  SPI_DMA_STATE_RUNNING,
+  SPI_DMA_STATE_FINISHED
+};
+
 volatile uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
-volatile static uint8_t DmaEvents = 0;
+volatile static uint8_t SpiDmaState = SPI_DMA_STATE_IDLE;
 volatile static uint8_t Actions; // Signalling from interrupts to bottom halves
 static const uint8_t ACTION_POLL_BUTTONS = 0x01;
 static const uint8_t ACTION_BLINK_TIMER = 0x02;
@@ -98,7 +104,11 @@ void dma1_channel2_isr(void)
 
   // Note: we have to wait until TXE=1 and BSY=0 before changing CS lines.
 #endif
-  DmaEvents++;
+  if (SpiDmaState != SPI_DMA_STATE_RUNNING) {
+      // Error!
+      while (1);
+  }
+  SpiDmaState = SPI_DMA_STATE_FINISHED;
 }
 
 /** DMA channel 1:5 -- USART1_RX (shift registers) */
@@ -210,14 +220,21 @@ int main(void)
   while (true) {
     /* Interrupt "bottom half" processing */
 #ifndef HOST
-    /* We disable the interrupt here to protect DmaEvents, but also
+    /* We disable the interrupt here to protect SpiDmaState, but also
        because it doesn't work otherwise (which is a bit scary). */
     nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
-    if (DmaEvents) {
-      DmaEvents--;
+    switch (SpiDmaState) {
+    case SPI_DMA_STATE_RUNNING:
+      break;
+    case SPI_DMA_STATE_FINISHED:
       SpiDmaQueue.Finished();
-    } else {
-      SpiDmaQueue.TryStartJob();
+      SpiDmaState = SPI_DMA_STATE_IDLE;
+      break;
+    case SPI_DMA_STATE_IDLE:
+      if (SpiDmaQueue.TryStartJob()) {
+          SpiDmaState = SPI_DMA_STATE_RUNNING;
+      }
+      break;
     }
     nvic_enable_irq(NVIC_DMA1_CHANNEL2_IRQ);
 #endif

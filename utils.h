@@ -10,6 +10,12 @@
  * Some cheap libc alternatives.
  */
 
+#ifdef HOST
+#include <cassert>
+#else
+#define assert(x) if (!(x)) while (true);
+#endif
+
 /**
  * Copy string until \0.
  * \todo Consider not making inline.

@@ -1,13 +1,8 @@
 /* -*- c++ -*- */
 #pragma once
 #include "logging.h"
+#include "utils.h"
 #include <cstdint>
-
-#ifdef HOST
-#include <cassert>
-#else
-#define assert(x)
-#endif
 
 /**
  * Circular buffer class. Holds size objects of type T.

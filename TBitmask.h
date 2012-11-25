@@ -2,12 +2,7 @@
 #pragma once
 
 #include <cstdint>
-
-#ifdef HOST
-#include <cassert>
-#else
-#define assert(x)
-#endif
+#include "utils.h"
 
 /**
  * Bitmask handling functions. Two viewpoints are provided, with

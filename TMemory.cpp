@@ -35,7 +35,7 @@ void TMemory::FetchNextChunk()
   const uint16_t byteno = CurrentOperation.NextChunk * DmaChunkSize;
   CommandBuffer[0] = COMMAND_READ_ARRAY;
   CommandBuffer[1] = page >> 4;
-  CommandBuffer[2] = (page << 4) | byteno >> 8;
+  CommandBuffer[2] = (page << 4) | (byteno >> 8);
   CommandBuffer[3] = byteno & 0xff;
 
   CurrentOperation.NextChunk++;
@@ -43,13 +43,13 @@ void TMemory::FetchNextChunk()
 
   bool ret = true;
   ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 4),
-					TSpiDmaJob::CS_FLASH,
+					TSpiDmaJob::CS_FLASH_START,
 					TSpiDmaJob::LCD_DATA,
 					0,
 					0));
   ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CachedBlock + byteno,
 						DmaChunkSize),
-					TSpiDmaJob::CS_FLASH,
+					TSpiDmaJob::CS_FLASH_END,
 					TSpiDmaJob::LCD_DATA,
 					this,
 					reinterpret_cast<void*>(moreToRead)));
@@ -96,14 +96,14 @@ void TMemory::FetchNextName()
 
   bool ret = true;
   ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 4),
-					TSpiDmaJob::CS_FLASH,
+					TSpiDmaJob::CS_FLASH_START,
 					TSpiDmaJob::LCD_DATA,
 					0,
 					0));
   ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(
     reinterpret_cast<uint8_t*>(l->Names[l->FetchedCount]),
     l->Len),
-					TSpiDmaJob::CS_FLASH,
+					TSpiDmaJob::CS_FLASH_END,
 					TSpiDmaJob::LCD_DATA,
 					this,
 					reinterpret_cast<void*>(moreToRead)));
@@ -136,7 +136,7 @@ void TMemory::NudgeWriteMachine()
     break;
   case TOperation::STATE_WAIT_TO_UNPROTECT:
     // Status is in CommandBuffer[1..2]
-    if ((CommandBuffer[1] & SREG_WPP) && (~CommandBuffer[1] & SREG_BSY)) {
+    if ((CommandBuffer[1] & SREG_WPP) && !(CommandBuffer[1] & SREG_BSY)) {
       SendWriteEnable();
       CurrentOperation.State = TOperation::STATE_UNPROTECT_WE_SENT;
     }
@@ -155,7 +155,7 @@ void TMemory::NudgeWriteMachine()
     break;
   case TOperation::STATE_WAIT_TO_ERASE:
     // Status is in CommandBuffer[1..2]
-    if ((CommandBuffer[1] & SREG_WPP) && (~CommandBuffer[1] & SREG_BSY)) {
+    if ((CommandBuffer[1] & SREG_WPP) && !(CommandBuffer[1] & SREG_BSY)) {
       SendWriteEnable();
       CurrentOperation.State = TOperation::STATE_ERASE_WE_SENT;
     }
@@ -174,7 +174,8 @@ void TMemory::NudgeWriteMachine()
     break;
   case TOperation::STATE_WAIT_TO_WRITE_DATA:
     // Status is in CommandBuffer[1..2]
-    if ((CommandBuffer[1] & SREG_WPP) && (~CommandBuffer[1] & SREG_BSY)) {
+    assert(!(CommandBuffer[1] & SREG_EPE));
+    if ((CommandBuffer[1] & SREG_WPP) && !(CommandBuffer[1] & SREG_BSY)) {
       SendWriteEnable();
       CurrentOperation.State = TOperation::STATE_CHUNK_WE_SENT;
     }
@@ -184,10 +185,8 @@ void TMemory::NudgeWriteMachine()
     }
     break;
   case TOperation::STATE_CHUNK_WE_SENT:
-    if (CurrentOperation.NextChunk * DmaChunkSize < BlockSize) {
-      CurrentOperation.State = TOperation::STATE_CHUNK_SENT;
-    }
-    else {
+    CurrentOperation.State = TOperation::STATE_CHUNK_SENT;
+    if (((uint32_t)CurrentOperation.NextChunk + 1) * DmaChunkSize >= BlockSize) {
       CurrentOperation.State = TOperation::STATE_LAST_CHUNK_SENT;
     }
     SendWriteData();
@@ -205,11 +204,12 @@ void TMemory::NudgeWriteMachine()
 void TMemory::SendWriteEnable()
 {
   CommandBuffer[0] = COMMAND_WRITE_ENABLE;
-  SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 1),
-				 TSpiDmaJob::CS_FLASH,
+  bool ret = SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 1),
+				 TSpiDmaJob::CS_FLASH_ONESHOT,
 				 TSpiDmaJob::LCD_DATA,
 				 this,
 				 reinterpret_cast<void*>(true)));
+  assert(ret);
 };
 
 void TMemory::SendUnprotectSector()
@@ -217,10 +217,10 @@ void TMemory::SendUnprotectSector()
   const uint8_t page = CurrentOperation.BlockNo;
   CommandBuffer[0] = COMMAND_UNPROTECT_SECTOR;
   CommandBuffer[1] = page >> 4;
-  CommandBuffer[2] = page << 4;
+  CommandBuffer[2] = (page & 0x0f) << 4;
   CommandBuffer[3] = 0;
   SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 4),
-				 TSpiDmaJob::CS_FLASH,
+				 TSpiDmaJob::CS_FLASH_ONESHOT,
 				 TSpiDmaJob::LCD_DATA,
 				 this,
 				 reinterpret_cast<void*>(true)));
@@ -231,10 +231,10 @@ void TMemory::SendErasePage()
   const uint8_t page = CurrentOperation.BlockNo;
   CommandBuffer[0] = COMMAND_BLOCK_ERASE_4K;
   CommandBuffer[1] = page >> 4;
-  CommandBuffer[2] = page << 4;
+  CommandBuffer[2] = (page & 0x0f) << 4;
   CommandBuffer[3] = 0;
   SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 4),
-				 TSpiDmaJob::CS_FLASH,
+				 TSpiDmaJob::CS_FLASH_ONESHOT,
 				 TSpiDmaJob::LCD_DATA,
 				 this,
 				 reinterpret_cast<void*>(true)));
@@ -246,28 +246,26 @@ void TMemory::SendWriteData()
   const uint16_t byteno = CurrentOperation.NextChunk * DmaChunkSize;
   CommandBuffer[0] = COMMAND_PAGE_PROGRAM;
   CommandBuffer[1] = page >> 4;
-  CommandBuffer[2] = (page << 4) | (byteno >> 8);
+  CommandBuffer[2] = ((page & 0x0f) << 4) | (byteno >> 8);
   CommandBuffer[3] = byteno & 0xff;
 
   CurrentOperation.NextChunk++;
 
   bool ret = true;
   ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 4),
-					TSpiDmaJob::CS_FLASH,
+					TSpiDmaJob::CS_FLASH_START,
 					TSpiDmaJob::LCD_DATA,
 					0,
 					0));
   ret &= SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CachedBlock + byteno,
 						DmaChunkSize),
-					TSpiDmaJob::CS_FLASH,
+					TSpiDmaJob::CS_FLASH_END,
 					TSpiDmaJob::LCD_DATA,
 					this,
 					reinterpret_cast<void*>(true)));
-  if (!ret) {
-    // A hang here indicates that there aren't enough SPI DMA
-    // buffers. That can't happen.
-    while (true);
-  }
+  // A hang here indicates that there aren't enough SPI DMA
+  // buffers. That can't happen.
+  assert(ret);
 }
 
 void TMemory::ReadStatus()
@@ -278,11 +276,12 @@ void TMemory::ReadStatus()
 
   // Status register is read into CommandBuffer[1..2]
 
-  SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 3),
-				 TSpiDmaJob::CS_FLASH,
+  bool ret = SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 3),
+				 TSpiDmaJob::CS_FLASH_ONESHOT,
 				 TSpiDmaJob::LCD_DATA,
 				 this,
 				 reinterpret_cast<void*>(true)));
+  assert(ret);
 }
 
 void TMemory::Identify()
@@ -295,7 +294,7 @@ void TMemory::Identify()
   // Device ID register is read into CommandBuffer[1..3]
 
   SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(CommandBuffer, 4),
-				 TSpiDmaJob::CS_FLASH,
+				 TSpiDmaJob::CS_FLASH_ONESHOT,
 				 TSpiDmaJob::LCD_DATA,
 				 this, 0));
 }

@@ -1,4 +1,5 @@
 #include "TSpiDmaJob.h"
+#include <cstring>
 
 TSpiDmaQueue::TSpiDmaQueue()
 {
@@ -18,7 +19,7 @@ bool TSpiDmaQueue::Enqueue(const TSpiDmaJob& job)
   }
 }
 
-void TSpiDmaQueue::TryStartJob()
+bool TSpiDmaQueue::TryStartJob()
 {
 #ifndef HOST
   // Start the next DMA job in the queue if the SPI interface is
@@ -27,14 +28,18 @@ void TSpiDmaQueue::TryStartJob()
   if ((SPI_SR(SPI1) & SPI_SR_TXE) && (~SPI_SR(SPI1) & SPI_SR_BSY)) {
 
     if (Jobs.Empty()) {
-      // No transfers planned -- deassert CS lines
-      Pin_flash_cs.Set();
-      Pin_lcd_cs.Set();
-      return;
+        return false;
     }
 
     const TSpiDmaJob& job = Jobs.First();
     const TBuffer& buffer = job.GetBuffer();
+
+    assert(!(job.GetChip() == TSpiDmaJob::CS_FLASH_ONESHOT && Pin_flash_cs.Read() == false));
+    assert(!(job.GetChip() == TSpiDmaJob::CS_FLASH_START && Pin_flash_cs.Read() == false));
+    assert(!(job.GetChip() == TSpiDmaJob::CS_FLASH_END && Pin_flash_cs.Read() == true));
+
+    // SPI receive register should be empty here!
+    assert(!(SPI_SR(SPI1) & SPI_SR_RXNE));
 
     {
       const uint32_t dma = DMA1;
@@ -82,11 +87,24 @@ void TSpiDmaQueue::TryStartJob()
       Pin_flash_cs.Clear();
     }
 
+#if 1
     // Kick off the transfer
     spi_enable_rx_dma(SPI1);
     spi_enable_tx_dma(SPI1);
+#else
+    uint8_t temp[buffer.GetLength()];
+    for (int i = 0; i < buffer.GetLength(); i++) {
+        temp[i] = spi_xfer(SPI1, buffer.GetData()[i]);
+    }
+    memcpy(buffer.GetData(), temp, buffer.GetLength());
+    Finished();
+    return false;
+#endif
+
+    return true;
   }
 #endif
+  return false;
 }
 
 void TSpiDmaJob::Finished() const
