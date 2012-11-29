@@ -76,7 +76,12 @@ static const uint8_t ACTION_BLINK_TIMER = 0x02;
 
 void hard_fault_handler(void)
 {
-	while (1);
+	while (1) {
+		Pin_vpullup.Clear();
+		delay_ms(1000);
+		Pin_vpullup.Set();
+		delay_ms(1000);
+	}
 }
 
 void mem_manage_handler(void)
@@ -168,6 +173,7 @@ int main(void)
 	rcc_peripheral_clear_reset(&RCC_APB2RSTR, resets2);
 	rcc_peripheral_clear_reset(&RCC_APB1RSTR, resets1);
 	DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
+  assert(!(USART_SR(USART1) & USART_SR_RXNE));
 #endif
 
 	/// \todo We should wake up in some kind of low power mode.

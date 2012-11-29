@@ -44,6 +44,20 @@ public:
   virtual void Event(TEvent event);
 };
 
+/**
+ * Present a popup menu that allows inputting a name.
+ */
+class TNamePopup : public TPopup
+{
+private:
+  char Name[NAMELEN];
+
+public:
+  void SetName(const char*);
+  virtual void Render(uint8_t n, TDisplay::TPageBuffer* line);
+  virtual void Event(TEvent event);
+};
+
 class TButtonPopup : public TPopup
 {
 };

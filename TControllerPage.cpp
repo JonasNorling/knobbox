@@ -112,10 +112,14 @@ void TControllerPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
     text[i++] = '\0';
     break;
   }
+  default:
+    cheap_strcpy(text, "blah.");
+    break;
   }
 }
 
 void TControllerPage::MenuItemSelected(uint8_t n)
 {
   CurrentChannel = n;
+  Gui.RemovePopup();
 }

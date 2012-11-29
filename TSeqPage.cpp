@@ -3,7 +3,7 @@
 #include "TGui.h"
 #include "utils.h"
 
-const TSeqPage::eventhandler_t TSeqPage::EventHandler[FOCUS_LAST + 1] = {
+const TSeqPage::eventhandler_t TSeqPage::EventHandler[FOCUS_AUX_LAST + 1] = {
   0,
   0,
   0,
@@ -14,7 +14,10 @@ const TSeqPage::eventhandler_t TSeqPage::EventHandler[FOCUS_LAST + 1] = {
   &TSeqPage::EventHandlerLen,
   &TSeqPage::EventHandlerOffset,
   0,
-  &TSeqPage::EventHandlerTempo };
+  &TSeqPage::EventHandlerTempo,
+  0,
+  0,
+  0 };
 
 void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 {
@@ -241,11 +244,14 @@ void TSeqPage::GetMenuTitle(char text[MenuTextLen])
   case FOCUS_SETUPMENU:
     cheap_strcpy(text, "Setup seq");
     break;
-  case FOCUS_LOAD_SLOT:
+  case FOCUS_SETUP_POPUP_LOAD_SLOT:
     cheap_strcpy(text, "Whence, sir?");
     break;
-  case FOCUS_STORE_SLOT:
+  case FOCUS_SETUP_POPUP_STORE_SLOT:
     cheap_strcpy(text, "Where, sir?");
+    break;
+  case FOCUS_SETUP_POPUP_STORE_SLOT_NAME:
+    cheap_strcpy(text, "Name, sir?");
     break;
   }
 }
@@ -304,8 +310,8 @@ void TSeqPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
     }
     break;
   }
-  case FOCUS_LOAD_SLOT:
-  case FOCUS_STORE_SLOT: {
+  case FOCUS_SETUP_POPUP_LOAD_SLOT:
+  case FOCUS_SETUP_POPUP_STORE_SLOT: {
     if (n < TMemory::SEQ_SCENE_COUNT) {
       const TNameList* l = reinterpret_cast<TNameList*>(Memory.GetCachedBlock());
       if (l->Magic == TNameList::MAGIC) {
@@ -330,16 +336,16 @@ void TSeqPage::MenuItemSelected(uint8_t n)
   case FOCUS_SETUPMENU: {
     switch (n) {
     case 7:
-      Focus = FOCUS_LOAD_SLOT;
+      Focus = FOCUS_SETUP_POPUP_LOAD_SLOT;
       Memory.FetchNames((TMemory::BlockSize * TMemory::BLOCK_FIRST_SEQ_SCENE + offsetof(TSequencerScene, Name)),
 			NAMELEN,
-			8, //TMemory::SEQ_SCENE_COUNT,
+			TMemory::SEQ_SCENE_COUNT,
 			TMemory::BlockSize,
 			0 /* callback */);
       Gui.DisplayPopup<TSelectPopup>();
       break;
     case 8:
-      Focus = FOCUS_STORE_SLOT;
+      Focus = FOCUS_SETUP_POPUP_STORE_SLOT;
       Memory.FetchNames((TMemory::BlockSize * TMemory::BLOCK_FIRST_SEQ_SCENE + offsetof(TSequencerScene, Name)),
 			NAMELEN,
 			TMemory::SEQ_SCENE_COUNT,
@@ -350,14 +356,26 @@ void TSeqPage::MenuItemSelected(uint8_t n)
     }
     break;
   }
-  case FOCUS_LOAD_SLOT: {
+  case FOCUS_SETUP_POPUP_LOAD_SLOT: {
     Focus = FOCUS_SETUPMENU;
     Sequencer.LoadFromMemory(/*scene*/ 0, /*patchno*/ n);
+    Gui.RemovePopup();
     break;
   }
-  case FOCUS_STORE_SLOT: {
-    Focus = FOCUS_SETUPMENU;
-    Sequencer.StoreInMemory(/*scene*/ 0, /*patchno*/ n);
+  case FOCUS_SETUP_POPUP_STORE_SLOT: {
+    Focus = FOCUS_SETUP_POPUP_STORE_SLOT_NAME;
+    Gui.DisplayPopup<TNamePopup>();
+    TNamePopup* popup = reinterpret_cast<TNamePopup*>(Gui.GetCurrentPopupObject());
+
+    // Slot names will have been cached by the name list that is currently displaying
+    const TNameList* l = reinterpret_cast<TNameList*>(Memory.GetCachedBlock());
+    if (l->Magic == TNameList::MAGIC && n < l->FetchedCount) {
+      popup->SetName(l->Names[n]);
+    } else {
+      popup->SetName("olle");
+    }
+    //Focus = FOCUS_SETUPMENU;
+    //Sequencer.StoreInMemory(/*scene*/ 0, /*patchno*/ n);
     break;
   }
   }

@@ -33,29 +33,23 @@ void TKnobs::InitDma()
 #endif
 }
 
-/**
- * \todo This is probably horribly slow -- we need to optimise the DMA
- * channel setup and it's probably not a good idea to make all those
- * library calls that aren't inlined.
- *
- * \todo We shouldn't trigger interrupts for both RX and TX here,
- * that's just stupid.
- */
 void TKnobs::StartShifting()
 {
 #ifndef HOST
+
   const uint32_t dma = DMA1;
   const uint32_t txchannel = DMA_CHANNEL4;
   const uint32_t rxchannel = DMA_CHANNEL5;
   //  dma_channel_reset(dma, txchannel);
   //  dma_channel_reset(dma, rxchannel);
 
+  assert(!(USART_SR(USART1) & USART_SR_RXNE));
+
   // Disable channels
   DMA_CCR(dma, txchannel) &= ~DMA_CCR_EN;
   DMA_CCR(dma, rxchannel) &= ~DMA_CCR_EN;
   // Reset interrupts
   DMA_IFCR(dma) |= DMA_IFCR_CIF(txchannel) | DMA_IFCR_CIF(rxchannel);
-#endif
 
   // LED driver: clock in the last sent data, always enable outputs.
   Pin_shift_out_load.Set();
@@ -67,7 +61,6 @@ void TKnobs::StartShifting()
   Pin_shift_in_en.Clear();
   Pin_shift_in_load.Set();
 
-#ifndef HOST
   DMA_CCR(dma, rxchannel) = (DMA_CCR_PL_HIGH | // prio
 			     DMA_CCR_MSIZE_8BIT |
 			     DMA_CCR_PSIZE_8BIT |
@@ -89,12 +82,6 @@ void TKnobs::StartShifting()
   DMA_CCR(dma, txchannel) |= DMA_CCR_EN;
   // Enable RX/TX DMA, kicks off the transfer
   USART_CR3(USART1) |= USART_CR3_DMAR | USART_CR3_DMAT;
-#endif
-
-  /// \todo Think about symmetric PWM to lower the power ripple a bit.
-  // Also, we could scatter the on-state pseudo-randomly in the
-  // timeslot, giving a much more even power usage. How will the
-  // brightness be affected by that? USe a LUT of some kind?
 
   // Calculate the next PWM step. It's ok to do this after the DMA job
   // has been started -- we'll output the first byte from the last
@@ -108,6 +95,8 @@ void TKnobs::StartShifting()
   LedControl[0] = 0;
   LedControl[1] = value;
   CurrentPwmStep++;
+
+  #endif
 }
 
 /*

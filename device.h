@@ -67,7 +67,7 @@ void clockInit();
 void deviceInit();
 
 static inline void delay_ms(unsigned n) {
-  for (unsigned i=0; i < n*5000; i++) __asm__("nop");
+  for (unsigned i=0; i < n*10000; i++) __asm__("nop");
 }
 
 enum TMode {

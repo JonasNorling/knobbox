@@ -47,7 +47,7 @@ public:
   public:
     friend class TDisplay;
     uint8_t DrawText(const char* text, uint8_t offset = 0, bool invert = false);
-    /// Advance a character witdth.
+    /// Advance a character width.
     uint8_t Advance(uint8_t offset) { return offset + TDisplay::GlyphWidth; }
 
     void Clear()

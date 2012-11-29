@@ -15,9 +15,11 @@ public:
     FOCUS_TEMPO,
     FOCUS_LAST = FOCUS_TEMPO,
 
-    // Current focus in auxilliary menues and stuff
-    FOCUS_LOAD_SLOT,
-    FOCUS_STORE_SLOT
+    // Current focus in auxiliary menus and stuff
+    FOCUS_SETUP_POPUP_LOAD_SLOT,
+    FOCUS_SETUP_POPUP_STORE_SLOT,
+    FOCUS_SETUP_POPUP_STORE_SLOT_NAME,
+    FOCUS_AUX_LAST = FOCUS_SETUP_POPUP_STORE_SLOT_NAME
   };
 
   TSeqPage() : Focus(FOCUS_NONE), CurrentStep(0),
@@ -39,7 +41,7 @@ private:
   // Event handlers for the current focus, should return true if the
   // event was consumed.
   typedef bool (TSeqPage::*eventhandler_t) (TEvent);
-  const static eventhandler_t EventHandler[FOCUS_LAST + 1];
+  const static eventhandler_t EventHandler[FOCUS_AUX_LAST + 1];
 
   bool EventHandlerStep(TEvent event);
   bool EventHandlerVelo(TEvent event);

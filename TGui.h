@@ -50,6 +50,7 @@ public:
     }
   }
   template<typename T> void DisplayPopup();
+  void RemovePopup() { ChangeFocus(FOCUS_PAGE); }
   void ChangeFocus(TFocus focus);
   TFocus GetFocus() const { return Focus; }
   IDisplayPage* GetCurrentPageObject() {
@@ -68,7 +69,7 @@ private:
   TTopMenu TopMenu;
   // The current IDisplayPage implementation is put here with placement new. Delete is never called.
   uint8_t CurrentPageObject[sizeof(TSettingsPage)];
-  uint8_t CurrentPopupObject[sizeof(TSelectPopup)];
+  uint8_t CurrentPopupObject[sizeof(TNamePopup)];
 };
 
 extern TGui Gui;

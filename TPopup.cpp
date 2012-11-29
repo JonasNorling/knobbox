@@ -1,5 +1,6 @@
 #include "TGui.h"
 #include "TPopup.h"
+#include <cstring>
 
 void TPopup::Render(uint8_t n, TDisplay::TPageBuffer* line)
 {
@@ -44,6 +45,76 @@ void TPopup::Render(uint8_t n, TDisplay::TPageBuffer* line)
   }
 }
 
+void TNamePopup::SetName(const char* name)
+{
+  memset(Name, ' ', sizeof(Name));
+  cheap_strncpy(Name, name, sizeof(Name));
+  ItemCount = sizeof(Name);
+}
+
+void TNamePopup::Render(uint8_t n, TDisplay::TPageBuffer* line)
+{
+  if (n == 0) {
+    line->Clear(Margin, line->GetLength());
+    char text[IDisplayPage::MenuTextLen];
+    text[0] = '\0';
+    Gui.GetCurrentPageObject()->GetMenuTitle(text);
+    line->DrawText(text, Margin + TDisplay::GlyphWidth);
+    line->Invert(Margin, line->GetLength());
+  }
+  else if (n == 3) {
+      line->Clear(Margin, line->GetLength());
+      line->DrawText("\003\011\011\011\011\011\011\011\011\011\011\011\011", Margin);
+  }
+  else if (n == 4) {
+    line->Clear(Margin, line->GetLength());
+    char text[sizeof(Name) + 2];
+    text[0] = '\003';
+    text[1] = '\0';
+    cheap_strncpy(text + 1, Name, sizeof(Name));
+    line->DrawText(text, Margin);
+
+    // Highlight selected letter
+    line->Invert(Margin + TDisplay::GlyphWidth * (Focus + 1), Margin + TDisplay::GlyphWidth * (Focus + 2));
+  }
+  else if (n == 5) {
+      line->Clear(Margin, line->GetLength());
+      line->DrawText("\003\012\012\012\012\012\012\012\012\012\012\012\012", Margin);
+  }
+  else {
+    line->Clear(Margin, line->GetLength());
+    line->DrawText("\003", Margin);
+  }
+}
+
+void TNamePopup::Event(TEvent event)
+{
+  Gui.UpdateAll();
+  switch (event_code(event)) {
+  case KNOB_RIGHT:
+  case KEY_DOWN:
+    if (Focus < ItemCount-1) {
+      Focus++;
+    }
+    break;
+  case KNOB_LEFT:
+  case KEY_UP:
+    if (Focus > 0) {
+      Focus--;
+    }
+    break;
+  case KNOB_PUSH:
+  case KEY_OK:
+    Gui.GetCurrentPageObject()->MenuItemSelected(0);
+    break;
+  case KEY_BACK:
+    Gui.ChangeFocus(TGui::FOCUS_PAGE);
+    break;
+  default:
+    break;
+  }
+}
+
 void TSelectPopup::Event(TEvent event)
 {
   Gui.UpdateAll();
@@ -69,7 +140,6 @@ void TSelectPopup::Event(TEvent event)
   case KNOB_PUSH:
   case KEY_OK:
     Gui.GetCurrentPageObject()->MenuItemSelected(Focus);
-    Gui.ChangeFocus(TGui::FOCUS_PAGE);
     break;
   case KEY_BACK:
     Gui.ChangeFocus(TGui::FOCUS_PAGE);
