@@ -15,6 +15,7 @@ extern "C" {
   void mem_manage_handler(void);
   void bus_fault_handler(void);
   void usage_fault_handler(void);
+  void pend_sv_handler(void);
   void dma1_channel1_isr(void);
   void dma1_channel2_isr(void); // SPI1_RX
   void dma1_channel3_isr(void); // SPI1_TX
