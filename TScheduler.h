@@ -35,7 +35,9 @@
  *
  */
 
+#ifndef HOST
 #include <libopencm3/stm32/f1/scb.h>
+#endif
 #include <cstring>
 
 class TScheduler
@@ -70,8 +72,8 @@ private:
 		uint32_t R2;
 		uint32_t R3;
 		uint32_t R12;
-		uint32_t Lr;
-		uint32_t Pc;
+		void* Lr;
+		void* Pc;
 		uint32_t Psr;
 	};
 
@@ -117,8 +119,8 @@ public:
 				reinterpret_cast<TNvicFrame*>(sp)->R2 = 0xff00ff02;
 				reinterpret_cast<TNvicFrame*>(sp)->R3 = 0xff00ff03;
 				reinterpret_cast<TNvicFrame*>(sp)->R12 = 0xff00ff0c;
-				reinterpret_cast<TNvicFrame*>(sp)->Lr = reinterpret_cast<uint32_t>(ReturnFromTask);
-				reinterpret_cast<TNvicFrame*>(sp)->Pc = reinterpret_cast<uint32_t>(task.EntryPoint);
+				reinterpret_cast<TNvicFrame*>(sp)->Lr = reinterpret_cast<void*>(ReturnFromTask);
+				reinterpret_cast<TNvicFrame*>(sp)->Pc = reinterpret_cast<void*>(task.EntryPoint);
 				reinterpret_cast<TNvicFrame*>(sp)->Psr = 0x21000000; // Default, allegedly
 				sp -= sizeof(TSoftwareFrame);
 				reinterpret_cast<TSoftwareFrame*>(sp)->Registers[0] = 0xff00ff04;
@@ -143,8 +145,10 @@ public:
 
 	static inline void Yield()
 	{
+#ifndef HOST
 		// Trigger PendSV
 		SCB_ICSR |= SCB_ICSR_PENDSVSET;
+#endif
 	}
 };
 
@@ -154,11 +158,12 @@ public:
  * be affected. In the former case, we need to take some care with which registers (R4..R11) the
  * compiler pushes for its own use.
  */
+#ifndef HOST
 extern "C" {
 void __attribute__((naked)) pend_sv_handler(void)
 {
 	const uint32_t RETURN_ON_PSP = 0xfffffffd;
-	const uint32_t RETURN_ON_MSP = 0xfffffff9;
+	//const uint32_t RETURN_ON_MSP = 0xfffffff9; // Documentation tells us to use this, but it hardfaults.
 	const uint32_t RETURN_ON_MSP_HANDLER = 0xfffffff1;
 
 	// 0. NVIC has already pushed some registers on the program/main stack.
@@ -220,3 +225,4 @@ void __attribute__((naked)) pend_sv_handler(void)
 	}
 }
 }
+#endif // HOST

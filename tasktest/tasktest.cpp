@@ -43,8 +43,8 @@ static uint8_t __attribute__((aligned(8))) guard2[16];
 
 const TScheduler::TTask TScheduler::Tasks[SCHEDULER_NUM_TASKS] = {
 		{ "main", 0, 0, 0 },
-		{ "task1", task1, task1_stack, 256 },
-		{ "task2", task2, task2_stack, 256 }
+		{ "task1", task1, task1_stack, sizeof(task1_stack) },
+		{ "task2", task2, task2_stack, sizeof(task2_stack) }
 };
 
 // Called with the program stack
