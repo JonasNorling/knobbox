@@ -72,8 +72,8 @@ void deviceInit()
 			  GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
 
   // USART2
-  Pin_midi_out.SetOutput(GPIO_MODE_OUTPUT_50_MHZ/*,
-			 GPIO_CNF_OUTPUT_ALTFN_PUSHPULL*/);
+  Pin_midi_out.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
+			 GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
 
   Pin_vpullup.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
 
@@ -122,7 +122,7 @@ void deviceInit()
   usart_set_mode(USART2, USART_MODE_TX_RX);
   usart_set_parity(USART2, USART_PARITY_NONE);
   usart_set_flow_control(USART2, USART_FLOWCONTROL_NONE);
-  //usart_enable(USART2);
+  usart_enable(USART2);
 
   /*
    * *********************************************************** *
