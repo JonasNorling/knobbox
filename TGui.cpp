@@ -3,8 +3,10 @@
 #include "TBitmask.h"
 #include "TSeqPage.h"
 #include "TSettingsPage.h"
+#include "TControllerPage.h"
 #include "TControllers.h"
 #include "TSequencer.h"
+#include "TScheduler.h"
 
 /*
 void TGui::DrawCharmap()
@@ -29,7 +31,7 @@ void TGui::DrawCharmap()
 */
 
 void TTopMenu::Render(uint8_t n __attribute__((unused)),
-		      TDisplay::TPageBuffer* line)
+		      TDisplay::TPageBuffer* line, bool haveFocus)
 {
   int pos = 3;
   const int selected = Mode;
@@ -42,8 +44,7 @@ void TTopMenu::Render(uint8_t n __attribute__((unused)),
       shadestart = pos;
       pos = line->DrawText("\020", pos);
     }
-    pos = line->DrawText(strings[i], pos,
-			 i == selected && Gui.GetFocus() == TGui::FOCUS_MENU);
+    pos = line->DrawText(strings[i], pos, i == selected && haveFocus);
     if (i == selected) {
       pos = line->DrawText("\021", pos);
       shadeend = pos;
@@ -62,19 +63,12 @@ void TTopMenu::Event(TEvent event)
   case KEY_OK:
     if (Mode != MODE_LAST) {
       Mode++;
-      Gui.SetPage();
     }
     break;
   case KEY_BACK:
     if (Mode != MODE_FIRST) {
       Mode--;
-      Gui.SetPage();
     }
-    break;
-  case KEY_DOWN:
-    Gui.ChangeFocus(TGui::FOCUS_PAGE);
-    break;
-  default:
     break;
   }
 }
@@ -82,72 +76,51 @@ void TTopMenu::Event(TEvent event)
 
 TGui::TGui() :
   DirtyLines(TBitmask::Init(Lines)),
-  Focus(FOCUS_MENU)
+  PendingEvent(NO_EVENT)
 {
-  SetPage();
 }
 
-void TGui::SetPage()
+void TGui::Show()
 {
-  switch (Mode) {
-  case MODE_CONTROLLER:
-    static_assert(sizeof(TControllerPage) <= sizeof(CurrentPageObject), "Too large object");
-    new(CurrentPageObject) TControllerPage();
-    Controllers.UpdateKnobs();
-    break;
-  case MODE_SEQ:
-    static_assert(sizeof(TSeqPage) <= sizeof(CurrentPageObject), "Too large object");
-    new(CurrentPageObject) TSeqPage();
-    Sequencer.UpdateKnobs();
-    break;
-  case MODE_SETTINGS:
-    static_assert(sizeof(TSettingsPage) <= sizeof(CurrentPageObject), "Too large object");
-    new(CurrentPageObject) TSettingsPage();
-    break;
-  }
-  UpdateAll();
-}
-
-void TGui::Process()
-{
-  int8_t n = TBitmask::FindSet(DirtyLines, Lines);
-  if (n != -1) {
-    TDisplay::TPageBuffer* line = Display.GetBuffer();
-    if (line) {
-      line->Clear();
-      if (n == 0) {
-	TopMenu.Render(n, line);
-      } else {
-	GetCurrentPageObject()->Render(n, line);
-      }
-      if (Focus == FOCUS_POPUP) {
-	if (GetCurrentPopupObject()) {
-	  GetCurrentPopupObject()->Render(n, line);
-	}
-      }
-      Display.OutputBuffer(line, line->GetLength(), n, 0);
-    } else {
-      TBitmask::Set(DirtyLines, n);
+    while (true) {
+        switch (Mode) {
+        case MODE_CONTROLLER: {
+            TControllerPage page;
+            page.Show();
+            break;
+        }
+        case MODE_SEQ: {
+            TSeqPage page;
+            page.Show();
+            break;
+        }
+        case MODE_SETTINGS: {
+            TSettingsPage page;
+            page.Show();
+            break;
+        }
+        }
     }
-  }
 }
 
-void TGui::UpdateAll()
+TEvent TGui::WaitForEvent()
 {
-  DirtyLines = TBitmask::Init(Lines);
-}
+    TEvent event = PendingEvent;
+    if (event != NO_EVENT) {
+        PendingEvent = NO_EVENT;
+        return event;
+    }
 
-void TGui::ChangeFocus(TFocus focus)
-{
-  Focus = focus;
-  switch (Focus) {
-  case FOCUS_MENU:
-    TopMenu.Event(RECEIVE_FOCUS);
-    break;
-  case FOCUS_PAGE:
-    GetCurrentPageObject()->Event(RECEIVE_FOCUS);
-    break;
-  case FOCUS_POPUP:
-    break;
-  }
+    TScheduler::Yield();
+    Pin_midi_out.Toggle();
+
+    event = PendingEvent;
+    if (event == NO_EVENT) {
+        int8_t n = TBitmask::FindFree(DirtyLines, Lines);
+        if (n >= 0) {
+            event = construct_event(RENDER_LINE, n);
+        }
+    }
+    PendingEvent = NO_EVENT;
+    return event;
 }

@@ -1,15 +1,17 @@
 /* -*- c++ -*- */
 #pragma once
 
+const uint8_t NO_EVENT      = 0x00;
 const uint8_t KEY_UP        = 0x10;
 const uint8_t KEY_DOWN      = 0x20;
 const uint8_t KEY_OK        = 0x30;
 const uint8_t KEY_BACK      = 0x40;
-const uint8_t RECEIVE_FOCUS = 0x50;
+//const uint8_t RECEIVE_FOCUS = 0x50;
 const uint8_t BLINK_TIMER   = 0x60;
 const uint8_t KNOB_RIGHT    = 0x70;
 const uint8_t KNOB_LEFT     = 0x80;
 const uint8_t KNOB_PUSH     = 0x90;
+const uint8_t RENDER_LINE   = 0xa0;
 
 typedef uint8_t TEvent;
 

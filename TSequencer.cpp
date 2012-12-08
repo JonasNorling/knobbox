@@ -38,14 +38,14 @@ void TSequencer::Load()
 {
 	for (int scene = 0; scene < SceneCount; scene++) {
 		Scenes[scene].Magic = TSequencerScene::MAGIC;
-		Scenes[scene].Name[0] = 'N';
-		Scenes[scene].Name[1] = 'o';
-		Scenes[scene].Name[2] = ' ';
-		Scenes[scene].Name[3] = 's';
-		Scenes[scene].Name[4] = 'c';
+		Scenes[scene].Name[0] = 'U';
+		Scenes[scene].Name[1] = 'n';
+		Scenes[scene].Name[2] = 'n';
+		Scenes[scene].Name[3] = 'a';
+		Scenes[scene].Name[4] = 'm';
 		Scenes[scene].Name[5] = 'e';
-		Scenes[scene].Name[6] = 'n';
-		Scenes[scene].Name[7] = 'e';
+		Scenes[scene].Name[6] = 'd';
+		Scenes[scene].Name[7] = '\0';
 		Scenes[scene].Name[8] = '\0';
 		Scenes[scene].Name[9] = '\0';
 		Scenes[scene].Name[10] = '\0';
@@ -193,7 +193,7 @@ void TSequencer::CalculateSchedule(uint8_t sceneno)
 		for (uint8_t step=0; step < scene.Steps; step++) {
 			const TSequencerScene::TData& data = scene.Data[step];
 			if (StepIsEnabled(sceneno, step)) {
-				TPosition starttime({static_cast<uint8_t>(step), 0});
+				TPosition starttime({static_cast<int8_t>(step), 0});
 				starttime.AddMinorsAndWrap(data.Offset * 4, scene.Steps);
 				TPosition endtime(starttime);
 				endtime.AddMinorsAndWrap(data.Len * 4, scene.Steps);

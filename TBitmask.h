@@ -50,4 +50,10 @@ public:
   {
     Release(mask, bit);
   }
+
+  static bool HaveSetBits(const uint8_t& mask)
+  {
+    return mask != 0;
+  }
+
 };

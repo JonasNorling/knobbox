@@ -3,36 +3,29 @@
 
 #include <cstdint>
 #include "IDisplayPage.h"
+#include "TGui.h"
+#include "TPopup.h"
 
-class TSeqPage : public IDisplayPage
+class TSeqPage : public TDisplayPageBase
 {
 public:
   enum TFocus {
     // Currently focused field
-    FOCUS_NONE, FOCUS_SETUPMENU, FOCUS_ACTIONMENU,
+    FOCUS_TOP_MENU, FOCUS_SETUPMENU, FOCUS_ACTIONMENU,
     FOCUS_STEP, FOCUS_NOTE, FOCUS_ACTION,
     FOCUS_VELO, FOCUS_LEN, FOCUS_OFFSET, FOCUS_CC,
     FOCUS_TEMPO,
-    FOCUS_LAST = FOCUS_TEMPO,
-
-    // Current focus in auxiliary menus and stuff
-    FOCUS_SETUP_POPUP_LOAD_SLOT,
-    FOCUS_SETUP_POPUP_STORE_SLOT,
-    FOCUS_SETUP_POPUP_STORE_SLOT_NAME,
-    FOCUS_AUX_LAST = FOCUS_SETUP_POPUP_STORE_SLOT_NAME
+    FOCUS_LAST = FOCUS_TEMPO
   };
 
-  TSeqPage() : Focus(FOCUS_NONE), CurrentStep(0),
+  TSeqPage() : Focus(FOCUS_TOP_MENU), CurrentStep(0),
 	       Selected(false), Blink(false) { }
+  void Show();
   void Render(uint8_t n, TDisplay::TPageBuffer* line);
-  void Event(TEvent event);
-
-  void GetMenuTitle(char text[MenuTextLen]);
-  void GetMenuItem(uint8_t n, char text[MenuTextLen]);
-  void MenuItemSelected(uint8_t n);
-  void MenuItemChanged(uint8_t n, int8_t value);
 
 private:
+  TTopMenu TopMenu;
+
   uint8_t Focus;
   uint8_t CurrentStep;
   bool Selected; /// Focused item is selected and blinking
@@ -41,11 +34,32 @@ private:
   // Event handlers for the current focus, should return true if the
   // event was consumed.
   typedef bool (TSeqPage::*eventhandler_t) (TEvent);
-  const static eventhandler_t EventHandler[FOCUS_AUX_LAST + 1];
+  const static eventhandler_t EventHandler[FOCUS_LAST + 1];
 
+  bool EventHandlerSetup(TEvent event);
   bool EventHandlerStep(TEvent event);
   bool EventHandlerVelo(TEvent event);
   bool EventHandlerLen(TEvent event);
   bool EventHandlerOffset(TEvent event);
   bool EventHandlerTempo(TEvent event);
+};
+
+class TSetupMenuPopup : public TSettingsPopup
+{
+public:
+    virtual void ItemChanged(uint8_t n, int8_t value);
+    virtual bool ItemSelected(uint8_t n);
+    virtual void GetMenuTitle(char text[MenuTextLen]);
+    virtual void GetMenuItem(uint8_t n, char text[MenuTextLen]);
+};
+
+class TMemorySlotPopup : public TSelectPopup
+{
+public:
+    TMemorySlotPopup(const char* title);
+    virtual void GetMenuTitle(char text[MenuTextLen]);
+    virtual void GetMenuItem(uint8_t n, char text[MenuTextLen]);
+
+private:
+    const char* Title;
 };

@@ -4,6 +4,77 @@
 #include "TControllers.h"
 #include "utils.h"
 
+void TControllerPage::Show()
+{
+    Gui.UpdateAll();
+
+    while (true) {
+        TEvent event = Gui.WaitForEvent();
+
+        switch (event_code(event)) {
+        case RENDER_LINE: {
+            const uint8_t n = event_value(event);
+            TDisplay::TPageBuffer* line = Display.GetBuffer();
+            if (line) {
+                line->Clear();
+                if (n == 0) {
+                    TopMenu.Render(n, line, Focus == FOCUS_TOP_MENU);
+                }
+                else {
+                    Render(n, line);
+                }
+                Display.OutputBuffer(line, line->GetLength(), n, 0);
+            }
+            else {
+                Gui.UpdateLine(n); // Try again
+            }
+            break;
+        }
+
+        case KEY_DOWN:
+          if (Focus < FOCUS_LAST) Focus++;
+          Gui.UpdateAll();
+          break;
+
+        case KEY_UP:
+          if (Focus > FOCUS_TOP_MENU) Focus--;
+          Gui.UpdateAll();
+          break;
+
+        case KEY_OK:
+            switch (Focus) {
+            case FOCUS_TOP_MENU:
+                TopMenu.Event(event);
+                return;
+            case FOCUS_CHANNEL: {
+                TChannelSelectPopup popup;
+                int channel = popup.Show(CurrentChannel);
+                if (channel != -1) CurrentChannel = channel;
+                Gui.UpdateAll();
+                break;
+            }
+            case FOCUS_SCENE: {
+                //TSceneSelectPopup popup;
+                //popup.Show();
+                TChannelSelectPopup popup;
+                popup.Show(CurrentChannel);
+                Gui.UpdateAll();
+                break;
+            }
+            }
+            break;
+
+        case KEY_BACK:
+            switch (Focus) {
+            case FOCUS_TOP_MENU:
+                TopMenu.Event(event);
+                return;
+            }
+            break;
+        }
+    }
+}
+
 void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 {
   const int currentKnob = Controllers.GetActiveKnob();
@@ -16,7 +87,7 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     channel[2] = ' ';
     channel[3] = '\0';
     uint8_t pos = line->DrawText(channel, LeftMargin, Focus == FOCUS_CHANNEL);
-    line->DrawText(Controllers.GetScene().Name, pos, Focus == FOCUS_SET);
+    line->DrawText(Controllers.GetScene().Name, pos, Focus == FOCUS_SCENE);
   }
   else if (n == 2) {
     line->DrawText("clock ON  seq ON", LeftMargin);
@@ -69,57 +140,17 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   }
 }
 
-void TControllerPage::Event(TEvent event)
+void TChannelSelectPopup::GetMenuTitle(char text[MenuTextLen])
 {
-  Gui.UpdateAll();
-  switch (event) {
-  case RECEIVE_FOCUS:
-    Focus = FOCUS_CHANNEL;
-    break;
-  case KEY_DOWN:
-    if (Focus < FOCUS_LAST) Focus++;
-    break;
-  case KEY_UP:
-    Focus--;
-    if (Focus == 0) Gui.ChangeFocus(TGui::FOCUS_MENU);
-    break;
-  case KEY_OK:
-    Gui.DisplayPopup<TSelectPopup>();
-    break;
-  default:
-    break;
-  }
-}
-
-void TControllerPage::GetMenuTitle(char text[MenuTextLen])
-{
-  switch (Focus) {
-  case FOCUS_CHANNEL: {
     cheap_strcpy(text, "MIDI channel");
-  }
-  }
 }
 
-void TControllerPage::GetMenuItem(uint8_t n, char text[MenuTextLen])
+void TChannelSelectPopup::GetMenuItem(uint8_t n, char text[MenuTextLen])
 {
-  switch (Focus) {
-  case FOCUS_CHANNEL: {
     if (n > 15) return;
     const char* channel = "Channel \037";
     size_t i = cheap_strcpy(text, channel);
     text[i++] = ' ';
     text[i++] = '0' + n + 1;
     text[i++] = '\0';
-    break;
-  }
-  default:
-    cheap_strcpy(text, "blah.");
-    break;
-  }
-}
-
-void TControllerPage::MenuItemSelected(uint8_t n)
-{
-  CurrentChannel = n;
-  Gui.RemovePopup();
 }

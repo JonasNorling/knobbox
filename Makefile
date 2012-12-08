@@ -7,6 +7,7 @@ SRCS += TGui.cpp
 SRCS += TKnobs.cpp
 SRCS += TMemory.cpp
 SRCS += TPopup.cpp
+SRCS += TScheduler.cpp
 SRCS += TSequencer.cpp
 SRCS += TSeqPage.cpp
 SRCS += TSettingsPage.cpp
@@ -128,9 +129,9 @@ $(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS) $(LIBOPENCM3)/lib/stm32/f1/libopencm3_st
 # ARM test program rules
 
 $(BUILDDIR)/flashtest.elf: $(BUILDDIR)/flashtest/flashtest.o
-$(BUILDDIR)/tasktest.elf: $(BUILDDIR)/tasktest/tasktest.o
+$(BUILDDIR)/tasktest.elf: $(BUILDDIR)/tasktest/tasktest.o $(BUILDDIR)/TScheduler.o
 	@echo ARMLD $@
-	$(ARMLD) -o $@ $< $(ARM_LDFLAGS)
+	$(ARMLD) -o $@ $(BUILDDIR)/tasktest/tasktest.o $(BUILDDIR)/TScheduler.o $(ARM_LDFLAGS)
 
 # -------------------------------------
 # Host rules

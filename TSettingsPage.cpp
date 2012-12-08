@@ -13,36 +13,65 @@ void TSettingsPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
   }
 }
 
-void TSettingsPage::Event(TEvent event)
+void TSettingsPage::Show()
 {
-  switch (event_code(event)) {
-  case RECEIVE_FOCUS:
-    Focus = FOCUS_FLASHREAD;
     Gui.UpdateAll();
-    break;
-  case KEY_DOWN:
-    if (Focus < FOCUS_LAST) {
-      Focus++;
+
+    while (true) {
+        TEvent event = Gui.WaitForEvent();
+
+        if (event_code(event) == RENDER_LINE) {
+            const uint8_t n = event_value(event);
+            TDisplay::TPageBuffer* line = Display.GetBuffer();
+            if (line) {
+                line->Clear();
+                if (n == 0) {
+                    TopMenu.Render(n, line, Focus == FOCUS_TOP_MENU);
+                }
+                else {
+                    Render(n, line);
+                }
+                Display.OutputBuffer(line, line->GetLength(), n, 0);
+            }
+            else {
+                Gui.UpdateLine(n); // Try again
+            }
+            continue;
+        }
+
+        Gui.UpdateAll();
+
+        switch (event_code(event)) {
+        case KEY_DOWN:
+            if (Focus < FOCUS_LAST) Focus++;
+            break;
+
+        case KEY_UP:
+            if (Focus > FOCUS_TOP_MENU) Focus--;
+            break;
+
+        case KEY_OK:
+            switch (Focus) {
+            case FOCUS_TOP_MENU:
+                TopMenu.Event(event);
+                return;
+            case FOCUS_FLASHREAD:
+                FlashTester.RunRead();
+                break;
+            case FOCUS_FLASHWRITE:
+                FlashTester.RunWrite();
+                break;
+            }
+            break;
+
+        case KEY_BACK:
+            switch (Focus) {
+            case FOCUS_TOP_MENU:
+                TopMenu.Event(event);
+                return;
+            }
+            break;
+        }
     }
-    Gui.UpdateAll();
-    break;
-  case KEY_UP:
-    Focus--;
-    if (Focus == 0) {
-      Gui.ChangeFocus(TGui::FOCUS_MENU);
-    }
-    Gui.UpdateAll();
-    break;
-  case KEY_OK:
-    switch (Focus) {
-    case FOCUS_FLASHREAD:
-      FlashTester.RunRead();
-      break;
-    case FOCUS_FLASHWRITE:
-      FlashTester.RunWrite();
-      break;
-    }
-    break;
-  }
 }
 

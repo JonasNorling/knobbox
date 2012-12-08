@@ -62,7 +62,7 @@ static const TPin Pin_sw_4 =           {GPIOB, GPIO12};
 static const TPin Pin_led_b =          {GPIOC, GPIO15}; // N/C
 static const TPin Pin_led_g =          {GPIOC, GPIO14}; // N/C
 
-static const TPin Pin_vpullup =        {GPIOB, GPIO15}; // N/C
+static const TPin Pin_vpullup =        {GPIOB, GPIO15};
 
 void clockInit();
 void deviceInit();
@@ -81,3 +81,7 @@ enum TMode {
   MODE_LAST = MODE_SETTINGS
 };
 extern int Mode;
+
+#ifndef SCHEDULER_NUM_TASKS
+#define SCHEDULER_NUM_TASKS 2
+#endif

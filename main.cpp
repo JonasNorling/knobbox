@@ -9,6 +9,7 @@
 #include "TControllers.h"
 #include "TUsb.h"
 #include <new>
+#include "TScheduler.h"
 
 /**
  * \file main.cpp
@@ -60,6 +61,15 @@ TMemory Memory;
 TControllers Controllers;
 TUsb Usb;
 
+static void gui_task(void) __attribute__((noreturn));
+static uint8_t __attribute__((aligned(8))) gui_task_stack[312];
+TScheduler::TTaskControlBlock TScheduler::Tcbs[SCHEDULER_NUM_TASKS];
+uint8_t TScheduler::CurrentTask;
+const TScheduler::TTask TScheduler::Tasks[SCHEDULER_NUM_TASKS] = {
+		{ "main", 0, 0, 0 },
+		{ "gui", gui_task, gui_task_stack, sizeof(gui_task_stack) },
+};
+
 enum {
 	SPI_DMA_STATE_IDLE = 0,
 	SPI_DMA_STATE_RUNNING,
@@ -74,15 +84,21 @@ static const uint8_t ACTION_BLINK_TIMER = 0x02;
 
 /* Spinning fault handlers, so gdb tells us what we got. */
 
+#ifndef HOST
+#include "libopencm3/include/libopencm3/stm32/f1/scb.h"
 void hard_fault_handler(void)
 {
-	while (1) {
-		Pin_vpullup.Clear();
-		delay_ms(1000);
-		Pin_vpullup.Set();
-		delay_ms(1000);
-	}
+    const volatile __attribute__((unused)) uint32_t* cfsr = &SCB_CFSR;
+    const volatile __attribute__((unused)) uint32_t* hfsr = &SCB_HFSR;
+    const volatile __attribute__((unused)) uint32_t* bfar = &SCB_BFAR;
+    while (1) {
+        Pin_vpullup.Clear();
+        delay_ms(1000);
+        Pin_vpullup.Set();
+        delay_ms(1000);
+    }
 }
+#endif
 
 void mem_manage_handler(void)
 {
@@ -151,6 +167,11 @@ void tim2_isr(void)
 	Sequencer.Step();
 }
 
+static void gui_task(void)
+{
+	Gui.Show();
+}
+
 int main(void)
 {
 #ifndef HOST
@@ -173,7 +194,7 @@ int main(void)
 	rcc_peripheral_clear_reset(&RCC_APB2RSTR, resets2);
 	rcc_peripheral_clear_reset(&RCC_APB1RSTR, resets1);
 	DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
-  assert(!(USART_SR(USART1) & USART_SR_RXNE));
+	assert(!(USART_SR(USART1) & USART_SR_RXNE));
 #endif
 
 	/// \todo We should wake up in some kind of low power mode.
@@ -220,6 +241,9 @@ int main(void)
 	Knobs.InitDma();
 	Knobs.StartShifting();
 	Pin_shift_out_en.Clear(); // Turn on LED driver
+
+	TScheduler::Init();
+	TScheduler::Yield();
 
 	while (true) {
 		/* Interrupt "bottom half" processing */
@@ -274,8 +298,10 @@ int main(void)
 
 		Usb.Poll();
 
-		/* Update things */
-		Gui.Process();
+		/* Run GUI task */
+		if (Gui.EventIsPending() || Gui.HaveDirtyLines()) {
+		    TScheduler::Yield();
+		}
 
 #ifndef HOST
 		/* Sanity check */

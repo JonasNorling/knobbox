@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include "IDisplayPage.h"
+#include "TGui.h"
+#include "TPopup.h"
 
 /**
  * The user interface page that is displayed when the device is in
@@ -11,22 +13,28 @@
  * Status: Mostly a mockup. Moving around works, some knob updates
  * work.
  */
-class TControllerPage : public IDisplayPage
+class TControllerPage : public TDisplayPageBase
 {
 public:
-  enum TFocus { FOCUS_NONE, FOCUS_CHANNEL, FOCUS_SET,
-		FOCUS_LAST = FOCUS_SET };
+    enum TFocus { FOCUS_TOP_MENU, FOCUS_CHANNEL, FOCUS_SCENE,
+        FOCUS_LAST = FOCUS_SCENE };
 
-  TControllerPage() : CurrentChannel(7), Focus(FOCUS_CHANNEL) { }
-  void Render(uint8_t n, TDisplay::TPageBuffer* line);
-  void Event(TEvent event);
+    TControllerPage() : CurrentChannel(7), Focus(FOCUS_TOP_MENU) { }
 
-  void GetMenuTitle(char text[MenuTextLen]);
-  void GetMenuItem(uint8_t n, char text[MenuTextLen]);
-  void MenuItemSelected(uint8_t n);
+    void Show();
+    void Render(uint8_t n, TDisplay::TPageBuffer* line);
 
 private:
-  uint8_t CurrentChannel; ///< This shouldn't be here
+    TTopMenu TopMenu;
 
-  uint8_t Focus;
+    uint8_t CurrentChannel; ///< This shouldn't be here
+
+    uint8_t Focus;
+};
+
+class TChannelSelectPopup : public TSelectPopup
+{
+    //int Show(int selection); uses default from TSelectPopup
+    virtual void GetMenuTitle(char text[MenuTextLen]);
+    virtual void GetMenuItem(uint8_t n, char text[MenuTextLen]);
 };
