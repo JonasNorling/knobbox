@@ -108,6 +108,8 @@ public:
 #ifndef HOST
 		// Trigger PendSV
 		SCB_ICSR |= SCB_ICSR_PENDSVSET;
+		__asm__("nop");
+		__asm__("nop");
 #endif
 	}
 };

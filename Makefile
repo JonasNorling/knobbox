@@ -42,7 +42,7 @@ ARM_LDFLAGS += -lc -lnosys -nostartfiles -Wl,--gc-sections -lstdc++
 ARM_LDFLAGS += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
 ARM_LDFLAGS += -Tstm32f1.ld
 
-ARM_COMMONFLAGS += -I. -O1 -fno-common -g
+ARM_COMMONFLAGS += -I. -O1 -fno-common -g -fconserve-stack
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
 ARM_COMMONFLAGS += -Wall -Wextra
 ARM_COMMONFLAGS += -I$(LIBOPENCM3)/include/

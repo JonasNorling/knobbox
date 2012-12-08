@@ -62,7 +62,7 @@ TControllers Controllers;
 TUsb Usb;
 
 static void gui_task(void) __attribute__((noreturn));
-static uint8_t __attribute__((aligned(8))) gui_task_stack[312];
+static uint8_t __attribute__((aligned(8))) gui_task_stack[300];
 TScheduler::TTaskControlBlock TScheduler::Tcbs[SCHEDULER_NUM_TASKS];
 uint8_t TScheduler::CurrentTask;
 const TScheduler::TTask TScheduler::Tasks[SCHEDULER_NUM_TASKS] = {

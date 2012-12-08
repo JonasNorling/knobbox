@@ -41,7 +41,7 @@ void TDisplay::Init()
     buffer->Data[2] = DOGM_SEG_REVERSE;
     buffer->Data[3] = DOGM_POWER_CONTROL | 0x07;
     buffer->Data[4] = DOGM_SET_ELECTRONIC_VOLUME;
-    buffer->Data[5] = 28;
+    buffer->Data[5] = 20;
     buffer->Data[6] = DOGM_ENABLE_DISPLAY;
     buffer->Data[7] = DOGM_INVERSE_ON;
 

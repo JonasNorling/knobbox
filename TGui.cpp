@@ -112,7 +112,6 @@ TEvent TGui::WaitForEvent()
     }
 
     TScheduler::Yield();
-    Pin_midi_out.Toggle();
 
     event = PendingEvent;
     if (event == NO_EVENT) {
