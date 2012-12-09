@@ -385,7 +385,7 @@ bool TSetupMenuPopup::ItemSelected(uint8_t n)
 }
 
 TMemorySlotPopup::TMemorySlotPopup(const char* title) :
-                Title(title)
+                        Title(title)
 {
     // FIXME: Stack usage?
     Memory.FetchNames((TMemory::BlockSize * TMemory::BLOCK_FIRST_SEQ_SCENE + offsetof(TSequencerScene, Name)),

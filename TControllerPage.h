@@ -2,7 +2,7 @@
 #pragma once
 
 #include <cstdint>
-#include "IDisplayPage.h"
+#include "TDisplayPageBase.h"
 #include "TGui.h"
 #include "TPopup.h"
 

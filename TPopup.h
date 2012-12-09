@@ -2,7 +2,7 @@
 #pragma once
 
 #include "TMemory.h"
-#include "IDisplayPage.h"
+#include "TDisplayPageBase.h"
 
 class TPopup
 {

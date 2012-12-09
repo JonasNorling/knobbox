@@ -5,12 +5,12 @@
 
 void TSettingsPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 {
-  if (n == 1) {
-    line->DrawText("Start flash read", 0, Focus == FOCUS_FLASHREAD);
-  }
-  else if (n == 2) {
-    line->DrawText("Start flash write", 0, Focus == FOCUS_FLASHWRITE);
-  }
+    if (n == 1) {
+        line->DrawText("Start flash read", 0, Focus == FOCUS_FLASHREAD);
+    }
+    else if (n == 2) {
+        line->DrawText("Start flash write", 0, Focus == FOCUS_FLASHWRITE);
+    }
 }
 
 void TSettingsPage::Show()
@@ -64,13 +64,13 @@ void TSettingsPage::Show()
             }
             break;
 
-        case KEY_BACK:
-            switch (Focus) {
-            case FOCUS_TOP_MENU:
-                TopMenu.Event(event);
-                return;
-            }
-            break;
+            case KEY_BACK:
+                switch (Focus) {
+                case FOCUS_TOP_MENU:
+                    TopMenu.Event(event);
+                    return;
+                }
+                break;
         }
     }
 }
