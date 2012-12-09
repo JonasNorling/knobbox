@@ -77,6 +77,7 @@ public:
         MidiOutput(midiOutput),
         Tempo(120),
         Running(false),
+        CurrentScene(0),
         GlobalPosition({0, 0}),
         Position({ {0, 0}, {0, 0}, {0, 0}, {0, 0} }),
         LastPosition({ {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0} }),
@@ -101,19 +102,19 @@ public:
     void ChangeOffset(int step, int8_t v);
     void ChangeSteps(int8_t v);
     void ToggleEnable(int step);
+    void ToggleSceneEnable(int sceneno);
     void ChangeStepLength(int8_t v);
-    uint8_t GetStepLength() const { return Scenes[0].StepLength; }
+    uint8_t GetStepLength(uint8_t scene) const { return Scenes[scene].StepLength; }
 
     // These methods apply to all scenes
     uint8_t GetTempo() const { return Tempo; }
     void ChangeTempo(int8_t v);
     void ToggleRunning();
 
-    const TPosition& GetGlobalPosition() const
-    { return GlobalPosition; }
-
-    const TPosition& GetPosition(uint8_t scene) const
-    { return Position[scene]; }
+    const TPosition& GetGlobalPosition() const { return GlobalPosition; }
+    const TPosition& GetPosition(uint8_t scene) const { return Position[scene]; }
+    uint8_t GetCurrentScene() const { return CurrentScene; }
+    void SetCurrentScene(uint8_t s) { CurrentScene = s; UpdateKnobs(); }
 
     /// \todo Hide!
     TSequencerScene Scenes[SceneCount];
@@ -150,6 +151,7 @@ private:
     /// Tempo in BPM (quarter notes per second)
     uint8_t Tempo; ///< Maybe want more precision for tap tempo?
     bool Running;
+    uint8_t CurrentScene;
 
     TPosition GlobalPosition; ///< \todo Only need minor for MIDI beat
     TPosition Position[SceneCount];

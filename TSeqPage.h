@@ -11,7 +11,7 @@ class TSeqPage : public TDisplayPageBase
 public:
     enum TFocus {
         // Currently focused field
-        FOCUS_TOP_MENU, FOCUS_SETUPMENU, FOCUS_ACTIONMENU,
+        FOCUS_TOP_MENU, FOCUS_SCENE_MENU, FOCUS_SETUPMENU, FOCUS_ACTIONMENU,
         FOCUS_STEP, FOCUS_NOTE, FOCUS_ACTION,
         FOCUS_VELO, FOCUS_LEN, FOCUS_OFFSET, FOCUS_CC,
         FOCUS_TEMPO,
@@ -36,6 +36,7 @@ private:
     typedef bool (TSeqPage::*eventhandler_t) (TEvent);
     const static eventhandler_t EventHandler[FOCUS_LAST + 1];
 
+    bool EventHandlerScene(TEvent event);
     bool EventHandlerSetup(TEvent event);
     bool EventHandlerStep(TEvent event);
     bool EventHandlerVelo(TEvent event);

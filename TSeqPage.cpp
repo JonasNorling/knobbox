@@ -5,6 +5,7 @@
 
 const TSeqPage::eventhandler_t TSeqPage::EventHandler[FOCUS_LAST + 1] = {
         0,
+        &TSeqPage::EventHandlerScene,
         &TSeqPage::EventHandlerSetup,
         0,
         &TSeqPage::EventHandlerStep,
@@ -20,6 +21,7 @@ const TSeqPage::eventhandler_t TSeqPage::EventHandler[FOCUS_LAST + 1] = {
 void TSeqPage::Show()
 {
     Gui.UpdateAll();
+    Sequencer.UpdateKnobs();
 
     while (true) {
         TEvent event = Gui.WaitForEvent();
@@ -103,9 +105,34 @@ void TSeqPage::Show()
 void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 {
     uint8_t pos = LeftMargin;
+    const uint8_t sceneno = Sequencer.GetCurrentScene();
+
     if (n == 1) {
-        line->DrawText("\020S1\021S2 S3 S4 all", 0);
-        line->Invert(4*TDisplay::GlyphWidth, line->GetLength());
+        int pos = 3;
+        const int selected = Sequencer.GetCurrentScene();
+        int shadestart = 0;
+        int shadeend = 0;
+
+        for (int i = 0; i < 4; i++) {
+            if (i == selected) {
+                shadestart = pos;
+                pos = line->DrawText("\020", pos);
+            }
+            char str[5];
+            str[0] = '0' + i;
+            str[1] = Sequencer.Scenes[i].Flags & TSequencerScene::FLAG_ENABLED ? '\013' : '\014';
+            str[2] = '\0';
+            pos = line->DrawText(str, pos, i == selected && Focus == FOCUS_SCENE_MENU);
+            if (i == selected) {
+                pos = line->DrawText("\021", pos);
+                shadeend = pos;
+            } else {
+                pos = line->Advance(pos);
+            }
+        }
+
+        line->Invert(0, shadestart);
+        line->Invert(shadeend, line->GetLength());
     }
     else if (n == 2) {
         pos = line->DrawText("setup\022", pos, Focus == FOCUS_SETUPMENU);
@@ -119,7 +146,7 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
         pos = line->DrawText(text, pos, Focus == FOCUS_STEP && !Blink);
         pos = line->Advance(pos);
 
-        pos = line->DrawText(TSequencer::NoteName(Sequencer.Scenes[0].Data[CurrentStep].Note),
+        pos = line->DrawText(TSequencer::NoteName(Sequencer.Scenes[sceneno].Data[CurrentStep].Note),
                 pos, Focus == FOCUS_NOTE);
     }
     else if (n == 4) {
@@ -128,36 +155,57 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     else if (n == 5) {
         char text[9];
         cheap_strcpy(text, "velo xxx");
-        render_uint(text+5, Sequencer.Scenes[0].Data[CurrentStep].Velocity, 3);
+        render_uint(text+5, Sequencer.Scenes[sceneno].Data[CurrentStep].Velocity, 3);
         pos = line->DrawText(text, pos, Focus == FOCUS_VELO && !Blink);
         pos = line->Advance(pos);
 
         cheap_strcpy(text, "len    ");
-        render_note_time(text+4, Sequencer.Scenes[0].Data[CurrentStep].Len);
+        render_note_time(text+4, Sequencer.Scenes[sceneno].Data[CurrentStep].Len);
         pos = line->DrawText(text, pos, Focus == FOCUS_LEN && !Blink);
     }
     else if (n == 6) {
         char text[9];
         cheap_strcpy(text, "ofs     ");
-        render_signed_note_time(text+3, Sequencer.Scenes[0].Data[CurrentStep].Offset);
+        render_signed_note_time(text+3, Sequencer.Scenes[sceneno].Data[CurrentStep].Offset);
         pos = line->DrawText(text, pos, Focus == FOCUS_OFFSET && !Blink);
 
         pos = line->Advance(pos);
         pos = line->DrawText("CC 034", pos, Focus == FOCUS_CC && !Blink);
     }
     else if (n == 7) {
-        pos = line->DrawText(Sequencer.Scenes[0].Name, pos);
+        char text[12];
+        cheap_strcpy(text, "\033=xxx xx:xx");
+        render_uint(text+2, Sequencer.GetTempo(), 3);
+        render_uint(text+6, Sequencer.GetPosition(sceneno).Step, 2);
+        render_hexbyte(text+9, Sequencer.GetPosition(sceneno).Minor);
+        pos = line->DrawText(text, pos, Focus == FOCUS_TEMPO && !Blink);
         line->Invert(0, line->GetLength());
-        /*
-    char text[12];
-    cheap_strcpy(text, "\033=xxx xx:xx");
-    render_uint(text+2, Sequencer.GetTempo(), 3);
-    render_uint(text+6, Sequencer.GetPosition(0).Step, 2);
-    render_hexbyte(text+9, Sequencer.GetPosition(0).Minor);
-    pos = line->DrawText(text, pos, Focus == FOCUS_TEMPO && !Blink);
-    line->Invert(0, line->GetLength());
-         */
     }
+}
+
+bool TSeqPage::EventHandlerScene(TEvent event)
+{
+    switch (event_code(event)) {
+    case KNOB_PUSH:
+        Sequencer.ToggleSceneEnable(event_value(event));
+        return true;
+        break;
+
+    case KEY_OK:
+        if (Sequencer.GetCurrentScene() < TSequencer::SceneCount - 1) {
+            Sequencer.SetCurrentScene(Sequencer.GetCurrentScene() + 1);
+        }
+        return true;
+        break;
+
+    case KEY_BACK:
+        if (Sequencer.GetCurrentScene() > 0) {
+            Sequencer.SetCurrentScene(Sequencer.GetCurrentScene() - 1);
+        }
+        return true;
+        break;
+    }
+    return false;
 }
 
 bool TSeqPage::EventHandlerSetup(TEvent event)
@@ -178,7 +226,8 @@ bool TSeqPage::EventHandlerSetup(TEvent event)
                 slot = slotPopup.Show();
             }
             if (selection == 7 && slot != -1) { // LOAD...
-                Sequencer.LoadFromMemory(0, slot);
+                const uint8_t sceneno = Sequencer.GetCurrentScene();
+                Sequencer.LoadFromMemory(sceneno, slot);
             }
             else if (selection == 8 && slot != -1) { // STORE...
                 TNamePopup namePopup;
@@ -191,7 +240,8 @@ bool TSeqPage::EventHandlerSetup(TEvent event)
                     namePopup.SetName("no name");
                 }
                 if (namePopup.Show()) {
-                    Sequencer.StoreInMemory(0, slot);
+                    const uint8_t sceneno = Sequencer.GetCurrentScene();
+                    Sequencer.StoreInMemory(sceneno, slot);
                 }
             }
         }
@@ -306,10 +356,11 @@ void TSetupMenuPopup::GetMenuTitle(char text[MenuTextLen])
 
 void TSetupMenuPopup::GetMenuItem(uint8_t n, char text[MenuTextLen])
 {
+    const uint8_t sceneno = Sequencer.GetCurrentScene();
     switch (n) {
     case 0:
         cheap_strcpy(text, "STEPS: xx");
-        render_uint(text+7, Sequencer.Scenes[0].Steps, 2);
+        render_uint(text+7, Sequencer.Scenes[sceneno].Steps, 2);
         break;
     case 1:
         cheap_strcpy(text, "TEMPO: \033=xxx");
@@ -320,11 +371,11 @@ void TSetupMenuPopup::GetMenuItem(uint8_t n, char text[MenuTextLen])
         break;
     case 3:
         cheap_strcpy(text, "CHANNEL: \037xx");
-        render_uint(text+10, Sequencer.Scenes[0].Channel + 1, 2);
+        render_uint(text+10, Sequencer.Scenes[sceneno].Channel + 1, 2);
         break;
     case 4: {
         cheap_strcpy(text, "STEP: 1/xx   ");
-        int step = Sequencer.GetStepLength();
+        int step = Sequencer.GetStepLength(sceneno);
         render_uint(text+8, step, 2);
         switch (step) {
         case 1:  text[11] = '\035'; break;
@@ -358,6 +409,7 @@ void TSetupMenuPopup::GetMenuItem(uint8_t n, char text[MenuTextLen])
 
 void TSetupMenuPopup::ItemChanged(uint8_t n, int8_t value)
 {
+    const uint8_t sceneno = Sequencer.GetCurrentScene();
     switch (n) {
     case 0:
         Sequencer.ChangeSteps(value);
@@ -366,7 +418,7 @@ void TSetupMenuPopup::ItemChanged(uint8_t n, int8_t value)
         Sequencer.ChangeTempo(value);
         break;
     case 3:
-        Sequencer.Scenes[0].Channel = clamp(Sequencer.Scenes[0].Channel + value, 0, 15);
+        Sequencer.Scenes[sceneno].Channel = clamp(Sequencer.Scenes[sceneno].Channel + value, 0, 15);
         break;
     case 4:
         Sequencer.ChangeStepLength(value);
