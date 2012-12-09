@@ -30,6 +30,9 @@ void TKnobs::InitDma()
   DMA_CMAR(dma, rxchannel) = reinterpret_cast<uint32_t>(SwitchData); // memory addr
   DMA_CPAR(dma, txchannel) = reinterpret_cast<uint32_t>(&USART1_DR); // peripheral addr
   DMA_CMAR(dma, txchannel) = reinterpret_cast<uint32_t>(LedControl); // memory addr
+
+  usart_recv(USART1);
+  usart_recv(USART1);
 #endif
 }
 
@@ -53,12 +56,10 @@ void TKnobs::StartShifting()
 
   // LED driver: clock in the last sent data, always enable outputs.
   Pin_shift_out_load.Set();
-  __asm__("nop;");
   Pin_shift_out_load.Clear();
 
-  Pin_shift_in_en.Set();
+  // Knob input: sample encoder positions and push buttons
   Pin_shift_in_load.Clear();
-  Pin_shift_in_en.Clear();
   Pin_shift_in_load.Set();
 
   DMA_CCR(dma, rxchannel) = (DMA_CCR_PL_HIGH | // prio

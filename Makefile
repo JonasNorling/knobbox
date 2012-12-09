@@ -65,12 +65,13 @@ TEST_OBJS += $(TEST_SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 all: $(HOSTBUILDDIR) $(HOSTBUILDDIR)/$(PROJECT).elf
 all: $(BUILDDIR)/flashtest $(BUILDDIR)/flashtest.elf
 all: $(BUILDDIR)/tasktest $(BUILDDIR)/tasktest.elf
+all: $(BUILDDIR)/knobtest $(BUILDDIR)/knobtest.elf
 all: $(BUILDDIR) $(BUILDDIR)/$(PROJECT).bin $(BUILDDIR)/$(PROJECT).asm
 	@size $(BUILDDIR)/$(PROJECT).elf
 #	@$(ARMOBJDUMP) -t -j .bss -C $(BUILDDIR)/$(PROJECT).elf | \
 		awk '{n = strtonum("0x"$$5); if (n!=0) printf("%20s %5d bytes\n", $$6, n);}'
 
-$(BUILDDIR) $(HOSTBUILDDIR) $(BUILDDIR)/flashtest $(BUILDDIR)/tasktest:
+$(BUILDDIR) $(HOSTBUILDDIR) $(BUILDDIR)/flashtest $(BUILDDIR)/tasktest $(BUILDDIR)/knobtest:
 	mkdir $@ $@/tests
 
 liquid-2.0: external/liquid-2.0.tgz external/liquid.patch Makefile
@@ -129,9 +130,16 @@ $(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS) $(LIBOPENCM3)/lib/stm32/f1/libopencm3_st
 # ARM test program rules
 
 $(BUILDDIR)/flashtest.elf: $(BUILDDIR)/flashtest/flashtest.o
+	@echo ARMLD $@
+	$(ARMLD) -o $@ $^ $(ARM_LDFLAGS)
+
+$(BUILDDIR)/knobtest.elf: $(BUILDDIR)/knobtest/knobtest.o $(BUILDDIR)/stm32.o
+	@echo ARMLD $@
+	$(ARMLD) -o $@ $^ $(ARM_LDFLAGS)
+
 $(BUILDDIR)/tasktest.elf: $(BUILDDIR)/tasktest/tasktest.o $(BUILDDIR)/TScheduler.o
 	@echo ARMLD $@
-	$(ARMLD) -o $@ $(BUILDDIR)/tasktest/tasktest.o $(BUILDDIR)/TScheduler.o $(ARM_LDFLAGS)
+	$(ARMLD) -o $@ $^ $(ARM_LDFLAGS)
 
 # -------------------------------------
 # Host rules

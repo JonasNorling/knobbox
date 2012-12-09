@@ -133,9 +133,6 @@ void dma1_channel2_isr(void)
 /** DMA channel 1:5 -- USART1_RX (shift registers) */
 void dma1_channel5_isr(void)
 {
-#ifndef HOST
-	dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL5);
-#endif
 	/// \todo Once we get the latency in the main loop down, perhaps
 	/// this could be moved to a bottom-half?
 	Knobs.StartShifting();
@@ -174,11 +171,11 @@ static void gui_task(void)
 
 int main(void)
 {
+        clockInit();
+
 #ifndef HOST
 	// Reset some peripherals, this helps when reloading software
 	// without issuing a hard reset.
-	systick_interrupt_disable();
-	systick_counter_disable();
 	nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
 	nvic_disable_irq(NVIC_DMA1_CHANNEL3_IRQ);
 	nvic_disable_irq(NVIC_DMA1_CHANNEL4_IRQ);
@@ -194,11 +191,16 @@ int main(void)
 	rcc_peripheral_clear_reset(&RCC_APB2RSTR, resets2);
 	rcc_peripheral_clear_reset(&RCC_APB1RSTR, resets1);
 	DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
+
+	nvic_clear_pending_irq(NVIC_DMA1_CHANNEL2_IRQ);
+	nvic_clear_pending_irq(NVIC_DMA1_CHANNEL3_IRQ);
+	nvic_clear_pending_irq(NVIC_DMA1_CHANNEL4_IRQ);
+	nvic_clear_pending_irq(NVIC_DMA1_CHANNEL5_IRQ);
+
 	assert(!(USART_SR(USART1) & USART_SR_RXNE));
+	assert(!nvic_get_pending_irq(NVIC_DMA1_CHANNEL5_IRQ));
 #endif
 
-	/// \todo We should wake up in some kind of low power mode.
-	clockInit();
 	deviceInit();
 
 	Pin_vpullup.Clear();
@@ -210,8 +212,6 @@ int main(void)
 	Pin_shift_out_en.Set();
 	Pin_shift_in_en.Set();
 	Pin_shift_in_load.Set();
-
-	delay_ms(5);
 
 	// Use placement new to run the constructors of static objects,
 	// because libopencm3's crt0 and linker scripts aren't made for C++.
@@ -241,6 +241,7 @@ int main(void)
 	Knobs.InitDma();
 	Knobs.StartShifting();
 	Pin_shift_out_en.Clear(); // Turn on LED driver
+	Pin_shift_in_en.Clear();
 
 	TScheduler::Init();
 	TScheduler::Yield();
