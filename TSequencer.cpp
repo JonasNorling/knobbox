@@ -77,10 +77,17 @@ void TSequencer::LoadFromMemory(uint8_t /*scene*/, uint8_t patchno)
     Memory.FetchBlock(TMemory::BLOCK_FIRST_SEQ_SCENE + patchno, this);
 }
 
-void TSequencer::StoreInMemory(uint8_t /*scene*/, uint8_t patchno)
+void TSequencer::StoreInMemory(uint8_t scene, uint8_t patchno)
 {
-    ::memset(Memory.GetCachedBlock(), patchno, TMemory::BlockSize);
-    ::memcpy(Memory.GetCachedBlock(), &Scenes[0], sizeof(TSequencerScene));
+    ::memset(Memory.GetCachedBlock(), 0, TMemory::BlockSize);
+    ::memcpy(Memory.GetCachedBlock(), &Scenes[scene], sizeof(TSequencerScene));
+
+    TSequencerScene& sceneCopy(*reinterpret_cast<TSequencerScene*>(Memory.GetCachedBlock()));
+    for (int step = 0; step < SEQLEN; step++) {
+        TSequencerScene::TData& data = sceneCopy.Data[step];
+        data.Flags &= TSequencerScene::TData::FLAG_SAVE_MASK;
+    }
+
     Memory.WriteBlock(TMemory::BLOCK_FIRST_SEQ_SCENE + patchno, this);
 }
 
@@ -272,17 +279,22 @@ void TSequencer::DoNextEvent(int sceneno)
 
 void TSequencer::PlayEvent(int sceneno, const TEventSchedule::TEntry& event)
 {
-    const TSequencerScene& scene(Scenes[sceneno]);
-    const TSequencerScene::TData& data = scene.Data[event.Step];
+    TSequencerScene& scene(Scenes[sceneno]);
+    TSequencerScene::TData& data = scene.Data[event.Step];
 
     if (event.IsOn) {
+        if (data.Flags & TSequencerScene::TData::FLAG_SOUNDING) {
+            MidiOutput.SendEvent(TMidi::MIDI_NOTE_OFF | scene.Channel, data.Note, 0x40);
+        }
         MidiOutput.SendEvent(TMidi::MIDI_NOTE_ON | scene.Channel, data.Note, data.Velocity);
+        data.Flags |= TSequencerScene::TData::FLAG_SOUNDING;
         if (Mode == MODE_SEQ) {
             Knobs.LedIntensity[Knobs.COLOR_GREEN][event.Step] = 0x80;
         }
     }
     else {
         MidiOutput.SendEvent(TMidi::MIDI_NOTE_OFF | scene.Channel, data.Note, 0x40);
+        data.Flags &= ~TSequencerScene::TData::FLAG_SOUNDING;
         if (Mode == MODE_SEQ) {
             Knobs.LedIntensity[Knobs.COLOR_GREEN][event.Step] = 0;
         }
@@ -339,8 +351,21 @@ const char* TSequencer::NoteName(uint8_t n)
 
 void TSequencer::ChangeNote(int step, int8_t v)
 {
-    Scenes[0].Data[step].Note = clamp(Scenes[0].Data[step].Note + v,
+    TSequencerScene& scene(Scenes[0]);
+    TSequencerScene::TData& data = scene.Data[step];
+
+    // If note is sounding, kill it
+    if (data.Flags & TSequencerScene::TData::FLAG_SOUNDING) {
+        MidiOutput.SendEvent(TMidi::MIDI_NOTE_OFF | scene.Channel, data.Note, 0x40);
+    }
+
+    data.Note = clamp(Scenes[0].Data[step].Note + v,
             TMidi::MIDI_NOTE_MIN, TMidi::MIDI_NOTE_MAX);
+
+    // If note is sounding, play the new one
+    if (data.Flags & TSequencerScene::TData::FLAG_SOUNDING) {
+        MidiOutput.SendEvent(TMidi::MIDI_NOTE_ON | scene.Channel, data.Note, data.Velocity);
+    }
 }
 
 void TSequencer::ChangeVelocity(int step, int8_t v)
@@ -350,12 +375,14 @@ void TSequencer::ChangeVelocity(int step, int8_t v)
 
 void TSequencer::ChangeLength(int step, int8_t v)
 {
+    // FIXME: Kill sounding note if applicable
     Scenes[0].Data[step].Len = clamp(Scenes[0].Data[step].Len + v, 0, 240);
     CalculateSchedule(0);
 }
 
 void TSequencer::ChangeOffset(int step, int8_t v)
 {
+    // FIXME: Kill sounding note if applicable
     Scenes[0].Data[step].Offset = clamp(Scenes[0].Data[step].Offset + v, -120, 120);
     CalculateSchedule(0);
 }
@@ -368,14 +395,26 @@ void TSequencer::ChangeTempo(int8_t v)
 
 void TSequencer::ChangeSteps(int8_t v)
 {
+    // FIXME: Kill sounding note if applicable
     Scenes[0].Steps = clamp(Scenes[0].Steps + v, 1, 16);
     CalculateSchedule(0);
 }
 
 void TSequencer::ToggleEnable(int step)
 {
+    TSequencerScene& scene(Scenes[0]);
+    TSequencerScene::TData& data = scene.Data[step];
+
+    // If note is sounding, kill it
+    if (data.Flags & TSequencerScene::TData::FLAG_SOUNDING) {
+        MidiOutput.SendEvent(TMidi::MIDI_NOTE_OFF | scene.Channel, data.Note, 0x40);
+        data.Flags &= ~TSequencerScene::TData::FLAG_SOUNDING;
+        if (Mode == MODE_SEQ) {
+            Knobs.LedIntensity[Knobs.COLOR_GREEN][step] = 0;
+        }
+    }
+
     Scenes[0].Data[step].Flags = Scenes[0].Data[step].Flags ^ TSequencerScene::TData::FLAG_ON;
-    /// \todo Kill note and turn off LED if disabled while note is playing.
     CalculateSchedule(0);
     UpdateKnobs();
 }

@@ -92,7 +92,9 @@ struct TSequencerScene
   uint8_t Cc;
 
   struct TData {
-    static const uint32_t FLAG_ON = 0x01;
+    static const uint8_t FLAG_ON = 0x01;
+    static const uint8_t FLAG_SOUNDING = 0x02;
+    static const uint8_t FLAG_SAVE_MASK = FLAG_ON;
 
     uint8_t Flags;
     uint8_t Note;
