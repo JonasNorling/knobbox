@@ -12,6 +12,7 @@ SRCS += TSequencer.cpp
 SRCS += TSeqPage.cpp
 SRCS += TSettingsPage.cpp
 SRCS += TSpiDmaJob.cpp
+SRCS += TStartAnimation.cpp
 SRCS += TUsb.cpp
 ARM_C_SRCS += usbmidi.c
 ARM_SRCS += main.cpp

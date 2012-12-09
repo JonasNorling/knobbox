@@ -7,6 +7,7 @@
 #include "TControllers.h"
 #include "TSequencer.h"
 #include "TScheduler.h"
+#include "TStartAnimation.h"
 
 /*
 void TGui::DrawCharmap()
@@ -82,6 +83,10 @@ TGui::TGui() :
 
 void TGui::Show()
 {
+    {
+        TStartAnimation anim;
+        anim.Show();
+    }
     while (true) {
         switch (Mode) {
         case MODE_CONTROLLER: {
