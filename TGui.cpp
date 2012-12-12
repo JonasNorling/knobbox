@@ -95,8 +95,14 @@ void TGui::Show()
             break;
         }
         case MODE_SEQ: {
-            TSeqPage page;
-            page.Show();
+        	if (TSeqPage::LastSubpageWasOverview()) {
+        		TSeqOverviewPage page;
+        		page.Show();
+        	}
+        	else {
+        		TSeqPage page;
+        		page.Show();
+        	}
             break;
         }
         case MODE_SETTINGS: {

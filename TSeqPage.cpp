@@ -3,6 +3,8 @@
 #include "TGui.h"
 #include "utils.h"
 
+uint8_t TSeqPage::LastSubpage = 0;
+
 const TSeqPage::eventhandler_t TSeqPage::EventHandler[FOCUS_LAST + 1] = {
         0,
         &TSeqPage::EventHandlerScene,
@@ -109,12 +111,11 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 
     if (n == 1) {
         int pos = 3;
-        const int selected = Sequencer.GetCurrentScene();
         int shadestart = 0;
         int shadeend = 0;
 
         for (int i = 0; i < 4; i++) {
-            if (i == selected) {
+            if (i == sceneno) {
                 shadestart = pos;
                 pos = line->DrawText("\020", pos);
             }
@@ -122,14 +123,16 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
             str[0] = '0' + i;
             str[1] = Sequencer.Scenes[i].Flags & TSequencerScene::FLAG_ENABLED ? '\013' : '\014';
             str[2] = '\0';
-            pos = line->DrawText(str, pos, i == selected && Focus == FOCUS_SCENE_MENU);
-            if (i == selected) {
+            pos = line->DrawText(str, pos, i == sceneno && Focus == FOCUS_SCENE_MENU);
+            if (i == sceneno) {
                 pos = line->DrawText("\021", pos);
                 shadeend = pos;
             } else {
                 pos = line->Advance(pos);
             }
         }
+
+        pos = line->DrawText("all", pos);
 
         line->Invert(0, shadestart);
         line->Invert(shadeend, line->GetLength());
@@ -194,6 +197,7 @@ bool TSeqPage::EventHandlerScene(TEvent event)
     case KEY_OK:
         if (Sequencer.GetCurrentScene() < TSequencer::SceneCount - 1) {
             Sequencer.SetCurrentScene(Sequencer.GetCurrentScene() + 1);
+            LastSubpage = Sequencer.GetCurrentScene();
         }
         return true;
         break;
@@ -201,6 +205,7 @@ bool TSeqPage::EventHandlerScene(TEvent event)
     case KEY_BACK:
         if (Sequencer.GetCurrentScene() > 0) {
             Sequencer.SetCurrentScene(Sequencer.GetCurrentScene() - 1);
+            LastSubpage = Sequencer.GetCurrentScene();
         }
         return true;
         break;
@@ -348,6 +353,128 @@ bool TSeqPage::EventHandlerTempo(TEvent event)
     }
     return false;
 }
+
+/*
+ * ******************************************
+ */
+
+void TSeqOverviewPage::Show()
+{
+    Gui.UpdateAll();
+    Sequencer.UpdateKnobs();
+
+    while (true) {
+        TEvent event = Gui.WaitForEvent();
+
+        if (event_code(event) == RENDER_LINE) {
+            const uint8_t n = event_value(event);
+            TDisplay::TPageBuffer* line = Display.GetBuffer();
+            if (line) {
+                line->Clear();
+                if (n == 0) {
+                    TopMenu.Render(n, line, Focus == FOCUS_TOP_MENU);
+                }
+                else {
+                    Render(n, line);
+                }
+                Display.OutputBuffer(line, line->GetLength(), n, 0);
+            }
+            else {
+                Gui.UpdateLine(n); // Try again
+            }
+            continue;
+        }
+
+        Gui.UpdateAll();
+
+        switch (event_code(event)) {
+        case KEY_DOWN:
+            if (Focus < FOCUS_LAST) Focus++;
+            break;
+
+        case KEY_UP:
+            if (Focus > FOCUS_TOP_MENU) Focus--;
+            break;
+
+        case KEY_OK:
+            if (Focus == FOCUS_TOP_MENU) {
+                TopMenu.Event(event);
+                return;
+            }
+            break;
+
+        case KEY_BACK:
+            if (Focus == FOCUS_TOP_MENU) {
+                TopMenu.Event(event);
+                return;
+            }
+            Sequencer.ToggleRunning();
+            break;
+
+        case KNOB_RIGHT:
+            Sequencer.ChangeNote(event_value(event), 1);
+            break;
+
+        case KNOB_LEFT:
+            Sequencer.ChangeNote(event_value(event), -1);
+            break;
+
+        case KNOB_PUSH:
+            Sequencer.ToggleEnable(event_value(event));
+            break;
+        }
+    }
+}
+
+void TSeqOverviewPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
+{
+    uint8_t pos = LeftMargin;
+
+    if (n == 1) {
+        int pos = 3;
+        int shadestart = 0;
+        int shadeend = 0;
+
+        for (int i = 0; i < 4; i++) {
+            char str[5];
+            str[0] = '0' + i;
+            str[1] = Sequencer.Scenes[i].Flags & TSequencerScene::FLAG_ENABLED ? '\013' : '\014';
+            str[2] = ' ';
+            str[3] = '\0';
+            pos = line->DrawText(str, pos);
+        }
+
+        pos = line->DrawText("\020", pos);
+        shadestart = pos;
+        pos = line->DrawText("all", pos);
+        shadeend = pos;
+        pos = line->DrawText("\021", pos);
+
+        line->Invert(0, shadestart);
+        line->Invert(shadeend, line->GetLength());
+    }
+    else if (n == 2) {
+        pos = line->DrawText("oooooooooooooooo", pos, Focus == FOCUS_SCENE_1);
+    }
+    else if (n == 3) {
+    	pos = line->DrawText("oooooooooooooooo", pos, Focus == FOCUS_SCENE_2);
+    }
+    else if (n == 4) {
+    	pos = line->DrawText("oooooooooooooooo", pos, Focus == FOCUS_SCENE_3);
+    }
+    else if (n == 5) {
+    	pos = line->DrawText("oooooooooooooooo", pos, Focus == FOCUS_SCENE_4);
+    }
+    else if (n == 6) {
+    	pos = line->DrawText("rst", pos, Focus == FOCUS_RESET);
+    }
+    else if (n == 7) {
+    }
+}
+
+/*
+ * ******************************************
+ */
 
 void TSetupMenuPopup::GetMenuTitle(char text[MenuTextLen])
 {

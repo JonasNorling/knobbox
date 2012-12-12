@@ -22,6 +22,7 @@ public:
             Selected(false), Blink(false) { }
     void Show();
     void Render(uint8_t n, TDisplay::TPageBuffer* line);
+    static uint8_t LastSubpageWasOverview() { return LastSubpage == 4; }
 
 private:
     TTopMenu TopMenu;
@@ -30,6 +31,7 @@ private:
     uint8_t CurrentStep;
     bool Selected; /// Focused item is selected and blinking
     bool Blink;
+    static uint8_t LastSubpage;
 
     // Event handlers for the current focus, should return true if the
     // event was consumed.
@@ -43,6 +45,30 @@ private:
     bool EventHandlerLen(TEvent event);
     bool EventHandlerOffset(TEvent event);
     bool EventHandlerTempo(TEvent event);
+};
+
+class TSeqOverviewPage : public TDisplayPageBase
+{
+public:
+    enum TFocus {
+        // Currently focused field
+        FOCUS_TOP_MENU,
+        FOCUS_SCENE_1,
+        FOCUS_SCENE_2,
+        FOCUS_SCENE_3,
+        FOCUS_SCENE_4,
+        FOCUS_RESET,
+        FOCUS_LAST = FOCUS_RESET
+    };
+
+    TSeqOverviewPage() : Focus(FOCUS_TOP_MENU) { }
+    void Show();
+    void Render(uint8_t n, TDisplay::TPageBuffer* line);
+
+private:
+    TTopMenu TopMenu;
+
+    uint8_t Focus;
 };
 
 class TSetupMenuPopup : public TSettingsPopup
