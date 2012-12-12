@@ -25,6 +25,8 @@ public:
     static uint8_t LastSubpageWasOverview() { return LastSubpage == 4; }
 
 private:
+    friend class TSeqOverviewPage;
+
     TTopMenu TopMenu;
 
     uint8_t Focus;
@@ -53,6 +55,7 @@ public:
     enum TFocus {
         // Currently focused field
         FOCUS_TOP_MENU,
+        FOCUS_SCENE_MENU,
         FOCUS_SCENE_1,
         FOCUS_SCENE_2,
         FOCUS_SCENE_3,

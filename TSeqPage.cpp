@@ -51,6 +51,10 @@ void TSeqPage::Show()
 
         eventhandler_t fn = EventHandler[Focus];
         if (fn && (this->*fn)(event)) {
+            if (LastSubpage == TSequencer::SceneCount) {
+                // Let the caller show the overview page
+                return;
+            }
             continue;
         }
 
@@ -110,7 +114,7 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     const uint8_t sceneno = Sequencer.GetCurrentScene();
 
     if (n == 1) {
-        int pos = 3;
+        int pos = 0;
         int shadestart = 0;
         int shadeend = 0;
 
@@ -198,6 +202,9 @@ bool TSeqPage::EventHandlerScene(TEvent event)
         if (Sequencer.GetCurrentScene() < TSequencer::SceneCount - 1) {
             Sequencer.SetCurrentScene(Sequencer.GetCurrentScene() + 1);
             LastSubpage = Sequencer.GetCurrentScene();
+        } else {
+            // Overview page
+            LastSubpage = TSequencer::SceneCount;
         }
         return true;
         break;
@@ -390,10 +397,16 @@ void TSeqOverviewPage::Show()
         switch (event_code(event)) {
         case KEY_DOWN:
             if (Focus < FOCUS_LAST) Focus++;
+            if (Focus >= FOCUS_SCENE_1 && Focus <= FOCUS_SCENE_4) {
+                Sequencer.SetCurrentScene(Focus - FOCUS_SCENE_1);
+            }
             break;
 
         case KEY_UP:
             if (Focus > FOCUS_TOP_MENU) Focus--;
+            if (Focus >= FOCUS_SCENE_1 && Focus <= FOCUS_SCENE_4) {
+                Sequencer.SetCurrentScene(Focus - FOCUS_SCENE_1);
+            }
             break;
 
         case KEY_OK:
@@ -408,6 +421,10 @@ void TSeqOverviewPage::Show()
                 TopMenu.Event(event);
                 return;
             }
+            if (Focus == FOCUS_SCENE_MENU) {
+                TSeqPage::LastSubpage--;
+                return;
+            }
             Sequencer.ToggleRunning();
             break;
 
@@ -420,7 +437,12 @@ void TSeqOverviewPage::Show()
             break;
 
         case KNOB_PUSH:
-            Sequencer.ToggleEnable(event_value(event));
+            if (Focus == FOCUS_SCENE_MENU) {
+                Sequencer.ToggleSceneEnable(event_value(event));
+            }
+            else {
+                Sequencer.ToggleEnable(event_value(event));
+            }
             break;
         }
     }
@@ -431,7 +453,7 @@ void TSeqOverviewPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     uint8_t pos = LeftMargin;
 
     if (n == 1) {
-        int pos = 3;
+        int pos = 0;
         int shadestart = 0;
         int shadeend = 0;
 
@@ -444,31 +466,39 @@ void TSeqOverviewPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
             pos = line->DrawText(str, pos);
         }
 
-        pos = line->DrawText("\020", pos);
         shadestart = pos;
-        pos = line->DrawText("all", pos);
-        shadeend = pos;
+        pos = line->DrawText("\020", pos);
+        pos = line->DrawText("all", pos, Focus == FOCUS_SCENE_MENU);
         pos = line->DrawText("\021", pos);
+        shadeend = pos;
 
         line->Invert(0, shadestart);
         line->Invert(shadeend, line->GetLength());
     }
-    else if (n == 2) {
-        pos = line->DrawText("oooooooooooooooo", pos, Focus == FOCUS_SCENE_1);
-    }
-    else if (n == 3) {
-    	pos = line->DrawText("oooooooooooooooo", pos, Focus == FOCUS_SCENE_2);
-    }
-    else if (n == 4) {
-    	pos = line->DrawText("oooooooooooooooo", pos, Focus == FOCUS_SCENE_3);
-    }
-    else if (n == 5) {
-    	pos = line->DrawText("oooooooooooooooo", pos, Focus == FOCUS_SCENE_4);
+    else if (n >= 2 && n <= 5) {
+        const int scene = n - 2;
+        pos = 1;
+
+        for (int step = 0; step < Sequencer.Scenes[scene].Steps; step++) {
+            if ((step % 4) == 0 && step != 0) {
+                line->Data[pos] = 0x7e;
+                pos++;
+            }
+            if (Sequencer.Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON) {
+                pos = line->DrawText("o", pos);
+            }
+            else {
+                pos = line->DrawText("-", pos);
+            }
+        }
+        if (Focus == FOCUS_SCENE_1 + scene) {
+            line->Invert(0, line->GetLength());
+        }
     }
     else if (n == 6) {
-    	pos = line->DrawText("rst", pos, Focus == FOCUS_RESET);
     }
     else if (n == 7) {
+    	pos = line->DrawText("rst", pos, Focus == FOCUS_RESET);
     }
 }
 

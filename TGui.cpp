@@ -29,55 +29,55 @@ void TGui::DrawCharmap()
     }
   }
 }
-*/
+ */
 
 void TTopMenu::Render(uint8_t n __attribute__((unused)),
-		      TDisplay::TPageBuffer* line, bool haveFocus)
+        TDisplay::TPageBuffer* line, bool haveFocus)
 {
-  int pos = 3;
-  const int selected = Mode;
-  const char* strings[3] = {"CTRL", "SEQ", "SETUP"};
-  int shadestart = 0;
-  int shadeend = 0;
+    int pos = 3;
+    const int selected = Mode;
+    const char* strings[3] = {"CTRL", "SEQ", "SETUP"};
+    int shadestart = 0;
+    int shadeend = 0;
 
-  for (int i = 0; i < 3; i++) {
-    if (i == selected) {
-      shadestart = pos;
-      pos = line->DrawText("\020", pos);
+    for (int i = 0; i < 3; i++) {
+        if (i == selected) {
+            shadestart = pos;
+            pos = line->DrawText("\020", pos);
+        }
+        pos = line->DrawText(strings[i], pos, i == selected && haveFocus);
+        if (i == selected) {
+            pos = line->DrawText("\021", pos);
+            shadeend = pos;
+        } else {
+            pos = line->Advance(pos);
+        }
     }
-    pos = line->DrawText(strings[i], pos, i == selected && haveFocus);
-    if (i == selected) {
-      pos = line->DrawText("\021", pos);
-      shadeend = pos;
-    } else {
-      pos = line->Advance(pos);
-    }
-  }
 
-  line->Invert(0, shadestart);
-  line->Invert(shadeend, line->GetLength());
+    line->Invert(0, shadestart);
+    line->Invert(shadeend, line->GetLength());
 }
 
 void TTopMenu::Event(TEvent event)
 {
-  switch (event) {
-  case KEY_OK:
-    if (Mode != MODE_LAST) {
-      Mode++;
+    switch (event) {
+    case KEY_OK:
+        if (Mode != MODE_LAST) {
+            Mode++;
+        }
+        break;
+    case KEY_BACK:
+        if (Mode != MODE_FIRST) {
+            Mode--;
+        }
+        break;
     }
-    break;
-  case KEY_BACK:
-    if (Mode != MODE_FIRST) {
-      Mode--;
-    }
-    break;
-  }
 }
 
 
 TGui::TGui() :
-  DirtyLines(TBitmask::Init(Lines)),
-  PendingEvent(NO_EVENT)
+          DirtyLines(TBitmask::Init(Lines)),
+          PendingEvent(NO_EVENT)
 {
 }
 
@@ -95,14 +95,14 @@ void TGui::Show()
             break;
         }
         case MODE_SEQ: {
-        	if (TSeqPage::LastSubpageWasOverview()) {
-        		TSeqOverviewPage page;
-        		page.Show();
-        	}
-        	else {
-        		TSeqPage page;
-        		page.Show();
-        	}
+            if (TSeqPage::LastSubpageWasOverview()) {
+                TSeqOverviewPage page;
+                page.Show();
+            }
+            else {
+                TSeqPage page;
+                page.Show();
+            }
             break;
         }
         case MODE_SETTINGS: {
