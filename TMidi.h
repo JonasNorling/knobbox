@@ -18,92 +18,92 @@
 class TMidi : public IMidi
 {
 private:
-  static const int QueueLen = 32;
-  static const uint32_t USART = USART2;
+    static const int QueueLen = 32;
+    static const uint32_t USART = USART2;
 
 public:
-  static const uint8_t MIDI_NOTE_OFF = 0x80;
-  static const uint8_t MIDI_NOTE_ON = 0x90;
-  static const uint8_t MIDI_CC = 0xb0;
-  static const uint8_t MIDI_CLOCK_TICK = 0xf8;
-  static const uint8_t MIDI_NOTE_C0 = 12;
-  static const uint8_t MIDI_NOTE_MIN = MIDI_NOTE_C0;
-  static const uint8_t MIDI_NOTE_MAX = 127;
+    static const uint8_t MIDI_NOTE_OFF = 0x80;
+    static const uint8_t MIDI_NOTE_ON = 0x90;
+    static const uint8_t MIDI_CC = 0xb0;
+    static const uint8_t MIDI_CLOCK_TICK = 0xf8;
+    static const uint8_t MIDI_NOTE_C0 = 12;
+    static const uint8_t MIDI_NOTE_MIN = MIDI_NOTE_C0;
+    static const uint8_t MIDI_NOTE_MAX = 127;
 
-  TMidi() : SendTick(false)  { }
+    TMidi() : SendTick(false)  { }
 
 #ifdef HOST
-  void SetUartSend(std::function<void(uint32_t, uint8_t)> fn)
-  {
-    usart_send = fn;
-  }
+    void SetUartSend(std::function<void(uint32_t, uint8_t)> fn)
+    {
+        usart_send = fn;
+    }
 #endif
 
-  void SendClockTick()
-  {
-    SendTick = true;
-    EnableTxInterrupt();
-  }
-
-  void SendEvent(uint8_t type, uint8_t arg1, uint8_t arg2)
-  {
-    EnqueueByte(type);
-    EnqueueByte(arg1);
-    EnqueueByte(arg2);
-  }
-
-  bool EnqueueByte(uint8_t d)
-  {
-    // Disable the interrupt when modifying the queue
-    DisableTxInterrupt();
-    bool status = Queue.Add(d);
-    EnableTxInterrupt();
-    return status;
-  }
-
-  /// Called from ISR, in interrupt context.
-  void GotInterrupt()
-  {
-    DisableTxInterrupt();
-    if (SendTick) {
-      SendTick = false;
-      usart_send(USART, MIDI_CLOCK_TICK);
+    void SendClockTick()
+    {
+        SendTick = true;
+        EnableTxInterrupt();
     }
-    else {
-      usart_send(USART, Queue.First());
-      Queue.Remove();
+
+    void SendEvent(uint8_t type, uint8_t arg1, uint8_t arg2)
+    {
+        EnqueueByte(type);
+        EnqueueByte(arg1);
+        EnqueueByte(arg2);
     }
-    if (!Queue.Empty()) {
-      EnableTxInterrupt();
+
+    bool EnqueueByte(uint8_t d)
+    {
+        // Disable the interrupt when modifying the queue
+        DisableTxInterrupt();
+        bool status = Queue.Add(d);
+        EnableTxInterrupt();
+        return status;
     }
-  }
+
+    /// Called from ISR, in interrupt context.
+    void GotInterrupt()
+    {
+        DisableTxInterrupt();
+        if (SendTick) {
+            SendTick = false;
+            usart_send(USART, MIDI_CLOCK_TICK);
+        }
+        else {
+            usart_send(USART, Queue.First());
+            Queue.Remove();
+        }
+        if (!Queue.Empty()) {
+            EnableTxInterrupt();
+        }
+    }
 
 private:
 #ifndef HOST
-  void usart_send(uint32_t usart, uint8_t data)
-  {
-    USART_DR(usart) = (data & USART_DR_MASK);
-  }
+    void usart_send(uint32_t usart, uint8_t data)
+    {
+        USART_DR(usart) = (data & USART_DR_MASK);
+    }
 #else
-  std::function<void(uint32_t, uint8_t)> usart_send;
+    std::function<void(uint32_t, uint8_t)> usart_send;
 #endif
 
-  void EnableTxInterrupt()
-  {
+    void EnableTxInterrupt()
+    {
 #ifndef HOST
-    USART_CR1(USART) |= USART_CR1_TXEIE;
+        USART_CR1(USART) |= USART_CR1_TXEIE;
 #endif
-  }
+    }
 
-  void DisableTxInterrupt()
-  {
+    void DisableTxInterrupt()
+    {
 #ifndef HOST
-    USART_CR1(USART) &= ~USART_CR1_TXEIE;
+        USART_CR1(USART) &= ~USART_CR1_TXEIE;
 #endif
-  }
+    }
 
-  TCircularBuffer<uint8_t, 32> Queue;
-  volatile bool SendTick;
+    TCircularBuffer<uint8_t, 32> Queue;
+    volatile bool SendTick;
 };
 
 extern TMidi Midi;

@@ -10,22 +10,22 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  // Need to declare ISRs as extern "C" for the linker to find them:
-  void hard_fault_handler(void);
-  void mem_manage_handler(void);
-  void bus_fault_handler(void);
-  void usage_fault_handler(void);
-  void pend_sv_handler(void);
-  void dma1_channel1_isr(void);
-  void dma1_channel2_isr(void); // SPI1_RX
-  void dma1_channel3_isr(void); // SPI1_TX
-  void dma1_channel4_isr(void); // USART1_TX
-  void dma1_channel5_isr(void); // USART1_RX
-  void dma1_channel6_isr(void); // USART2_RX
-  void dma1_channel7_isr(void); // USART2_TX
-  void usart2_isr(void);
-  void sys_tick_handler(void);
-  void tim2_isr(void);
+    // Need to declare ISRs as extern "C" for the linker to find them:
+    void hard_fault_handler(void);
+    void mem_manage_handler(void);
+    void bus_fault_handler(void);
+    void usage_fault_handler(void);
+    void pend_sv_handler(void);
+    void dma1_channel1_isr(void);
+    void dma1_channel2_isr(void); // SPI1_RX
+    void dma1_channel3_isr(void); // SPI1_TX
+    void dma1_channel4_isr(void); // USART1_TX
+    void dma1_channel5_isr(void); // USART1_RX
+    void dma1_channel6_isr(void); // USART2_RX
+    void dma1_channel7_isr(void); // USART2_TX
+    void usart2_isr(void);
+    void sys_tick_handler(void);
+    void tim2_isr(void);
 #ifdef __cplusplus
 }
 #endif
@@ -68,17 +68,17 @@ void clockInit();
 void deviceInit();
 
 static inline void delay_ms(unsigned n) {
-  for (unsigned i=0; i < n*10000; i++) __asm__("nop");
+    for (unsigned i=0; i < n*10000; i++) __asm__("nop");
 }
 
 enum TMode {
-  MODE_FIRST = 0,
+    MODE_FIRST = 0,
 
-  MODE_CONTROLLER = 0,
-  MODE_SEQ = 1,
-  MODE_SETTINGS = 2,
+    MODE_CONTROLLER = 0,
+    MODE_SEQ = 1,
+    MODE_SETTINGS = 2,
 
-  MODE_LAST = MODE_SETTINGS
+    MODE_LAST = MODE_SETTINGS
 };
 extern int Mode;
 
