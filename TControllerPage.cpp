@@ -7,6 +7,7 @@
 void TControllerPage::Show()
 {
     Gui.UpdateAll();
+    Controllers.UpdateKnobs();
 
     while (true) {
         TEvent event = Gui.WaitForEvent();

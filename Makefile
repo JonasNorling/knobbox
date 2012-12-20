@@ -181,7 +181,7 @@ doc: $(SRCS) $(ARM_SRCS) $(HOST_SRCS) doc/Doxyfile
 -include $(HOSTBUILDDIR)/*.d
 
 clean:
-	rm -rf $(BUILDDIR) libopencm3-$(LIBOPENCM3_V)
+	rm -rf $(BUILDDIR) $(HOSTBUILDDIR) libopencm3-$(LIBOPENCM3_V)
 	rm -rf liquid-2.0 libopencm3
 
 .PHONY: clean all tests doc

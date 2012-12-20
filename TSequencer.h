@@ -168,6 +168,8 @@ private:
     }
     void DoNextEvent(int sceneno);
     void PlayEvent(int sceneno, const TEventSchedule::TEntry& event);
+    void NoteOff(TSequencerScene& scene, uint8_t step);
+    void NoteOn(TSequencerScene& scene, uint8_t step);
 };
 
 extern TSequencer Sequencer;

@@ -38,7 +38,7 @@ void TStartAnimation::Show()
 
                 for (int knob = 0; knob < TKnobs::Knobs; knob++) {
                   Knobs.LedIntensity[Knobs.COLOR_RED][knob] = (State >> 6) >= knob ? 0xff : 0;
-                  Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = State / 8;
+                  Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = 256 - State;
                 }
             }
             break;
