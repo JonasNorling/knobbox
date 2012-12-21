@@ -246,6 +246,8 @@ int main(void)
     TScheduler::Init();
     TScheduler::Yield();
 
+    Midi.EnableRxInterrupt();
+
     while (true) {
         /* Interrupt "bottom half" processing */
 #ifndef HOST
@@ -297,7 +299,15 @@ int main(void)
             Gui.Event(BLINK_TIMER);
         }
 
+        /* Poll I/O */
         Usb.Poll();
+        if (!Midi.InQueue.Empty()) {
+            uint8_t b = Midi.InQueue.First();
+            Midi.InQueue.Remove();
+
+            // Feed through MIDI data
+            Midi.EnqueueByte(b);
+        }
 
         /* Run GUI task */
         if (Gui.EventIsPending() || Gui.HaveDirtyLines()) {

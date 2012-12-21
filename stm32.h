@@ -21,6 +21,16 @@ extern "C" {
 }
 #endif
 
+static inline void critical_section()
+{
+    __asm__("MSR FAULTMASK, %0" : : "r"(1));
+}
+
+static inline void end_critical_section()
+{
+    __asm__("MSR FAULTMASK, %0" : : "r"(0));
+}
+
 /**
  * GPIO pin abstraction. Everything should be inlined, so calls are
  * faster than to libopencm3.

@@ -1,6 +1,8 @@
 /* -*- c++ -*- */
 #pragma once
 
+#include <cstdint>
+
 class IMidi
 {
 public:

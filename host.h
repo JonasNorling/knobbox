@@ -29,6 +29,14 @@
 #define USART1 1
 #define USART2 2
 
+static inline void critical_section()
+{
+}
+
+static inline void end_critical_section()
+{
+}
+
 class TPin {
 public:
   uint32_t Port;

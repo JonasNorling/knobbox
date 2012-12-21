@@ -6,6 +6,7 @@ SRCS += TFlashTest.cpp
 SRCS += TGui.cpp
 SRCS += TKnobs.cpp
 SRCS += TMemory.cpp
+SRCS += TMidi.cpp
 SRCS += TPopup.cpp
 SRCS += TScheduler.cpp
 SRCS += TSequencer.cpp

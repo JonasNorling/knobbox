@@ -11,9 +11,9 @@
 /**
  * Enqueue MIDI data and send it off. A queue is implemented and clock
  * ticks are sent immediately (they can interrupt ongoing commands
- * without messing up the signalling).
+ * without messing up the signaling).
  *
- * Status: Not tested with real device. MIDI IN not implemented.
+ * Status: Works.
  */
 class TMidi : public IMidi
 {
@@ -30,7 +30,16 @@ public:
     static const uint8_t MIDI_NOTE_MIN = MIDI_NOTE_C0;
     static const uint8_t MIDI_NOTE_MAX = 127;
 
-    TMidi() : SendTick(false)  { }
+    TCircularBuffer<uint8_t, 4> InQueue;
+
+    TMidi() : SendTick(false) { }
+
+    void EnableRxInterrupt()
+    {
+#ifndef HOST
+        USART_CR1(USART) |= USART_CR1_RXNEIE;
+#endif
+    }
 
 #ifdef HOST
     void SetUartSend(std::function<void(uint32_t, uint8_t)> fn)
@@ -45,36 +54,37 @@ public:
         EnableTxInterrupt();
     }
 
-    void SendEvent(uint8_t type, uint8_t arg1, uint8_t arg2)
-    {
-        EnqueueByte(type);
-        EnqueueByte(arg1);
-        EnqueueByte(arg2);
-    }
-
-    bool EnqueueByte(uint8_t d)
-    {
-        // Disable the interrupt when modifying the queue
-        DisableTxInterrupt();
-        bool status = Queue.Add(d);
-        EnableTxInterrupt();
-        return status;
-    }
+    void SendEvent(uint8_t type, uint8_t arg1, uint8_t arg2);
+    bool EnqueueByte(uint8_t d);
 
     /// Called from ISR, in interrupt context.
     void GotInterrupt()
     {
-        DisableTxInterrupt();
-        if (SendTick) {
-            SendTick = false;
-            usart_send(USART, MIDI_CLOCK_TICK);
+#ifndef HOST
+        if ((USART_CR1(USART) & USART_CR1_TXEIE) && (USART_SR(USART) & USART_SR_TXE)) {
+#else
+        if (true) {
+#endif
+            // We got here because there is space in the TX register
+            DisableTxInterrupt();
+            if (SendTick) {
+                SendTick = false;
+                usart_send(USART, MIDI_CLOCK_TICK);
+            }
+            else {
+                usart_send(USART, OutQueue.First());
+                OutQueue.Remove();
+            }
+            if (!OutQueue.Empty()) {
+                EnableTxInterrupt();
+            }
         }
-        else {
-            usart_send(USART, Queue.First());
-            Queue.Remove();
-        }
-        if (!Queue.Empty()) {
-            EnableTxInterrupt();
+#ifndef HOST
+        if ((USART_CR1(USART) & USART_CR1_RXNEIE) && (USART_SR(USART) & USART_SR_RXNE)) {
+#else
+        if (false) {
+#endif
+            InQueue.Add(usart_receive(USART));
         }
     }
 
@@ -84,8 +94,14 @@ private:
     {
         USART_DR(usart) = (data & USART_DR_MASK);
     }
+
+    uint8_t usart_receive(uint32_t usart)
+    {
+        return USART_DR(usart) & 0xff;
+    }
 #else
     std::function<void(uint32_t, uint8_t)> usart_send;
+    std::function<uint8_t(uint32_t)> usart_receive;
 #endif
 
     void EnableTxInterrupt()
@@ -102,7 +118,7 @@ private:
 #endif
     }
 
-    TCircularBuffer<uint8_t, 32> Queue;
+    TCircularBuffer<uint8_t, 32> OutQueue;
     volatile bool SendTick;
 };
 
