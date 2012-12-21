@@ -7,6 +7,7 @@ SRCS += TGui.cpp
 SRCS += TKnobs.cpp
 SRCS += TMemory.cpp
 SRCS += TMidi.cpp
+SRCS += TMidiParser.cpp
 SRCS += TPopup.cpp
 SRCS += TScheduler.cpp
 SRCS += TSequencer.cpp

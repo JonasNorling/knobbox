@@ -16,9 +16,9 @@ bool TMidi::EnqueueByte(uint8_t d)
     return status;
 }
 
-void TMidi::SendEvent(uint8_t type, uint8_t arg1, uint8_t arg2)
+void TMidi::SendEvent(const TMidiEvent& event)
 {
-    EnqueueByte(type);
-    EnqueueByte(arg1);
-    EnqueueByte(arg2);
+    EnqueueByte(event.Data[0]);
+    EnqueueByte(event.Data[1]);
+    EnqueueByte(event.Data[2]);
 }

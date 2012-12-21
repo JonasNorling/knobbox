@@ -43,73 +43,73 @@
 class TScheduler
 {
 private:
-	/**
-	 * Constant information about the system's tasks.
-	 */
-	struct TTask
-	{
-		const char* Name;
-		void (*EntryPoint)(void);
-		void* Stack; //< Pointer to stack memory, or 0 if it uses the main stack with MSP.
-		int StackSize;
-	};
+    /**
+     * Constant information about the system's tasks.
+     */
+    struct TTask
+    {
+        const char* Name;
+        void (*EntryPoint)(void);
+        void* Stack; //< Pointer to stack memory, or 0 if it uses the main stack with MSP.
+        int StackSize;
+    };
 
-	/**
-	 * Current state of a task
-	 */
-	struct TTaskControlBlock
-	{
-		void* StackPointer;
-	};
+    /**
+     * Current state of a task
+     */
+    struct TTaskControlBlock
+    {
+        void* StackPointer;
+    };
 
-	/**
-	 * Registers pushed on stack by NVIC (hardware)
-	 */
-	struct TNvicFrame
-	{
-		uint32_t R0;
-		uint32_t R1;
-		uint32_t R2;
-		uint32_t R3;
-		uint32_t R12;
-		void* Lr;
-		void* Pc;
-		uint32_t Psr;
-	};
+    /**
+     * Registers pushed on stack by NVIC (hardware)
+     */
+    struct TNvicFrame
+    {
+        uint32_t R0;
+        uint32_t R1;
+        uint32_t R2;
+        uint32_t R3;
+        uint32_t R12;
+        void* Lr;
+        void* Pc;
+        uint32_t Psr;
+    };
 
-	struct TSoftwareFrame
-	{
-		uint32_t Registers[8];
-	};
+    struct TSoftwareFrame
+    {
+        uint32_t Registers[8];
+    };
 
-	static uint8_t CurrentTask;
-	static TTaskControlBlock Tcbs[SCHEDULER_NUM_TASKS];
-	static const TTask Tasks[SCHEDULER_NUM_TASKS];
-        static const uint8_t StackFill = 0xa5;
+    static uint8_t CurrentTask;
+    static TTaskControlBlock Tcbs[SCHEDULER_NUM_TASKS];
+    static const TTask Tasks[SCHEDULER_NUM_TASKS];
+    static const uint8_t StackFill = 0xa5;
 
 public:
-	friend void pend_sv_handler(void);
+    friend void pend_sv_handler(void);
 
-	static void ReturnFromTask()
-	{
-		while (true);
-	}
+    static void ReturnFromTask()
+    {
+        while (true);
+    }
 
-	/**
-	 * Initialize the scheduler data structures. All tasks with stacks have
-	 * their stacks cleared and their stack pointers initialized.
-	 * Task number 0 is marked as currently executing.
-	 */
-	static void Init();
-	static void Switch();
+    /**
+     * Initialize the scheduler data structures. All tasks with stacks have
+     * their stacks cleared and their stack pointers initialized.
+     * Task number 0 is marked as currently executing.
+     */
+    static void Init();
+    static void Switch();
 
-	static inline void Yield()
-	{
+    static inline void Yield()
+    {
 #ifndef HOST
-		// Trigger PendSV
-		SCB_ICSR |= SCB_ICSR_PENDSVSET;
-		__asm__("nop");
-		__asm__("nop");
+        // Trigger PendSV
+        SCB_ICSR |= SCB_ICSR_PENDSVSET;
+        __asm__("nop");
+        __asm__("nop");
 #endif
-	}
+    }
 };

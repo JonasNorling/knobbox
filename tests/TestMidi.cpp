@@ -1,4 +1,5 @@
 #include "TMidi.h"
+#include "TMidiParser.h"
 #include <vector>
 
 static std::vector<uint8_t> data;
@@ -46,4 +47,44 @@ int TestMidi()
   test_assert(data[7] == 7);
 
   return 0;
+}
+
+int TestMidiParser()
+{
+    TMidiParser p;
+    test_assert(p.Feed(0x90) == false);
+    test_assert(p.Feed(0x45) == false);
+    test_assert(p.Feed(0x40) == true);
+
+    TMidiEvent e = p.GetEvent();
+    test_assert(e.Data[0] == 0x90);
+    test_assert(e.GetType() == TMidiEvent::MIDI_NOTE_ON);
+    test_assert(e.GetNote() == 0x45);
+    test_assert(e.GetVelocity() == 0x40);
+
+
+    test_assert(p.Feed(0x80) == false);
+    test_assert(p.Feed(0x43) == false);
+    test_assert(p.Feed(0x00) == true);
+
+    e = p.GetEvent();
+    test_assert(e.Data[0] == 0x80);
+    test_assert(e.GetType() == TMidiEvent::MIDI_NOTE_OFF);
+    test_assert(e.GetNote() == 0x43);
+    test_assert(e.GetVelocity() == 0x00);
+
+
+    test_assert(p.Feed(0xb3) == false);
+    test_assert(p.Feed(0xf8) == false);
+    test_assert(p.Feed(  13) == false);
+    test_assert(p.Feed(0xf8) == false);
+    test_assert(p.Feed(  42) == true);
+
+    e = p.GetEvent();
+    test_assert(e.Data[0] == 0xb3);
+    test_assert(e.GetType() == TMidiEvent::MIDI_CC);
+    test_assert(e.GetChannel() == 3);
+    test_assert(e.GetCC() == 13);
+    test_assert(e.GetValue() == 42);
+    return 0;
 }

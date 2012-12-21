@@ -58,19 +58,14 @@ int TestPosition()
 class TMidiBuffer : public IMidi
 {
 public:
-  struct TEvent {
-    uint8_t Data[3];
-  };
-
   int Ticks;
-  std::list<TEvent> Events;
+  std::list<TMidiEvent> Events;
 
   TMidiBuffer() : Ticks(0) {}
   void SendClockTick() {
     Ticks++;
   }
-  void SendEvent(uint8_t type, uint8_t arg1, uint8_t arg2) {
-    TEvent event = {{type, arg1, arg2}};
+  void SendEvent(const TMidiEvent& event) {
     Events.push_back(event);
   }
 };
@@ -92,7 +87,7 @@ int TestSequence()
 
   s.CalculateSchedule(0);
 
-  test_assert(s.GetStepLength() == 4);
+  test_assert(s.GetStepLength(0) == 4);
 
   // 48 TicksPerBeat, 24 MidiTicksPerBeat
   s.Start();

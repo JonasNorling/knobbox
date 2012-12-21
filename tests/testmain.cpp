@@ -11,6 +11,14 @@
 #include "TMidi.h"
 #include "TMemory.h"
 #include "TControllers.h"
+#include "TScheduler.h"
+
+TScheduler::TTaskControlBlock TScheduler::Tcbs[SCHEDULER_NUM_TASKS];
+uint8_t TScheduler::CurrentTask;
+const TScheduler::TTask TScheduler::Tasks[SCHEDULER_NUM_TASKS] = {
+        { "main", 0, 0, 0 },
+        { "gui", 0, 0, 0 },
+};
 
 int Mode;
 TDisplay Display;
@@ -20,7 +28,7 @@ TKnobs Knobs;
 TMidi Midi;
 TSequencer Sequencer(Midi);
 TMemory Memory;
-TControllers Controllers;
+TControllers Controllers(Midi);
 
 void dma1_channel2_isr()
 {
@@ -43,6 +51,7 @@ int main(int, char**)
   int failures = 0;
   failures += TestCircularBuffer();
   failures += TestMidi();
+  failures += TestMidiParser();
   failures += TestSequencer();
 
   if (failures == 0) {

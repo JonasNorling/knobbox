@@ -320,7 +320,7 @@ const char* TSequencer::NoteName(uint8_t n)
 {
     static char name[4];
 
-    if (n < TMidi::MIDI_NOTE_MIN || n > TMidi::MIDI_NOTE_MAX) {
+    if (n < TMidiEvent::MIDI_NOTE_MIN || n > TMidiEvent::MIDI_NOTE_MAX) {
         name[0] = 'X';
         name[1] = '\0';
         return name;
@@ -331,8 +331,8 @@ const char* TSequencer::NoteName(uint8_t n)
             "C", "C#", "D", "Eb", "E", "F",
             "F#", "G", "G#", "A", "Bb", "B" };
 
-    int octave = (n - TMidi::MIDI_NOTE_C0) / notes_per_octave;
-    const char* notename = names[(n - TMidi::MIDI_NOTE_C0) % notes_per_octave];
+    int octave = (n - TMidiEvent::MIDI_NOTE_C0) / notes_per_octave;
+    const char* notename = names[(n - TMidiEvent::MIDI_NOTE_C0) % notes_per_octave];
 
     size_t pos = cheap_strcpy(name, notename);
     render_uint(&name[pos], octave, 1);
@@ -352,7 +352,7 @@ void TSequencer::ChangeNote(int step, int8_t v)
         NoteOff(scene, step);
     }
 
-    data.Note = clamp(data.Note + v, TMidi::MIDI_NOTE_MIN, TMidi::MIDI_NOTE_MAX);
+    data.Note = clamp(data.Note + v, TMidiEvent::MIDI_NOTE_MIN, TMidiEvent::MIDI_NOTE_MAX);
 
     // If note is sounding, play the new one
     if (sounding) {
@@ -436,14 +436,16 @@ void TSequencer::ChangeStepLength(int8_t v)
 void TSequencer::NoteOff(TSequencerScene& scene, uint8_t step)
 {
     TSequencerScene::TData& data = scene.Data[step];
-    MidiOutput.SendEvent(TMidi::MIDI_NOTE_OFF | scene.Channel, data.Note, 0x40);
+    TMidiEvent event = {{ (uint8_t)(TMidiEvent::MIDI_NOTE_OFF | scene.Channel), data.Note, 0x40 }};
+    MidiOutput.SendEvent(event);
     data.Flags &= ~TSequencerScene::TData::FLAG_SOUNDING;
 }
 
 void TSequencer::NoteOn(TSequencerScene& scene, uint8_t step)
 {
     TSequencerScene::TData& data = scene.Data[step];
-    MidiOutput.SendEvent(TMidi::MIDI_NOTE_ON | scene.Channel, data.Note, data.Velocity);
+    TMidiEvent event = {{ (uint8_t)(TMidiEvent::MIDI_NOTE_ON | scene.Channel), data.Note, data.Velocity }};
+    MidiOutput.SendEvent(event);
     data.Flags |= TSequencerScene::TData::FLAG_SOUNDING;
 }
 

@@ -5,6 +5,7 @@
 #include "TKnobs.h"
 #include "TSequencer.h"
 #include "TMidi.h"
+#include "TMidiParser.h"
 #include "TMemory.h"
 #include "TControllers.h"
 #include "TUsb.h"
@@ -56,9 +57,10 @@ TSpiDmaQueue SpiDmaQueue;
 TGui Gui;
 TKnobs Knobs;
 TMidi Midi;
+TMidiParser MidiParser;
 TSequencer Sequencer(Midi);
 TMemory Memory;
-TControllers Controllers;
+TControllers Controllers(Midi);
 TUsb Usb;
 
 static void gui_task(void) __attribute__((noreturn));
@@ -221,9 +223,10 @@ int main(void)
     new(&Gui) TGui();
     new(&Knobs) TKnobs();
     new(&Midi) TMidi();
+    new(&MidiParser) TMidiParser();
     new(&Sequencer) TSequencer(Midi);
     new(&Memory) TMemory();
-    new(&Controllers) TControllers();
+    new(&Controllers) TControllers(Midi);
     new(&Usb) TUsb();
 
     //Memory.FetchBlock(TMemory::BLOCK_PRODPARAM, 0);
@@ -307,6 +310,12 @@ int main(void)
 
             // Feed through MIDI data
             Midi.EnqueueByte(b);
+
+            if (MidiParser.Feed(b)) {
+                if (Mode == MODE_CONTROLLER) {
+                    Controllers.MidiEvent(MidiParser.GetEvent());
+                }
+            }
         }
 
         /* Run GUI task */

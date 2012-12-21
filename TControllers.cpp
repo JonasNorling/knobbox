@@ -43,3 +43,16 @@ void TControllers::Load()
     SetValue(i, 0);
   }
 }
+
+void TControllers::MidiEvent(const TMidiEvent& event)
+{
+    if (event.GetType() == TMidiEvent::MIDI_CC) {
+        // Find a matching knob to twist
+        for (int i = 0; i < KNOBS; i++) {
+            if (Scene.Knobs[i].Channel == event.GetChannel() &&
+                    Scene.Knobs[i].Param == event.GetCC()) {
+                SetValue(i, event.GetValue());
+            }
+        }
+    }
+}
