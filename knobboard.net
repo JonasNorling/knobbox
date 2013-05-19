@@ -1,5 +1,8 @@
-# EESchema Netlist Version 1.1 created  Wed 08 May 2013 08:54:29 PM CEST
+# EESchema Netlist Version 1.1 created  Sun 19 May 2013 11:54:08 AM CEST
 (
+ ( /51988EC0 $noname  TP11 TST {Lib=TST}
+  (    1 /encoders/SHIFT_CLK )
+ )
  ( /4F90F9F5 $noname  H10 CONN_1 {Lib=CONN_1}
   (    1 ? )
  )
@@ -43,40 +46,32 @@
   (    2 /panel/ENC_BTN )
  )
  ( /50CC7DE6/51867E35 $noname  RK2 390 {Lib=R}
-  (    1 N-000220 )
+  (    1 N-000216 )
   (    2 /panel/ENC_LED2 )
  )
  ( /50CC7DE6/51867E34 $noname  RK1 390 {Lib=R}
-  (    1 N-000221 )
+  (    1 N-000217 )
   (    2 /panel/ENC_LED1 )
  )
  ( /50CC7DE6/51867E32 $noname  ENC17 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000220 )
-  (    3 N-000221 )
+  (    2 N-000216 )
+  (    3 N-000217 )
   (    4 /panel/ENC_BTN )
   (    A /panel/ENCODER1 )
   (    B /panel/ENCODER2 )
   (    C GND )
  )
- ( /50CC7DE6/51867E30 $noname  CK2 DNP {Lib=C}
-  (    1 /panel/ENCODER2 )
-  (    2 GND )
- )
- ( /50CC7DE6/51867E2F $noname  CK1 DNP {Lib=C}
-  (    1 /panel/ENCODER1 )
-  (    2 GND )
- )
  ( /50CC7DE6/50CC7FBD $noname  LCD1 DOGS102-6 {Lib=DOGS102-6}
-  (    1 N-000222 )
-  (    2 N-000224 )
-  (   13 N-000224 )
-  (   14 N-000222 )
-  (   15 N-000226 )
-  (   16 N-000228 )
-  (   17 N-000227 )
-  (   18 N-000223 )
-  (   19 N-000225 )
+  (    1 /panel/BL+ )
+  (    2 /panel/BL- )
+  (   13 /panel/BL- )
+  (   14 /panel/BL+ )
+  (   15 N-000223 )
+  (   16 N-000222 )
+  (   17 N-000224 )
+  (   18 N-000219 )
+  (   19 N-000221 )
   (   20 GND )
   (   21 GND )
   (   22 +3.3V )
@@ -88,20 +83,20 @@
   (   28 /panel/LCD_CS )
  )
  ( /50CC7DE6/50CC7FBC $noname  R6 35 {Lib=R}
-  (    1 N-000222 )
+  (    1 /panel/BL+ )
   (    2 +5V )
  )
  ( /50CC7DE6/50CC7FB8 $noname  C22 1u {Lib=C}
-  (    1 N-000226 )
+  (    1 N-000223 )
   (    2 GND )
  )
  ( /50CC7DE6/50CC7FB7 $noname  C21 1u {Lib=C}
-  (    1 N-000228 )
-  (    2 N-000225 )
+  (    1 N-000222 )
+  (    2 N-000221 )
  )
  ( /50CC7DE6/50CC7FB6 $noname  C20 1u {Lib=C}
-  (    1 N-000227 )
-  (    2 N-000223 )
+  (    1 N-000224 )
+  (    2 N-000219 )
  )
  ( /50CC7DE6/50CC7FB4 $noname  C18 100n {Lib=C}
   (    1 +3.3V )
@@ -109,12 +104,8 @@
  )
  ( /50CC7DE6/50CC7FB1 SOT23-3  Q3 PDTC123Y {Lib=PDTC123Y}
   (    1 /panel/BACKLIGHT_PWM )
-  (    2 N-000224 )
-  (    3 GND )
- )
- ( /50CC7DE6/50CC7FB0 $noname  C19 100n {Lib=C}
-  (    1 +3.3V )
   (    2 GND )
+  (    3 /panel/BL- )
  )
  ( /50CC7DE6/50CC7EBD $noname  R1 20k {Lib=R}
   (    1 /panel/BTN1 )
@@ -158,19 +149,19 @@
  )
  ( /50CC7DE6/50CC7EB3 $noname  D1 LED {Lib=LED}
   (    1 +3.3V )
-  (    2 N-000237 )
+  (    2 N-000225 )
  )
  ( /50CC7DE6/50CC7EB2 $noname  D2 LED {Lib=LED}
   (    1 +3.3V )
-  (    2 N-000240 )
+  (    2 N-000234 )
  )
  ( /50CC7DE6/50CC7EB1 $noname  D3 LED {Lib=LED}
   (    1 +3.3V )
-  (    2 N-000239 )
+  (    2 N-000236 )
  )
  ( /50CC7DE6/50CC7EB0 $noname  D4 LED {Lib=LED}
   (    1 +3.3V )
-  (    2 N-000238 )
+  (    2 N-000235 )
  )
  ( /50CC7DE6/50CC7EAF $noname  SW5 101-0661-EV {Lib=TACT}
   (    1 /stm32/BTN1 )
@@ -183,19 +174,19 @@
   (    2 GND )
  )
  ( /50CC7DE6/50CC7EAB $noname  R7 390 {Lib=R}
-  (    1 N-000237 )
+  (    1 N-000225 )
   (    2 /panel/LED1 )
  )
  ( /50CC7DE6/50CC7EAA $noname  R9 390 {Lib=R}
-  (    1 N-000240 )
+  (    1 N-000234 )
   (    2 /panel/LED2 )
  )
  ( /50CC7DE6/50CC7EA9 $noname  R11 390 {Lib=R}
-  (    1 N-000239 )
+  (    1 N-000236 )
   (    2 /panel/LED3 )
  )
  ( /50CC7DE6/50CC7EA8 $noname  R14 390 {Lib=R}
-  (    1 N-000238 )
+  (    1 N-000235 )
   (    2 /panel/LED4 )
  )
  ( /50CC8305/50CC832F $noname  C1 100n {Lib=C}
@@ -216,6 +207,18 @@
   (    1 +3.3V )
   (    2 GND )
  )
+ ( /4F7EF61F/51988F8A $noname  TP17 TST {Lib=TST}
+  (    1 N-000101 )
+ )
+ ( /4F7EF61F/51988F7E $noname  TP16 TST {Lib=TST}
+  (    1 N-000114 )
+ )
+ ( /4F7EF61F/51988F69 $noname  TP15 TST {Lib=TST}
+  (    1 N-000102 )
+ )
+ ( /4F7EF61F/51988F5C $noname  TP14 TST {Lib=TST}
+  (    1 N-000117 )
+ )
  ( /4F7EF61F/5189413B $noname  TP12 TST {Lib=TST}
   (    1 GND )
  )
@@ -226,7 +229,7 @@
   (    1 +3.3V )
  )
  ( /4F7EF61F/50CDE3AD $noname  TP9 TST {Lib=TST}
-  (    1 N-000105 )
+  (    1 /stm32/PA4 )
  )
  ( /4F7EF61F/50CDD464 $noname  P2 CONN_5X2 {Lib=CONN_5X2}
   (    1 +3.3V )
@@ -259,12 +262,12 @@
   (   12 GND )
   (   13 +3.3V )
   (   14 /panel/ENC_BTN )
-  (   15 ? )
+  (   15 N-000114 )
   (   16 /io/MIDI_TX )
   (   17 /io/MIDI_RX )
   (   18 GND )
   (   19 +3.3V )
-  (   20 N-000105 )
+  (   20 /stm32/PA4 )
   (   21 /flash/FLASH_SPI_SCK )
   (   22 /flash/FLASH_SPI_MISO )
   (   23 /flash/FLASH_SPI_MOSI )
@@ -296,9 +299,9 @@
   (   49 /stm32/SWCLK )
   (   50 /flash/FLASH_CS )
   (   51 /panel/ENC_LED2 )
-  (   52 ? )
-  (   53 ? )
-  (   54 ? )
+  (   52 N-000117 )
+  (   53 N-000102 )
+  (   54 N-000101 )
   (   55 /stm32/SWO )
   (   56 /panel/ENCODER1 )
   (   57 /panel/ENCODER2 )
@@ -368,16 +371,16 @@
   (    1 GND )
  )
  ( /4F80537C/50CDE394 $noname  TP8 TST {Lib=TST}
-  (    1 ? )
+  (    1 /io/MIDI_TX2 )
  )
  ( /4F80537C/50CDE38D $noname  TP7 TST {Lib=TST}
-  (    1 ? )
+  (    1 /io/MIDI_RX2 )
  )
  ( /4F80537C/50CDE382 $noname  TP6 TST {Lib=TST}
-  (    1 ? )
+  (    1 /io/MIDI_TX )
  )
  ( /4F80537C/50CDE372 $noname  TP5 TST {Lib=TST}
-  (    1 ? )
+  (    1 /io/MIDI_RX )
  )
  ( /4F80537C/50CDE359 $noname  TP4 TST {Lib=TST}
   (    1 /io/USB_DP )
@@ -399,7 +402,7 @@
  )
  ( /4F80537C/50CDE1D1 $noname  R20 220 {Lib=R}
   (    1 /io/MIDIOUT2- )
-  (    2 N-000120 )
+  (    2 N-000136 )
  )
  ( /4F80537C/50CDE1D0 $noname  R21 220 {Lib=R}
   (    1 /io/MIDIOUT2+ )
@@ -409,22 +412,22 @@
   (    1 GND )
   (    2 /io/MIDIOUT2- )
   (    3 /io/MIDIOUT2+ )
-  (    4 N-000118 )
+  (    4 N-000135 )
   (    5 /io/MIDIIN2- )
  )
  ( /4F80537C/50CDE1CA $noname  R22 220 {Lib=R}
-  (    1 N-000118 )
+  (    1 N-000135 )
   (    2 /io/MIDIIN2+ )
  )
  ( /4F80537C/50CDE1C8 SOT23-3  Q5 PDTC123Y {Lib=PDTC123Y}
-  (    1 N-000119 )
-  (    2 N-000120 )
-  (    3 GND )
+  (    1 N-000120 )
+  (    2 GND )
+  (    3 N-000136 )
  )
  ( /4F80537C/50CDE1C7 SOT23-3  Q4 PDTA124X {Lib=PDTA124X}
   (    1 /io/MIDI_TX2 )
-  (    2 N-000119 )
-  (    3 +3.3V )
+  (    2 +3.3V )
+  (    3 N-000120 )
  )
  ( /4F80537C/50CDE1C5 $noname  R19 20k {Lib=R}
   (    1 /io/MIDI_RX2 )
@@ -440,16 +443,16 @@
  )
  ( /4F80537C/4F898311 SOT23-3  Q1 PDTA124X {Lib=PDTA124X}
   (    1 /io/MIDI_TX )
-  (    2 N-000123 )
-  (    3 +3.3V )
+  (    2 +3.3V )
+  (    3 N-000118 )
  )
  ( /4F80537C/4F898308 SOT23-3  Q2 PDTC123Y {Lib=PDTC123Y}
-  (    1 N-000123 )
-  (    2 N-000121 )
-  (    3 GND )
+  (    1 N-000118 )
+  (    2 GND )
+  (    3 N-000132 )
  )
  ( /4F80537C/4F896ACC $noname  R16 220 {Lib=R}
-  (    1 N-000122 )
+  (    1 N-000128 )
   (    2 /io/MIDIIN+ )
  )
  ( /4F80537C/4F896A1A $noname  P4 DIN5 {Lib=CONN_5}
@@ -463,7 +466,7 @@
   (    1 ? )
   (    2 ? )
   (    3 ? )
-  (    4 N-000122 )
+  (    4 N-000128 )
   (    5 /io/MIDIIN- )
  )
  ( /4F80537C/4F896936 $noname  R17 220 {Lib=R}
@@ -472,7 +475,7 @@
  )
  ( /4F80537C/4F896930 $noname  R15 220 {Lib=R}
   (    1 /io/MIDIOUT- )
-  (    2 N-000121 )
+  (    2 N-000132 )
  )
  ( /4F80537C/4F894AC7 $noname  R13 DNP {Lib=R}
   (    1 /io/USB_ID )
@@ -498,18 +501,18 @@
  ( /4F92B0F3/4F905A80 $noname  U12 74HC165 {Lib=74LS165}
   (    1 /encoders/BTN_LOAD )
   (    2 /encoders/SHIFT_CLK )
-  (    3 N-000210 )
-  (    4 N-000205 )
-  (    5 N-000208 )
-  (    6 N-000206 )
+  (    3 N-000206 )
+  (    4 N-000201 )
+  (    5 N-000204 )
+  (    6 N-000202 )
   (    7 ? )
   (    8 GND )
   (    9 /switchbus/BTNSHIFT_IN1 )
   (   10 GND )
-  (   11 N-000207 )
-  (   12 N-000200 )
-  (   13 N-000209 )
-  (   14 N-000201 )
+  (   11 N-000203 )
+  (   12 N-000196 )
+  (   13 N-000205 )
+  (   14 N-000197 )
   (   15 /encoders/BTN_CE )
   (   16 +3.3V )
  )
@@ -537,11 +540,11 @@
  )
  ( /4F92B0F3/4F92B22D $noname  RPU36 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000200 )
+  (    2 N-000196 )
  )
  ( /4F92B0F3/4F92B22B $noname  RPU35 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000207 )
+  (    2 N-000203 )
  )
  ( /4F92B0F3/4F92B22A $noname  RPU34 20k {Lib=R}
   (    1 VPULLUP )
@@ -549,11 +552,11 @@
  )
  ( /4F92B0F3/4F92B227 $noname  RPU33 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000201 )
+  (    2 N-000197 )
  )
  ( /4F92B0F3/4F92B26F $noname  RPU32 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000209 )
+  (    2 N-000205 )
  )
  ( /4F92B0F3/4F92B225 $noname  RPU31 20k {Lib=R}
   (    1 VPULLUP )
@@ -561,11 +564,11 @@
  )
  ( /4F92B0F3/4F92B26D $noname  RPU30 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000205 )
+  (    2 N-000201 )
  )
  ( /4F92B0F3/4F905A71 $noname  RPU29 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000210 )
+  (    2 N-000206 )
  )
  ( /4F92B0F3/4F92B223 $noname  RPU28 20k {Lib=R}
   (    1 VPULLUP )
@@ -573,11 +576,11 @@
  )
  ( /4F92B0F3/4F92B221 $noname  RPU27 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000206 )
+  (    2 N-000202 )
  )
  ( /4F92B0F3/4F92B21F $noname  RPU26 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000208 )
+  (    2 N-000204 )
  )
  ( /4F92B0F3/4F82845B $noname  RPU25 20k {Lib=R}
   (    1 VPULLUP )
@@ -593,87 +596,87 @@
  )
  ( /4F92B0F3/4F92B217 $noname  ENC13 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000203 )
-  (    3 N-000202 )
+  (    2 N-000199 )
+  (    3 N-000198 )
   (    4 /encoders4/SW1 )
-  (    A N-000207 )
-  (    B N-000200 )
+  (    A N-000203 )
+  (    B N-000196 )
   (    C GND )
  )
  ( /4F92B0F3/4F905A64 $noname  RK132 390 {Lib=R}
-  (    1 N-000202 )
+  (    1 N-000198 )
   (    2 /encoders4/LED11 )
  )
  ( /4F92B0F3/4F92B216 $noname  RK133 240 {Lib=R}
-  (    1 N-000203 )
+  (    1 N-000199 )
   (    2 /encoders4/LED12 )
  )
  ( /4F92B0F3/4F92B24E $noname  RK143 240 {Lib=R}
-  (    1 N-000204 )
+  (    1 N-000200 )
   (    2 /encoders4/LED22 )
  )
  ( /4F92B0F3/4F92B24C $noname  RK142 390 {Lib=R}
-  (    1 N-000195 )
+  (    1 N-000191 )
   (    2 /encoders4/LED21 )
  )
  ( /4F92B0F3/4F92B248 $noname  ENC14 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000204 )
-  (    3 N-000195 )
+  (    2 N-000200 )
+  (    3 N-000191 )
   (    4 /switchbus/SW14 )
-  (    A N-000209 )
-  (    B N-000201 )
+  (    A N-000205 )
+  (    B N-000197 )
   (    C GND )
  )
  ( /4F92B0F3/4F7E096E $noname  ENC15 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000197 )
-  (    3 N-000196 )
+  (    2 N-000193 )
+  (    3 N-000192 )
   (    4 /switchbus/SW15 )
-  (    A N-000210 )
-  (    B N-000205 )
+  (    A N-000206 )
+  (    B N-000201 )
   (    C GND )
  )
  ( /4F92B0F3/4F7E096B $noname  RK152 390 {Lib=R}
-  (    1 N-000196 )
+  (    1 N-000192 )
   (    2 /encoders4/LED31 )
  )
  ( /4F92B0F3/4F905A4F $noname  RK153 240 {Lib=R}
-  (    1 N-000197 )
+  (    1 N-000193 )
   (    2 /encoders4/LED32 )
  )
  ( /4F92B0F3/4F7E0953 $noname  RK163 240 {Lib=R}
-  (    1 N-000198 )
+  (    1 N-000194 )
   (    2 /encoders4/LED42 )
  )
  ( /4F92B0F3/4F92B235 $noname  RK162 390 {Lib=R}
-  (    1 N-000199 )
+  (    1 N-000195 )
   (    2 /encoders4/LED41 )
  )
  ( /4F92B0F3/4F7E094F $noname  ENC16 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000198 )
-  (    3 N-000199 )
+  (    2 N-000194 )
+  (    3 N-000195 )
   (    4 /switchbus/SW16 )
-  (    A N-000208 )
-  (    B N-000206 )
+  (    A N-000204 )
+  (    B N-000202 )
   (    C GND )
  )
  ( /4F92A9C4/4F92B279 $noname  U14 74HC165 {Lib=74LS165}
   (    1 /encoders/BTN_LOAD )
   (    2 /encoders/SHIFT_CLK )
-  (    3 N-000170 )
-  (    4 N-000184 )
-  (    5 N-000171 )
-  (    6 N-000186 )
+  (    3 N-000167 )
+  (    4 N-000181 )
+  (    5 N-000166 )
+  (    6 N-000180 )
   (    7 ? )
   (    8 GND )
   (    9 /encoders2/BTNSHIFT_IN )
   (   10 /encoders3/BTNSHIFT_IN )
-  (   11 N-000172 )
-  (   12 N-000185 )
-  (   13 N-000173 )
-  (   14 N-000187 )
+  (   11 N-000179 )
+  (   12 N-000178 )
+  (   13 N-000168 )
+  (   14 N-000182 )
   (   15 /encoders/BTN_CE )
   (   16 +3.3V )
  )
@@ -701,11 +704,11 @@
  )
  ( /4F92A9C4/4F828559 $noname  RPU48 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000185 )
+  (    2 N-000178 )
  )
  ( /4F92A9C4/4F828556 $noname  RPU47 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000172 )
+  (    2 N-000179 )
  )
  ( /4F92A9C4/4F828551 $noname  RPU46 20k {Lib=R}
   (    1 VPULLUP )
@@ -713,11 +716,11 @@
  )
  ( /4F92A9C4/4F82854F $noname  RPU45 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000187 )
+  (    2 N-000182 )
  )
  ( /4F92A9C4/4F905A74 $noname  RPU44 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000173 )
+  (    2 N-000168 )
  )
  ( /4F92A9C4/4F82854B $noname  RPU43 20k {Lib=R}
   (    1 VPULLUP )
@@ -725,11 +728,11 @@
  )
  ( /4F92A9C4/4F92B26E $noname  RPU42 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000184 )
+  (    2 N-000181 )
  )
  ( /4F92A9C4/4F92B26B $noname  RPU41 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000170 )
+  (    2 N-000167 )
  )
  ( /4F92A9C4/4F92B224 $noname  RPU40 20k {Lib=R}
   (    1 VPULLUP )
@@ -737,11 +740,11 @@
  )
  ( /4F92A9C4/4F92B222 $noname  RPU39 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000186 )
+  (    2 N-000180 )
  )
  ( /4F92A9C4/4F92B220 $noname  RPU38 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000171 )
+  (    2 N-000166 )
  )
  ( /4F92A9C4/4F92B21E $noname  RPU37 20k {Lib=R}
   (    1 VPULLUP )
@@ -757,87 +760,87 @@
  )
  ( /4F92A9C4/4F7E098E $noname  ENC9 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000178 )
-  (    3 N-000176 )
+  (    2 N-000175 )
+  (    3 N-000173 )
   (    4 /encoders3/SW1 )
-  (    A N-000172 )
-  (    B N-000185 )
+  (    A N-000179 )
+  (    B N-000178 )
   (    C GND )
  )
  ( /4F92A9C4/4F92B260 $noname  RK92 390 {Lib=R}
-  (    1 N-000176 )
+  (    1 N-000173 )
   (    2 /encoders3/LED11 )
  )
  ( /4F92A9C4/4F92B215 $noname  RK93 240 {Lib=R}
-  (    1 N-000178 )
+  (    1 N-000175 )
   (    2 /encoders3/LED12 )
  )
  ( /4F92A9C4/4F905A56 $noname  RK103 240 {Lib=R}
-  (    1 N-000180 )
+  (    1 N-000176 )
   (    2 /encoders3/LED22 )
  )
  ( /4F92A9C4/4F905A55 $noname  RK102 390 {Lib=R}
-  (    1 N-000181 )
+  (    1 N-000177 )
   (    2 /encoders3/LED21 )
  )
  ( /4F92A9C4/4F905A53 $noname  ENC10 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000180 )
-  (    3 N-000181 )
+  (    2 N-000176 )
+  (    3 N-000177 )
   (    4 /switchbus/SW10 )
-  (    A N-000173 )
-  (    B N-000187 )
+  (    A N-000168 )
+  (    B N-000182 )
   (    C GND )
  )
  ( /4F92A9C4/4F92B20B $noname  ENC11 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000182 )
-  (    3 N-000183 )
+  (    2 N-000170 )
+  (    3 N-000169 )
   (    4 /switchbus/SW11 )
-  (    A N-000170 )
-  (    B N-000184 )
+  (    A N-000167 )
+  (    B N-000181 )
   (    C GND )
  )
  ( /4F92A9C4/4F92B209 $noname  RK112 390 {Lib=R}
-  (    1 N-000183 )
+  (    1 N-000169 )
   (    2 /encoders3/LED31 )
  )
  ( /4F92A9C4/4F92B244 $noname  RK113 240 {Lib=R}
-  (    1 N-000182 )
+  (    1 N-000170 )
   (    2 /encoders3/LED32 )
  )
  ( /4F92A9C4/4F92B1FC $noname  RK123 240 {Lib=R}
-  (    1 N-000174 )
+  (    1 N-000171 )
   (    2 /encoders3/LED42 )
  )
  ( /4F92A9C4/4F905A41 $noname  RK122 390 {Lib=R}
-  (    1 N-000175 )
+  (    1 N-000172 )
   (    2 /encoders3/LED41 )
  )
  ( /4F92A9C4/4F92B1F7 $noname  ENC12 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000174 )
-  (    3 N-000175 )
+  (    2 N-000171 )
+  (    3 N-000172 )
   (    4 /switchbus/SW12 )
-  (    A N-000171 )
-  (    B N-000186 )
+  (    A N-000166 )
+  (    B N-000180 )
   (    C GND )
  )
  ( /4F905A24/4F92B27A $noname  U9 74HC165 {Lib=74LS165}
   (    1 /encoders/BTN_LOAD )
   (    2 /encoders/SHIFT_CLK )
-  (    3 N-000160 )
+  (    3 N-000156 )
   (    4 N-000151 )
-  (    5 N-000158 )
-  (    6 N-000148 )
+  (    5 N-000154 )
+  (    6 N-000152 )
   (    7 ? )
   (    8 GND )
   (    9 /switchbus/BTNSHIFT_IN0 )
   (   10 /encoders2/BTNSHIFT_IN )
-  (   11 N-000157 )
-  (   12 N-000156 )
-  (   13 N-000159 )
-  (   14 N-000145 )
+  (   11 N-000153 )
+  (   12 N-000145 )
+  (   13 N-000155 )
+  (   14 N-000146 )
   (   15 /encoders/BTN_CE )
   (   16 +3.3V )
  )
@@ -865,11 +868,11 @@
  )
  ( /4F905A24/4F92B22E $noname  RPU24 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000156 )
+  (    2 N-000145 )
  )
  ( /4F905A24/4F92B22C $noname  RPU23 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000157 )
+  (    2 N-000153 )
  )
  ( /4F905A24/4F92B229 $noname  RPU22 20k {Lib=R}
   (    1 VPULLUP )
@@ -877,11 +880,11 @@
  )
  ( /4F905A24/4F92B228 $noname  RPU21 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000145 )
+  (    2 N-000146 )
  )
  ( /4F905A24/4F92B270 $noname  RPU20 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000159 )
+  (    2 N-000155 )
  )
  ( /4F905A24/4F92B226 $noname  RPU19 20k {Lib=R}
   (    1 VPULLUP )
@@ -893,7 +896,7 @@
  )
  ( /4F905A24/4F92B26C $noname  RPU17 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000160 )
+  (    2 N-000156 )
  )
  ( /4F905A24/4F828486 $noname  RPU16 20k {Lib=R}
   (    1 VPULLUP )
@@ -901,11 +904,11 @@
  )
  ( /4F905A24/4F828480 $noname  RPU15 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000148 )
+  (    2 N-000152 )
  )
  ( /4F905A24/4F828479 $noname  RPU14 20k {Lib=R}
   (    1 VPULLUP )
-  (    2 N-000158 )
+  (    2 N-000154 )
  )
  ( /4F905A24/4F92B21D $noname  RPU13 20k {Lib=R}
   (    1 VPULLUP )
@@ -921,70 +924,70 @@
  )
  ( /4F905A24/4F92B218 $noname  ENC5 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000155 )
-  (    3 N-000150 )
+  (    2 N-000148 )
+  (    3 N-000147 )
   (    4 /encoders2/SW1 )
-  (    A N-000157 )
-  (    B N-000156 )
+  (    A N-000153 )
+  (    B N-000145 )
   (    C GND )
  )
  ( /4F905A24/4F92B25F $noname  RK52 390 {Lib=R}
-  (    1 N-000150 )
+  (    1 N-000147 )
   (    2 /encoders2/LED11 )
  )
  ( /4F905A24/4F7E098A $noname  RK53 240 {Lib=R}
-  (    1 N-000155 )
+  (    1 N-000148 )
   (    2 /encoders2/LED12 )
  )
  ( /4F905A24/4F92B24D $noname  RK63 240 {Lib=R}
-  (    1 N-000154 )
+  (    1 N-000149 )
   (    2 /encoders2/LED22 )
  )
  ( /4F905A24/4F92B24B $noname  RK62 390 {Lib=R}
-  (    1 N-000153 )
+  (    1 N-000150 )
   (    2 /encoders2/LED21 )
  )
  ( /4F905A24/4F92B247 $noname  ENC6 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000154 )
-  (    3 N-000153 )
+  (    2 N-000149 )
+  (    3 N-000150 )
   (    4 /encoders2/SW2 )
-  (    A N-000159 )
-  (    B N-000145 )
+  (    A N-000155 )
+  (    B N-000146 )
   (    C GND )
  )
  ( /4F905A24/4F92B20C $noname  ENC7 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000146 )
-  (    3 N-000152 )
+  (    2 N-000142 )
+  (    3 N-000141 )
   (    4 /encoders2/SW3 )
-  (    A N-000160 )
+  (    A N-000156 )
   (    B N-000151 )
   (    C GND )
  )
  ( /4F905A24/4F92B20A $noname  RK72 390 {Lib=R}
-  (    1 N-000152 )
+  (    1 N-000141 )
   (    2 /encoders2/LED31 )
  )
  ( /4F905A24/4F92B243 $noname  RK73 240 {Lib=R}
-  (    1 N-000146 )
+  (    1 N-000142 )
   (    2 /encoders2/LED32 )
  )
  ( /4F905A24/4F92B1FB $noname  RK83 240 {Lib=R}
-  (    1 N-000147 )
+  (    1 N-000143 )
   (    2 /encoders2/LED42 )
  )
  ( /4F905A24/4F92B236 $noname  RK82 390 {Lib=R}
-  (    1 N-000149 )
+  (    1 N-000144 )
   (    2 /encoders2/LED41 )
  )
  ( /4F905A24/4F92B1F8 $noname  ENC8 PEL12D {Lib=PEL12D}
   (    1 GND )
-  (    2 N-000147 )
-  (    3 N-000149 )
+  (    2 N-000143 )
+  (    3 N-000144 )
   (    4 /encoders2/SW4 )
-  (    A N-000158 )
-  (    B N-000148 )
+  (    A N-000154 )
+  (    B N-000152 )
   (    C GND )
  )
  ( /4F81A858/4F905CC6 $noname  C26 100n {Lib=C}
@@ -1233,16 +1236,6 @@ $component RK1
  R?-*
  SM1206
 $endlist
-$component CK2
- SM*
- C?
- C1-1
-$endlist
-$component CK1
- SM*
- C?
- C1-1
-$endlist
 $component R6
  R?
  SM0603
@@ -1272,11 +1265,6 @@ $component C18
 $endlist
 $component Q3
  TO92-EBC
-$endlist
-$component C19
- SM*
- C?
- C1-1
 $endlist
 $component R1
  R?
@@ -2168,359 +2156,359 @@ $endfootprintlist
 { Pin List by Nets
 Net 1 "/io/MIDI_RX2" "MIDI_RX2"
  R19 1
+ TP7 1
  U15 4
  U2 30
-Net 2 "/stm32/BTN1" "BTN1"
- R5 1
- SW5 1
- U2 8
-Net 3 "/stm32/BTN2" "BTN2"
- U2 9
- R4 1
- SW4 1
-Net 4 "/panel/BTN3" "BTN3"
- R3 1
- SW3 1
- U2 10
-Net 5 "/encoders4/LEDSHIFT_IN" "LEDSHIFT_IN"
- U11 14
- U13 9
-Net 6 "/encoders2/BTNSHIFT_IN" "BTNSHIFT_IN"
- U9 10
- U14 9
-Net 7 "/encoders/BTN_LOAD" "BTN_LOAD"
- U12 1
- U14 1
- U10 1
- U4 1
- U9 1
- U8 1
- U2 58
-Net 9 "GND" "GND"
- C5 2
- C4 2
- C7 2
- ENC15 C
- ENC3 C
- ENC4 C
- ENC2 C
- U12 10
- U2 28
- C16 2
- C28 2
- U12 8
- C10 2
- C17 2
- C9 2
- ENC4 1
- ENC15 1
- ENC14 1
- ENC2 1
- P2 3
- C12 1
- P2 5
- C2 1
- ENC16 1
- P2 9
- U2 63
- U2 60
- U2 47
- U2 18
- U6 1
- C13 2
- CK2 2
- C15 2
- CK1 2
- C33 2
- U2 12
- U2 31
- TP12 1
- U11 8
- U8 8
- ENC17 C
- C14 2
- ENC17 1
- U3 8
- ENC12 C
- U13 8
- ENC12 1
- ENC9 1
- C30 2
- ENC11 C
- ENC11 1
- ENC10 C
- ENC10 1
- ENC9 C
- ENC7 1
- ENC6 C
- ENC5 C
- ENC6 1
- ENC8 C
- ENC8 1
- C25 2
- C32 2
- C24 2
- U9 8
- U7 8
- C23 2
- ENC5 1
- ENC7 C
- U15 3
- P5 1
- Q5 3
- ENC13 C
- C29 2
- ENC13 1
- C27 2
- ENC16 C
- TP13 1
- C3 2
- U14 8
- U4 8
- C26 2
- U10 8
- ENC14 C
- Q2 3
- P4 2
- C31 2
- R13 2
- P1 5
- U5 3
- U1 4
- C22 2
- ENC1 1
- C18 2
- C8 2
- ENC3 1
- C11 2
- R4 2
- C1 2
- LCD1 20
- LCD1 21
- R5 2
- Q3 3
- C19 2
- R1 2
- C6 2
- R2 2
- R3 2
- ENC1 C
-Net 10 "/flash/FLASH_SPI_MISO" "FLASH_SPI_MISO"
- U2 22
- U1 2
-Net 11 "/io/USB_DM" "USB_DM"
- P1 2
- TP3 1
- U2 44
-Net 12 "/io/USB_DP" "USB_DP"
- U2 45
- P1 3
- R12 2
- TP4 1
-Net 13 "/io/MIDI_RX" "MIDI_RX"
- U2 17
- R8 1
- U5 4
-Net 14 "/flash/FLASH_CS" "FLASH_CS"
- U1 1
- U2 50
-Net 15 "/flash/FLASH_SPI_SCK" "FLASH_SPI_SCK"
- U2 21
- U1 6
-Net 16 "/flash/FLASH_SPI_MOSI" "FLASH_SPI_MOSI"
+Net 2 "/encoders/BTN_CE" "BTN_CE"
+ U2 59
+ U14 15
+ U10 15
+ U8 15
+ U9 15
+ U4 15
+ U12 15
+Net 4 "/flash/FLASH_SPI_MOSI" "FLASH_SPI_MOSI"
  U2 23
  U1 5
-Net 17 "/panel/ENC_LED1" "ENC_LED1"
- U2 27
+Net 5 "/io/USB_DM" "USB_DM"
+ U2 44
+ P1 2
+ TP3 1
+Net 6 "/io/USB_DP" "USB_DP"
+ TP4 1
+ U2 45
+ R12 2
+ P1 3
+Net 7 "/io/MIDI_RX" "MIDI_RX"
+ U2 17
+ R8 1
+ TP5 1
+ U5 4
+Net 8 "/flash/FLASH_CS" "FLASH_CS"
+ U2 50
+ U1 1
+Net 9 "/flash/FLASH_SPI_MISO" "FLASH_SPI_MISO"
+ U2 22
+ U1 2
+Net 10 "/flash/FLASH_SPI_SCK" "FLASH_SPI_SCK"
+ U2 21
+ U1 6
+Net 11 "/panel/ENC_LED1" "ENC_LED1"
  RK1 2
-Net 18 "/panel/ENC_LED2" "ENC_LED2"
+ U2 27
+Net 12 "/panel/ENC_LED2" "ENC_LED2"
  RK2 2
  U2 51
-Net 19 "/panel/ENC_BTN" "ENC_BTN"
- U2 14
+Net 13 "/panel/ENC_BTN" "ENC_BTN"
  R23 2
  ENC17 4
-Net 20 "/panel/LCD_CS" "LCD_CS"
- U2 33
- LCD1 28
-Net 21 "/panel/BTN1" "BTN1"
- U2 24
+ U2 14
+Net 14 "/panel/BTN1" "BTN1"
  R1 1
  SW1 1
-Net 22 "/panel/LED1" "LED1"
- R7 2
- U2 37
-Net 23 "/panel/LED2" "LED2"
- U2 38
- R9 2
-Net 24 "/panel/LED3" "LED3"
- U2 39
- R11 2
-Net 25 "/panel/LED4" "LED4"
- U2 40
- R14 2
-Net 26 "/panel/ENCODER1" "ENCODER1"
- R24 2
- U2 56
- ENC17 A
- CK1 1
-Net 27 "/panel/ENCODER2" "ENCODER2"
- U2 57
- R25 2
- ENC17 B
- CK2 1
-Net 28 "/panel/BACKLIGHT_PWM" "BACKLIGHT_PWM"
- U2 26
- Q3 1
-Net 29 "/encoders3/BTNSHIFT_IN" "BTNSHIFT_IN"
- U10 9
- U14 10
-Net 30 "/panel/LCD_A0" "LCD_A0"
+ U2 24
+Net 15 "/panel/BTN2" "BTN2"
+ SW2 1
+ U2 11
+ R2 1
+Net 16 "/panel/BTN3" "BTN3"
+ U2 10
+ SW3 1
+ R3 1
+Net 17 "/panel/LCD_A0" "LCD_A0"
  U2 35
  LCD1 26
-Net 31 "/panel/LCD_SPI_SCK" "LCD_SPI_SCK"
- LCD1 25
+Net 18 "/panel/ENCODER1" "ENCODER1"
+ ENC17 A
+ U2 56
+ R24 2
+Net 19 "/panel/ENCODER2" "ENCODER2"
+ ENC17 B
+ R25 2
+ U2 57
+Net 20 "/panel/BACKLIGHT_PWM" "BACKLIGHT_PWM"
+ Q3 1
+ U2 26
+Net 21 "/panel/LCD_CS" "LCD_CS"
+ LCD1 28
+ U2 33
+Net 22 "/panel/LCD_SPI_SCK" "LCD_SPI_SCK"
  U2 34
-Net 32 "/panel/LCD_SPI_MOSI" "LCD_SPI_MOSI"
+ LCD1 25
+Net 23 "/panel/LCD_SPI_MOSI" "LCD_SPI_MOSI"
  U2 36
  LCD1 24
-Net 33 "/io/MIDI_TX" "MIDI_TX"
+Net 24 "/io/MIDI_TX" "MIDI_TX"
  U2 16
  Q1 1
-Net 34 "/io/MIDI_TX2" "MIDI_TX2"
+ TP6 1
+Net 25 "/io/MIDI_TX2" "MIDI_TX2"
  Q4 1
  U2 29
-Net 35 "/encoders/BTNSHIFT_OUT" "BTNSHIFT_OUT"
- U8 9
- U2 43
-Net 36 "/encoders/LEDSHIFT_IN" "LEDSHIFT_IN"
- U3 14
- U2 42
-Net 37 "/encoders/BTNSHIFT_IN" "BTNSHIFT_IN"
+ TP8 1
+Net 26 "/encoders/BTNSHIFT_IN" "BTNSHIFT_IN"
  U4 9
  U8 10
-Net 38 "/encoders4/SW1" "SW1"
- ENC13 4
- U10 3
+Net 27 "/encoders3/BTNSHIFT_IN" "BTNSHIFT_IN"
+ U14 10
+ U10 9
+Net 28 "/encoders/LEDSHIFT_IN" "LEDSHIFT_IN"
+ U2 42
+ U3 14
+Net 29 "/encoders2/LEDSHIFT_IN" "LEDSHIFT_IN"
+ U3 9
+ U7 14
+Net 30 "/encoders/BTNSHIFT_OUT" "BTNSHIFT_OUT"
+ U8 9
+ U2 43
+Net 31 "/encoders4/SW1" "SW1"
  RPU34 2
-Net 39 "/encoders/SW1" "SW1"
- U4 11
+ U10 3
+ ENC13 4
+Net 32 "/encoders/SW1" "SW1"
  RPU10 2
+ U4 11
  ENC1 4
-Net 40 "/encoders/SW2" "SW2"
- RPU7 2
+Net 33 "/encoders/SW2" "SW2"
  U4 12
+ RPU7 2
  ENC2 4
-Net 41 "/encoders/SW3" "SW3"
+Net 34 "/encoders/SW3" "SW3"
  ENC3 4
- RPU4 2
  U4 13
-Net 42 "/encoders/SW4" "SW4"
- RPU1 2
- ENC4 4
+ RPU4 2
+Net 35 "/encoders/SW4" "SW4"
  U4 14
-Net 43 "/switchbus/BTNSHIFT_IN1" "BTNSHIFT_IN1"
+ ENC4 4
+ RPU1 2
+Net 36 "GND" "GND"
+ ENC11 1
+ ENC9 C
+ C5 2
+ C7 2
+ ENC12 C
+ C4 2
+ ENC12 1
+ U2 31
+ C12 1
+ C2 1
+ TP13 1
+ C3 2
+ U2 60
+ U10 8
+ U4 8
+ C26 2
+ U2 12
+ C13 2
+ C10 2
+ ENC10 C
+ U6 1
+ C17 2
+ C9 2
+ ENC10 1
+ C14 2
+ C15 2
+ ENC8 1
+ ENC6 C
+ P4 2
+ ENC8 C
+ ENC7 C
+ ENC7 1
+ U5 3
+ TP12 1
+ ENC6 1
+ R13 2
+ ENC5 C
+ ENC5 1
+ C23 2
+ P1 5
+ Q2 2
+ C25 2
+ C30 2
+ ENC9 1
+ Q5 2
+ C32 2
+ ENC11 C
+ U9 8
+ P5 1
+ C33 2
+ U15 3
+ P2 9
+ C24 2
+ P2 5
+ P2 3
+ U7 8
+ C6 2
+ ENC3 1
+ ENC2 C
+ C27 2
+ ENC13 1
+ ENC2 1
+ ENC13 C
+ ENC4 1
+ C29 2
+ U12 10
+ C28 2
+ U11 8
+ U12 8
+ ENC16 1
+ ENC16 C
+ ENC17 C
+ ENC14 C
+ ENC4 C
+ ENC17 1
+ ENC14 1
+ ENC15 1
+ ENC1 1
+ C11 2
+ ENC1 C
+ ENC15 C
+ U3 8
+ C18 2
+ R1 2
+ R2 2
+ U2 18
+ U1 4
+ C1 2
+ U14 8
+ Q3 2
+ U2 28
+ U2 47
+ U13 8
+ C31 2
+ U2 63
+ C8 2
+ R5 2
+ C16 2
+ ENC3 C
+ R3 2
+ R4 2
+ LCD1 20
+ LCD1 21
+ C22 2
+ U8 8
+Net 37 "/switchbus/BTNSHIFT_IN1" "BTNSHIFT_IN1"
  U12 9
  U10 10
-Net 54 "/encoders3/SW1" "SW1"
- RPU46 2
+Net 48 "/encoders3/SW1" "SW1"
  U10 11
  ENC9 4
-Net 55 "/switchbus/SW10" "SW10"
+ RPU46 2
+Net 49 "/switchbus/SW10" "SW10"
  ENC10 4
  U10 12
  RPU43 2
-Net 56 "/switchbus/SW11" "SW11"
- RPU40 2
+Net 50 "/switchbus/SW11" "SW11"
  ENC11 4
+ RPU40 2
  U10 13
-Net 57 "/switchbus/SW12" "SW12"
+Net 51 "/switchbus/SW12" "SW12"
  ENC12 4
  RPU37 2
  U10 14
-Net 58 "/encoders/LED_LOAD" "LED_LOAD"
- U13 12
- U11 12
- U2 61
- U7 12
+Net 52 "/encoders/LED_OE" "LED_OE"
+ U3 13
+ U11 13
+ U7 13
+ U2 62
+ U13 13
+Net 53 "/encoders4/LEDSHIFT_IN" "LEDSHIFT_IN"
+ U13 9
+ U11 14
+Net 54 "/encoders/LED_LOAD" "LED_LOAD"
  U3 12
-Net 59 "/switchbus/SW14" "SW14"
- U10 4
+ U2 61
+ U11 12
+ U7 12
+ U13 12
+Net 55 "/switchbus/SW14" "SW14"
  ENC14 4
  RPU31 2
-Net 60 "/switchbus/SW15" "SW15"
+ U10 4
+Net 56 "/switchbus/SW15" "SW15"
+ ENC15 4
  RPU28 2
  U10 5
- ENC15 4
-Net 61 "/switchbus/SW16" "SW16"
- RPU25 2
- U10 6
+Net 57 "/switchbus/SW16" "SW16"
  ENC16 4
-Net 62 "/encoders2/SW1" "SW1"
- ENC5 4
+ U10 6
+ RPU25 2
+Net 58 "/encoders2/SW1" "SW1"
  RPU22 2
  U4 3
-Net 63 "/encoders2/SW2" "SW2"
+ ENC5 4
+Net 59 "/encoders2/SW2" "SW2"
  RPU19 2
- ENC6 4
  U4 4
-Net 64 "/encoders2/SW3" "SW3"
+ ENC6 4
+Net 60 "/encoders2/SW3" "SW3"
+ U4 5
  RPU16 2
  ENC7 4
- U4 5
-Net 65 "/encoders2/SW4" "SW4"
+Net 61 "/encoders2/SW4" "SW4"
+ ENC8 4
  U4 6
  RPU13 2
- ENC8 4
-Net 66 "/encoders2/LEDSHIFT_IN" "LEDSHIFT_IN"
- U7 14
- U3 9
-Net 67 "/panel/BTN2" "BTN2"
- U2 11
- R2 1
- SW2 1
-Net 68 "/encoders/LED_OE" "LED_OE"
- U7 13
- U11 13
- U3 13
- U13 13
- U2 62
-Net 69 "/encoders3/LEDSHIFT_IN" "LEDSHIFT_IN"
- U7 9
- U13 14
-Net 70 "/switchbus/BTNSHIFT_IN0" "BTNSHIFT_IN0"
+Net 62 "/stm32/BTN2" "BTN2"
+ SW4 1
+ R4 1
+ U2 9
+Net 63 "/encoders2/BTNSHIFT_IN" "BTNSHIFT_IN"
+ U9 10
+ U14 9
+Net 64 "/switchbus/BTNSHIFT_IN0" "BTNSHIFT_IN0"
  U9 9
  U4 10
-Net 71 "/encoders/BTN_CE" "BTN_CE"
- U10 15
- U14 15
- U12 15
- U4 15
- U8 15
- U9 15
- U2 59
-Net 72 "/encoders/SHIFT_CLK" "SHIFT_CLK"
- U3 11
- U9 2
- U13 11
+Net 65 "/encoders/SHIFT_CLK" "SHIFT_CLK"
+ U14 2
  U11 11
+ U4 2
+ U13 11
+ U9 2
  U7 11
  U12 2
- U4 2
+ U3 11
  U8 2
- U14 2
- U10 2
+ TP11 1
  U2 41
+ U10 2
+Net 66 "/stm32/BTN1" "BTN1"
+ U2 8
+ SW5 1
+ R5 1
+Net 67 "/panel/LED1" "LED1"
+ U2 37
+ R7 2
+Net 68 "/panel/LED2" "LED2"
+ R9 2
+ U2 38
+Net 69 "/panel/LED3" "LED3"
+ U2 39
+ R11 2
+Net 70 "/panel/LED4" "LED4"
+ U2 40
+ R14 2
+Net 71 "/encoders3/LEDSHIFT_IN" "LEDSHIFT_IN"
+ U7 9
+ U13 14
+Net 72 "/encoders/BTN_LOAD" "BTN_LOAD"
+ U8 1
+ U12 1
+ U10 1
+ U9 1
+ U2 58
+ U14 1
+ U4 1
 Net 73 "" ""
  RPU5 2
- U8 3
  ENC3 A
+ U8 3
 Net 74 "" ""
- RK43 1
  ENC4 2
+ RK43 1
 Net 75 "" ""
- ENC2 3
  RK22 1
+ ENC2 3
 Net 76 "" ""
  RK32 1
  ENC3 3
@@ -2528,554 +2516,565 @@ Net 77 "" ""
  ENC3 2
  RK33 1
 Net 78 "" ""
- RK42 1
  ENC4 3
+ RK42 1
 Net 79 "+3.3V" "+3.3V"
- SW1 2
- C29 1
+ U2 1
+ C9 1
+ U14 16
  U1 8
- U1 3
+ C14 1
+ C15 1
+ C32 1
+ P2 1
+ U9 16
+ C17 1
+ U6 4
+ U6 2
+ C13 1
+ C7 1
+ C4 1
+ C10 1
+ SW1 2
+ SW2 2
+ SW3 2
+ SW4 2
  D1 1
- SW5 2
- D4 1
- D3 1
  D2 1
  LCD1 27
- SW4 2
- SW2 2
- U14 16
- C8 1
  C18 1
- C19 1
- C32 1
- C1 1
- U1 7
- LCD1 23
+ C8 1
  LCD1 22
- SW3 2
+ LCD1 23
+ D3 1
+ D4 1
+ SW5 2
+ U1 3
  U12 16
- U9 16
- TP10 1
- U8 16
- C10 1
  C6 1
- U2 19
- U4 16
- C3 1
- U6 4
- R12 1
- U6 2
- C17 1
+ C29 1
+ C1 1
+ U8 16
  U2 64
- R19 2
- C4 1
- U2 1
- C13 1
- C26 1
- C14 1
- P2 1
- C25 1
- C15 1
- R8 2
- Q4 3
- U2 32
- U2 48
- C9 1
- C7 1
- U10 16
  U2 13
- Q1 3
+ U2 32
+ U2 19
+ U2 48
+ U1 7
+ TP10 1
+ R8 2
+ Q1 2
+ R19 2
+ U4 16
+ C26 1
+ C25 1
+ U10 16
+ Q4 2
+ R12 1
+ C3 1
 Net 80 "+5V" "+5V"
- C30 1
- U3 16
- R6 2
- U13 16
- C11 1
- C16 1
- C31 1
- R17 2
- R21 2
  C28 1
- U13 10
- U3 10
- TP2 1
- U7 10
- U7 16
+ C16 1
+ U3 16
+ U11 16
  U11 10
- C23 1
- C5 1
+ U7 16
+ U13 16
+ U3 10
  R10 1
+ C5 1
+ R21 2
+ C30 1
+ R6 2
+ C11 1
+ R17 2
+ C23 1
+ U6 3
+ TP2 1
  C24 1
  C27 1
- U6 3
- U11 16
+ C31 1
+ U13 10
+ U7 10
 Net 81 "" ""
  RPU12 2
- ENC1 B
  U8 12
+ ENC1 B
 Net 82 "" ""
  ENC2 B
- RPU9 2
  U8 14
+ RPU9 2
 Net 83 "VPULLUP" "VPULLUP"
- RPU12 1
- R24 1
- R23 1
- RPU11 1
- RPU10 1
- RPU9 1
- RPU8 1
- RPU7 1
- RPU6 1
- RPU5 1
- U2 25
- RPU22 1
- RPU32 1
- RPU13 1
- RPU14 1
- RPU28 1
- RPU27 1
- RPU15 1
- RPU16 1
- RPU17 1
- RPU26 1
- RPU36 1
- RPU18 1
- RPU19 1
  RPU35 1
  RPU34 1
+ RPU6 1
+ RPU5 1
+ R23 1
+ R24 1
+ RPU8 1
+ R25 1
+ RPU7 1
+ RPU36 1
+ RPU38 1
+ RPU39 1
+ RPU40 1
  RPU33 1
- RPU31 1
- RPU30 1
+ RPU27 1
+ RPU28 1
+ RPU16 1
+ RPU26 1
+ RPU41 1
  RPU25 1
- RPU20 1
+ RPU30 1
+ RPU11 1
+ RPU48 1
+ RPU19 1
  RPU24 1
  RPU21 1
  RPU23 1
+ RPU22 1
+ RPU20 1
+ RPU18 1
+ RPU17 1
+ RPU29 1
+ RPU12 1
+ RPU37 1
+ RPU3 1
+ RPU2 1
+ RPU10 1
+ RPU32 1
+ RPU4 1
+ U2 25
+ RPU9 1
+ RPU13 1
+ RPU14 1
+ RPU15 1
+ RPU47 1
+ RPU46 1
  RPU45 1
  RPU44 1
  RPU43 1
  RPU42 1
- R25 1
- RPU4 1
- RPU3 1
- RPU2 1
+ RPU31 1
  RPU1 1
- RPU38 1
- RPU39 1
- RPU40 1
- RPU46 1
- RPU29 1
- RPU37 1
- RPU41 1
- RPU48 1
- RPU47 1
 Net 84 "" ""
- RK12 1
  ENC1 3
+ RK12 1
 Net 85 "" ""
- RK13 1
  ENC1 2
+ RK13 1
 Net 86 "" ""
- RK23 1
  ENC2 2
+ RK23 1
 Net 87 "" ""
- U8 6
- ENC4 B
  RPU3 2
+ ENC4 B
+ U8 6
 Net 88 "" ""
  ENC3 B
  RPU6 2
  U8 4
 Net 89 "" ""
- RPU11 2
- U8 11
  ENC1 A
+ U8 11
+ RPU11 2
 Net 90 "" ""
  U8 5
  ENC4 A
  RPU2 2
 Net 91 "" ""
- U8 13
  ENC2 A
  RPU8 2
+ U8 13
 Net 93 "/encoders/LED42" "LED42"
  U3 7
  RK43 2
 Net 94 "/encoders/LED41" "LED41"
- RK42 2
  U3 6
+ RK42 2
 Net 95 "/encoders/LED32" "LED32"
- U3 5
  RK33 2
+ U3 5
 Net 96 "/encoders/LED31" "LED31"
- RK32 2
  U3 4
+ RK32 2
 Net 97 "/encoders/LED22" "LED22"
- U3 3
  RK23 2
+ U3 3
 Net 98 "/encoders/LED21" "LED21"
  RK22 2
  U3 2
 Net 99 "/encoders/LED12" "LED12"
- RK13 2
  U3 1
+ RK13 2
 Net 100 "/encoders/LED11" "LED11"
  RK12 2
  U3 15
-Net 102 "/stm32/SWDIO" "SWDIO"
- U2 46
- P2 2
-Net 105 "" ""
- U2 20
- TP9 1
-Net 106 "/stm32/SWO" "SWO"
- P2 6
- U2 55
-Net 108 "/stm32/SWCLK" "SWCLK"
- P2 4
- U2 49
-Net 109 "/stm32/RST" "RST"
+Net 101 "" ""
+ TP17 1
+ U2 54
+Net 102 "" ""
+ U2 53
+ TP15 1
+Net 105 "/stm32/RST" "RST"
  P2 10
  C33 1
  U2 7
-Net 116 "/stm32/OSCOUT" "OSCOUT"
- X1 2
+Net 107 "/stm32/OSCOUT" "OSCOUT"
  U2 6
  C12 2
-Net 117 "/stm32/OSCIN" "OSCIN"
+ X1 2
+Net 108 "/stm32/OSCIN" "OSCIN"
  C2 2
  X1 1
  U2 5
+Net 109 "/stm32/SWCLK" "SWCLK"
+ P2 4
+ U2 49
+Net 110 "/stm32/SWDIO" "SWDIO"
+ P2 2
+ U2 46
+Net 113 "/stm32/SWO" "SWO"
+ U2 55
+ P2 6
+Net 114 "" ""
+ TP16 1
+ U2 15
+Net 116 "/stm32/PA4" "PA4"
+ TP9 1
+ U2 20
+Net 117 "" ""
+ U2 52
+ TP14 1
 Net 118 "" ""
- R22 1
- P5 4
-Net 119 "" ""
- Q4 2
- Q5 1
-Net 120 "" ""
- R20 2
- Q5 2
-Net 121 "" ""
- R15 2
- Q2 2
-Net 122 "" ""
- P3 4
- R16 1
-Net 123 "" ""
- Q1 2
  Q2 1
-Net 128 "/io/MIDIIN2+" "MIDIIN2+"
- U15 1
+ Q1 3
+Net 119 "/io/MIDIIN2+" "MIDIIN2+"
  R22 2
-Net 129 "/io/MIDIIN2-" "MIDIIN2-"
- U15 2
- P5 5
-Net 130 "/io/MIDIOUT2-" "MIDIOUT2-"
- P5 2
+ U15 1
+Net 120 "" ""
+ Q4 3
+ Q5 1
+Net 121 "/io/MIDIOUT2-" "MIDIOUT2-"
  R20 1
-Net 131 "/io/MIDIOUT2+" "MIDIOUT2+"
- R21 1
- P5 3
-Net 137 "/io/MIDIOUT+" "MIDIOUT+"
- P4 4
- R17 1
-Net 138 "/io/MIDIOUT-" "MIDIOUT-"
- P4 5
- R15 1
-Net 139 "/io/MIDIIN-" "MIDIIN-"
- P3 5
- U5 2
-Net 140 "/io/MIDIIN+" "MIDIIN+"
+ P5 2
+Net 127 "/io/MIDIIN+" "MIDIIN+"
  R16 2
  U5 1
-Net 141 "/io/USB_ID" "USB_ID"
- R13 1
+Net 128 "" ""
+ R16 1
+ P3 4
+Net 129 "/io/MIDIIN-" "MIDIIN-"
+ U5 2
+ P3 5
+Net 130 "/io/MIDIOUT+" "MIDIOUT+"
+ P4 4
+ R17 1
+Net 131 "/io/MIDIOUT-" "MIDIOUT-"
+ R15 1
+ P4 5
+Net 132 "" ""
+ R15 2
+ Q2 3
+Net 133 "/io/USB_ID" "USB_ID"
  P1 4
-Net 142 "/io/USB_5V" "USB_5V"
- P1 1
- R10 2
+ R13 1
+Net 134 "/io/MIDIOUT2+" "MIDIOUT2+"
+ R21 1
+ P5 3
+Net 135 "" ""
+ P5 4
+ R22 1
+Net 136 "" ""
+ R20 2
+ Q5 3
+Net 137 "/io/MIDIIN2-" "MIDIIN2-"
+ U15 2
+ P5 5
+Net 138 "/io/USB_5V" "USB_5V"
  TP1 1
-Net 145 "" ""
- ENC6 B
- U9 14
- RPU21 2
-Net 146 "" ""
+ R10 2
+ P1 1
+Net 141 "" ""
+ RK72 1
+ ENC7 3
+Net 142 "" ""
  RK73 1
  ENC7 2
-Net 147 "" ""
- RK83 1
+Net 143 "" ""
  ENC8 2
-Net 148 "" ""
- RPU15 2
- ENC8 B
- U9 6
-Net 149 "" ""
- RK82 1
+ RK83 1
+Net 144 "" ""
  ENC8 3
-Net 150 "" ""
+ RK82 1
+Net 145 "" ""
+ U9 12
+ RPU24 2
+ ENC5 B
+Net 146 "" ""
+ U9 14
+ RPU21 2
+ ENC6 B
+Net 147 "" ""
  RK52 1
  ENC5 3
-Net 151 "" ""
- RPU18 2
- U9 4
- ENC7 B
-Net 152 "" ""
- ENC7 3
- RK72 1
-Net 153 "" ""
- RK62 1
- ENC6 3
-Net 154 "" ""
+Net 148 "" ""
+ ENC5 2
+ RK53 1
+Net 149 "" ""
  ENC6 2
  RK63 1
-Net 155 "" ""
- RK53 1
- ENC5 2
-Net 156 "" ""
- ENC5 B
- RPU24 2
- U9 12
-Net 157 "" ""
+Net 150 "" ""
+ RK62 1
+ ENC6 3
+Net 151 "" ""
+ RPU18 2
+ ENC7 B
+ U9 4
+Net 152 "" ""
+ U9 6
+ ENC8 B
+ RPU15 2
+Net 153 "" ""
  RPU23 2
- U9 11
  ENC5 A
-Net 158 "" ""
+ U9 11
+Net 154 "" ""
+ RPU14 2
  ENC8 A
  U9 5
- RPU14 2
-Net 159 "" ""
- RPU20 2
+Net 155 "" ""
  U9 13
  ENC6 A
-Net 160 "" ""
- RPU17 2
- U9 3
+ RPU20 2
+Net 156 "" ""
  ENC7 A
-Net 161 "/encoders2/LED21" "LED21"
- RK62 2
- U7 2
-Net 162 "/encoders2/LED11" "LED11"
- RK52 2
- U7 15
-Net 163 "/encoders2/LED12" "LED12"
- U7 1
- RK53 2
-Net 164 "/encoders2/LED22" "LED22"
- U7 3
- RK63 2
-Net 166 "/encoders2/LED32" "LED32"
- U7 5
- RK73 2
-Net 167 "/encoders2/LED42" "LED42"
+ U9 3
+ RPU17 2
+Net 158 "/encoders2/LED42" "LED42"
  U7 7
  RK83 2
-Net 168 "/encoders2/LED31" "LED31"
- U7 4
- RK72 2
-Net 169 "/encoders2/LED41" "LED41"
- U7 6
+Net 159 "/encoders2/LED41" "LED41"
  RK82 2
-Net 170 "" ""
- ENC11 A
- U14 3
- RPU41 2
-Net 171 "" ""
- U14 5
- RPU38 2
+ U7 6
+Net 160 "/encoders2/LED32" "LED32"
+ RK73 2
+ U7 5
+Net 161 "/encoders2/LED31" "LED31"
+ RK72 2
+ U7 4
+Net 162 "/encoders2/LED22" "LED22"
+ U7 3
+ RK63 2
+Net 163 "/encoders2/LED21" "LED21"
+ U7 2
+ RK62 2
+Net 164 "/encoders2/LED12" "LED12"
+ RK53 2
+ U7 1
+Net 165 "/encoders2/LED11" "LED11"
+ RK52 2
+ U7 15
+Net 166 "" ""
  ENC12 A
-Net 172 "" ""
- RPU47 2
- ENC9 A
- U14 11
-Net 173 "" ""
+ RPU38 2
+ U14 5
+Net 167 "" ""
+ RPU41 2
+ U14 3
+ ENC11 A
+Net 168 "" ""
+ ENC10 A
  RPU44 2
  U14 13
- ENC10 A
-Net 174 "" ""
+Net 169 "" ""
+ ENC11 3
+ RK112 1
+Net 170 "" ""
+ RK113 1
+ ENC11 2
+Net 171 "" ""
  ENC12 2
  RK123 1
-Net 175 "" ""
- RK122 1
+Net 172 "" ""
  ENC12 3
-Net 176 "" ""
+ RK122 1
+Net 173 "" ""
  ENC9 3
  RK92 1
-Net 177 "/encoders3/LED11" "LED11"
- RK92 2
- U13 15
-Net 178 "" ""
- RK93 1
- ENC9 2
-Net 179 "/encoders3/LED12" "LED12"
- U13 1
+Net 174 "/encoders3/LED12" "LED12"
  RK93 2
-Net 180 "" ""
- RK103 1
+ U13 1
+Net 175 "" ""
+ ENC9 2
+ RK93 1
+Net 176 "" ""
  ENC10 2
-Net 181 "" ""
+ RK103 1
+Net 177 "" ""
  RK102 1
  ENC10 3
-Net 182 "" ""
- ENC11 2
- RK113 1
-Net 183 "" ""
- RK112 1
- ENC11 3
-Net 184 "" ""
- ENC11 B
- RPU42 2
- U14 4
-Net 185 "" ""
- RPU48 2
+Net 178 "" ""
  U14 12
  ENC9 B
-Net 186 "" ""
- RPU39 2
+ RPU48 2
+Net 179 "" ""
+ RPU47 2
+ U14 11
+ ENC9 A
+Net 180 "" ""
  ENC12 B
  U14 6
-Net 187 "" ""
+ RPU39 2
+Net 181 "" ""
+ U14 4
+ RPU42 2
+ ENC11 B
+Net 182 "" ""
  RPU45 2
- ENC10 B
  U14 14
-Net 189 "/encoders3/LED32" "LED32"
- RK113 2
- U13 5
-Net 190 "/encoders3/LED21" "LED21"
+ ENC10 B
+Net 184 "/encoders3/LED31" "LED31"
+ RK112 2
+ U13 4
+Net 185 "/encoders3/LED11" "LED11"
+ U13 15
+ RK92 2
+Net 186 "/encoders3/LED21" "LED21"
  U13 2
  RK102 2
-Net 191 "/encoders3/LED22" "LED22"
- U13 3
+Net 187 "/encoders3/LED22" "LED22"
  RK103 2
-Net 192 "/encoders3/LED31" "LED31"
- U13 4
- RK112 2
-Net 193 "/encoders3/LED41" "LED41"
+ U13 3
+Net 188 "/encoders3/LED32" "LED32"
+ U13 5
+ RK113 2
+Net 189 "/encoders3/LED41" "LED41"
  U13 6
  RK122 2
-Net 194 "/encoders3/LED42" "LED42"
- RK123 2
+Net 190 "/encoders3/LED42" "LED42"
  U13 7
-Net 195 "" ""
- RK142 1
+ RK123 2
+Net 191 "" ""
  ENC14 3
-Net 196 "" ""
+ RK142 1
+Net 192 "" ""
  ENC15 3
  RK152 1
-Net 197 "" ""
+Net 193 "" ""
  RK153 1
  ENC15 2
-Net 198 "" ""
- ENC16 2
+Net 194 "" ""
  RK163 1
-Net 199 "" ""
+ ENC16 2
+Net 195 "" ""
  RK162 1
  ENC16 3
-Net 200 "" ""
+Net 196 "" ""
+ ENC13 B
  U12 12
  RPU36 2
- ENC13 B
-Net 201 "" ""
+Net 197 "" ""
  RPU33 2
- U12 14
  ENC14 B
-Net 202 "" ""
+ U12 14
+Net 198 "" ""
  ENC13 3
  RK132 1
-Net 203 "" ""
+Net 199 "" ""
  ENC13 2
  RK133 1
-Net 204 "" ""
- RK143 1
+Net 200 "" ""
  ENC14 2
-Net 205 "" ""
- U12 4
+ RK143 1
+Net 201 "" ""
  ENC15 B
+ U12 4
  RPU30 2
-Net 206 "" ""
+Net 202 "" ""
  ENC16 B
- U12 6
  RPU27 2
-Net 207 "" ""
+ U12 6
+Net 203 "" ""
+ U12 11
  ENC13 A
  RPU35 2
- U12 11
-Net 208 "" ""
+Net 204 "" ""
+ ENC16 A
  RPU26 2
  U12 5
- ENC16 A
-Net 209 "" ""
- U12 13
+Net 205 "" ""
  ENC14 A
+ U12 13
  RPU32 2
-Net 210 "" ""
+Net 206 "" ""
+ RPU29 2
  U12 3
  ENC15 A
- RPU29 2
-Net 212 "/encoders4/LED42" "LED42"
+Net 208 "/encoders4/LED42" "LED42"
  U11 7
  RK163 2
-Net 213 "/encoders4/LED41" "LED41"
+Net 209 "/encoders4/LED41" "LED41"
  U11 6
  RK162 2
-Net 214 "/encoders4/LED32" "LED32"
- RK153 2
+Net 210 "/encoders4/LED32" "LED32"
  U11 5
-Net 215 "/encoders4/LED31" "LED31"
+ RK153 2
+Net 211 "/encoders4/LED31" "LED31"
  U11 4
  RK152 2
-Net 216 "/encoders4/LED22" "LED22"
+Net 212 "/encoders4/LED22" "LED22"
  U11 3
  RK143 2
-Net 217 "/encoders4/LED21" "LED21"
- RK142 2
+Net 213 "/encoders4/LED21" "LED21"
  U11 2
-Net 218 "/encoders4/LED12" "LED12"
- U11 1
+ RK142 2
+Net 214 "/encoders4/LED12" "LED12"
  RK133 2
-Net 219 "/encoders4/LED11" "LED11"
+ U11 1
+Net 215 "/encoders4/LED11" "LED11"
  U11 15
  RK132 2
-Net 220 "" ""
- ENC17 2
+Net 216 "" ""
  RK2 1
-Net 221 "" ""
+ ENC17 2
+Net 217 "" ""
  ENC17 3
  RK1 1
-Net 222 "" ""
+Net 218 "/panel/BL+" "BL+"
  R6 1
- LCD1 1
  LCD1 14
-Net 223 "" ""
+ LCD1 1
+Net 219 "" ""
  LCD1 18
  C20 2
-Net 224 "" ""
+Net 220 "/panel/BL-" "BL-"
+ Q3 3
  LCD1 13
  LCD1 2
- Q3 2
-Net 225 "" ""
- C21 2
+Net 221 "" ""
  LCD1 19
-Net 226 "" ""
- LCD1 15
- C22 1
-Net 227 "" ""
- LCD1 17
- C20 1
-Net 228 "" ""
+ C21 2
+Net 222 "" ""
  C21 1
  LCD1 16
-Net 237 "" ""
- R7 1
+Net 223 "" ""
+ LCD1 15
+ C22 1
+Net 224 "" ""
+ C20 1
+ LCD1 17
+Net 225 "" ""
  D1 2
-Net 238 "" ""
+ R7 1
+Net 234 "" ""
+ D2 2
+ R9 1
+Net 235 "" ""
  D4 2
  R14 1
-Net 239 "" ""
- R11 1
+Net 236 "" ""
  D3 2
-Net 240 "" ""
- R9 1
- D2 2
+ R11 1
 }
 #End

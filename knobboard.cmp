@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2012-apr-16-27)-stable date = Tue 07 May 2013 08:48:41 PM CEST
+Cmp-Mod V01 Created by CvPcb (2012-apr-16-27)-stable date = Sun 19 May 2013 10:39:52 AM CEST
 
 BeginCmp
 TimeStamp = /50CC8305/50CC832F;
@@ -127,13 +127,6 @@ IdModule  = SMC0805;
 EndCmp
 
 BeginCmp
-TimeStamp = /50CC7DE6/50CC7FB0;
-Reference = C19;
-ValeurCmp = 100n;
-IdModule  = SMC0805;
-EndCmp
-
-BeginCmp
 TimeStamp = /50CC7DE6/50CC7FB6;
 Reference = C20;
 ValeurCmp = 1u;
@@ -228,20 +221,6 @@ BeginCmp
 TimeStamp = /4F7EF61F/50CC9E7F;
 Reference = C33;
 ValeurCmp = 100n;
-IdModule  = SMC0805;
-EndCmp
-
-BeginCmp
-TimeStamp = /50CC7DE6/51867E2F;
-Reference = CK1;
-ValeurCmp = DNP;
-IdModule  = SMC0805;
-EndCmp
-
-BeginCmp
-TimeStamp = /50CC7DE6/51867E30;
-Reference = CK2;
-ValeurCmp = DNP;
 IdModule  = SMC0805;
 EndCmp
 
@@ -1394,7 +1373,7 @@ IdModule  = TP;
 EndCmp
 
 BeginCmp
-TimeStamp = /4F7EF61F/50CDE40E;
+TimeStamp = /51988EC0;
 Reference = TP11;
 ValeurCmp = TST;
 IdModule  = TP;
@@ -1412,6 +1391,34 @@ TimeStamp = /4F80537C/518940F0;
 Reference = TP13;
 ValeurCmp = TST;
 IdModule  = TPGND;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F7EF61F/51988F5C;
+Reference = TP14;
+ValeurCmp = TST;
+IdModule  = TP;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F7EF61F/51988F69;
+Reference = TP15;
+ValeurCmp = TST;
+IdModule  = TP;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F7EF61F/51988F7E;
+Reference = TP16;
+ValeurCmp = TST;
+IdModule  = TP;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F7EF61F/51988F8A;
+Reference = TP17;
+ValeurCmp = TST;
+IdModule  = TP;
 EndCmp
 
 BeginCmp

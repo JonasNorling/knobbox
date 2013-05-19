@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Wed 08 May 2013 08:54:31 PM CEST
+EESchema Schematic File Version 2  date Sun 19 May 2013 11:54:05 AM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -46,7 +46,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 2 10
 Title ""
-Date "8 may 2013"
+Date "19 may 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -54,6 +54,10 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Label 2950 5450 0    60   ~ 0
+BL+
+Text Label 2700 5750 0    60   ~ 0
+BL-
 Connection ~ 6400 3300
 Wire Wire Line
 	7050 3300 5000 3300
@@ -64,9 +68,6 @@ Wire Wire Line
 Connection ~ 5000 3950
 Wire Wire Line
 	5000 3900 5000 3950
-Connection ~ 7000 4000
-Wire Wire Line
-	7000 4000 7000 4300
 Wire Wire Line
 	6600 3300 6600 3350
 Wire Wire Line
@@ -79,8 +80,6 @@ Wire Wire Line
 Connection ~ 4800 1600
 Wire Wire Line
 	4800 1550 4800 1600
-Wire Wire Line
-	5200 6600 4950 6600
 Wire Wire Line
 	4950 6150 4950 6200
 Wire Wire Line
@@ -159,8 +158,6 @@ Wire Wire Line
 	5750 5500 5750 5550
 Wire Wire Line
 	4950 6600 4950 6650
-Wire Wire Line
-	4950 6200 5200 6200
 Connection ~ 9000 2200
 Wire Wire Line
 	9000 2200 8900 2200
@@ -234,11 +231,6 @@ Wire Wire Line
 	4700 2450 4700 2500
 Connection ~ 4700 2500
 Wire Wire Line
-	7000 4700 7300 4700
-Wire Wire Line
-	7150 4750 7150 4700
-Connection ~ 7150 4700
-Wire Wire Line
 	7700 4200 6250 4200
 Wire Wire Line
 	5100 4050 5000 4050
@@ -256,9 +248,6 @@ Wire Wire Line
 	5000 4150 5100 4150
 Wire Wire Line
 	6400 3850 6400 4000
-Wire Wire Line
-	7300 4300 7300 4200
-Connection ~ 7300 4200
 Wire Wire Line
 	6250 4000 7700 4000
 Wire Wire Line
@@ -352,33 +341,6 @@ F 1 "PEL12D" H 5700 4350 60  0000 C CNN
 	1    5700 4100
 	1    0    0    -1  
 $EndComp
-$Comp
-L GND #PWR04
-U 1 1 51867E31
-P 7150 4750
-F 0 "#PWR04" H 7150 4750 30  0001 C CNN
-F 1 "GND" H 7150 4680 30  0001 C CNN
-	1    7150 4750
-	1    0    0    -1  
-$EndComp
-$Comp
-L C CK2
-U 1 1 51867E30
-P 7300 4500
-F 0 "CK2" H 7350 4600 50  0000 L CNN
-F 1 "DNP" H 7350 4400 50  0000 L CNN
-	1    7300 4500
-	1    0    0    -1  
-$EndComp
-$Comp
-L C CK1
-U 1 1 51867E2F
-P 7000 4500
-F 0 "CK1" H 7050 4600 50  0000 L CNN
-F 1 "DNP" H 7050 4400 50  0000 L CNN
-	1    7000 4500
-	1    0    0    -1  
-$EndComp
 Text HLabel 2050 6100 0    60   Input ~ 0
 BACKLIGHT_PWM
 Text HLabel 4100 6850 3    60   Input ~ 0
@@ -408,10 +370,10 @@ BTN2
 Text HLabel 4700 1250 1    60   Output ~ 0
 BTN1
 $Comp
-L +3.3V #PWR05
+L +3.3V #PWR04
 U 1 1 50CC7FBF
 P 3800 6850
-F 0 "#PWR05" H 3800 6810 30  0001 C CNN
+F 0 "#PWR04" H 3800 6810 30  0001 C CNN
 F 1 "+3.3V" H 3800 6960 30  0000 C CNN
 	1    3800 6850
 	-1   0    0    1   
@@ -425,10 +387,10 @@ SPI_MOSI
 Text Label 3900 6850 1    60   ~ 0
 LCD_A0
 $Comp
-L GND #PWR06
+L GND #PWR05
 U 1 1 50CC7FBE
 P 2600 6550
-F 0 "#PWR06" H 2600 6550 30  0001 C CNN
+F 0 "#PWR05" H 2600 6550 30  0001 C CNN
 F 1 "GND" H 2600 6480 30  0001 C CNN
 	1    2600 6550
 	1    0    0    -1  
@@ -452,10 +414,10 @@ F 1 "35" V 2650 5450 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L +5V #PWR07
+L +5V #PWR06
 U 1 1 50CC7FBB
 P 2150 5450
-F 0 "#PWR07" H 2150 5540 20  0001 C CNN
+F 0 "#PWR06" H 2150 5540 20  0001 C CNN
 F 1 "+5V" H 2150 5540 30  0000 C CNN
 	1    2150 5450
 	1    0    0    -1  
@@ -463,19 +425,19 @@ $EndComp
 Text Notes 800  5050 0    60   ~ 0
 Backlight at 5V, 80mA, Vf=2.2V --> 35ohm (0.25W),\nignoring drop in transistor. Base resistor\ncould be about 5k.
 $Comp
-L GND #PWR08
+L GND #PWR07
 U 1 1 50CC7FBA
 P 4500 6650
-F 0 "#PWR08" H 4500 6650 30  0001 C CNN
+F 0 "#PWR07" H 4500 6650 30  0001 C CNN
 F 1 "GND" H 4500 6580 30  0001 C CNN
 	1    4500 6650
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR09
+L +3.3V #PWR08
 U 1 1 50CC7FB9
 P 4300 6600
-F 0 "#PWR09" H 4300 6560 30  0001 C CNN
+F 0 "#PWR08" H 4300 6560 30  0001 C CNN
 F 1 "+3.3V" H 4300 6710 30  0000 C CNN
 	1    4300 6600
 	-1   0    0    1   
@@ -508,10 +470,10 @@ F 1 "1u" H 5450 5650 50  0000 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR010
+L GND #PWR09
 U 1 1 50CC7FB5
 P 6100 6100
-F 0 "#PWR010" H 6100 6100 30  0001 C CNN
+F 0 "#PWR09" H 6100 6100 30  0001 C CNN
 F 1 "GND" H 6100 6030 30  0001 C CNN
 	1    6100 6100
 	1    0    0    -1  
@@ -526,19 +488,19 @@ F 1 "100n" H 5000 6300 50  0000 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR011
+L +3.3V #PWR010
 U 1 1 50CC7FB3
 P 4950 6150
-F 0 "#PWR011" H 4950 6110 30  0001 C CNN
+F 0 "#PWR010" H 4950 6110 30  0001 C CNN
 F 1 "+3.3V" H 4950 6260 30  0000 C CNN
 	1    4950 6150
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR012
+L GND #PWR011
 U 1 1 50CC7FB2
 P 4950 6650
-F 0 "#PWR012" H 4950 6650 30  0001 C CNN
+F 0 "#PWR011" H 4950 6650 30  0001 C CNN
 F 1 "GND" H 4950 6580 30  0001 C CNN
 	1    4950 6650
 	1    0    0    -1  
@@ -551,15 +513,6 @@ F 0 "Q3" H 2700 6000 50  0000 C CNN
 F 1 "PDTC123Y" H 2750 6250 50  0000 C CNN
 F 2 "SOT23-3" H 2690 6100 30  0001 C CNN
 	1    2500 6100
-	1    0    0    -1  
-$EndComp
-$Comp
-L C C19
-U 1 1 50CC7FB0
-P 5200 6400
-F 0 "C19" H 5250 6500 50  0000 L CNN
-F 1 "100n" H 5250 6300 50  0000 L CNN
-	1    5200 6400
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -607,19 +560,19 @@ F 1 "20k" V 4150 2200 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR013
+L GND #PWR012
 U 1 1 50CC7EB9
 P 3700 2650
-F 0 "#PWR013" H 3700 2650 30  0001 C CNN
+F 0 "#PWR012" H 3700 2650 30  0001 C CNN
 F 1 "GND" H 3700 2580 30  0001 C CNN
 	1    3700 2650
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR014
+L +3.3V #PWR013
 U 1 1 50CC7EB8
 P 4950 1000
-F 0 "#PWR014" H 4950 960 30  0001 C CNN
+F 0 "#PWR013" H 4950 960 30  0001 C CNN
 F 1 "+3.3V" H 4950 1110 30  0000 C CNN
 	1    4950 1000
 	1    0    0    -1  
@@ -727,10 +680,10 @@ NoConn ~ 5550 2600
 Text Label 4400 2500 0    60   ~ 0
 BTN5
 $Comp
-L +3.3V #PWR015
+L +3.3V #PWR014
 U 1 1 50CC7EAC
 P 9000 1050
-F 0 "#PWR015" H 9000 1010 30  0001 C CNN
+F 0 "#PWR014" H 9000 1010 30  0001 C CNN
 F 1 "+3.3V" H 9000 1160 30  0000 C CNN
 	1    9000 1050
 	1    0    0    -1  

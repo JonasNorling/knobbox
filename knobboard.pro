@@ -1,4 +1,4 @@
-update=Tue 07 May 2013 08:02:21 PM CEST
+update=Sun 19 May 2013 10:39:26 AM CEST
 last_client=pcbnew
 [general]
 version=1
@@ -81,9 +81,9 @@ LibName39=pdt-transistor
 LibName40=tact
 [pcbnew]
 version=1
-PadDrlX=236
-PadDimH=394
-PadDimV=394
+PadDrlX=0
+PadDimH=630
+PadDimV=945
 BoardThickness=630
 TxtPcbV=800
 TxtPcbH=600
