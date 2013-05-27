@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sun 19 May 2013 11:54:05 AM CEST
+EESchema Schematic File Version 2  date Sun 26 May 2013 03:42:57 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -46,7 +46,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 5 10
 Title ""
-Date "19 may 2013"
+Date "26 may 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -54,6 +54,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Wire Wire Line
+	2100 4300 2400 4300
 Connection ~ 2000 4900
 Connection ~ 1400 6300
 Connection ~ 1950 1350
@@ -167,6 +169,16 @@ Wire Wire Line
 	4750 5200 3550 5200
 Connection ~ 10200 4900
 Connection ~ 9200 4800
+Wire Wire Line
+	2050 750  2350 750 
+Text GLabel 2400 4300 2    60   Input ~ 0
+VPULLUP
+Text GLabel 2350 750  2    60   Input ~ 0
+VPULLUP
+Text Notes 1450 4450 0    60   ~ 0
+mount 1k5 according to errata?
+Text Notes 1400 900  0    60   ~ 0
+mount 1k5 according to errata?
 $Comp
 L TST TP13
 U 1 1 518940F0
@@ -371,15 +383,6 @@ F 1 "GND" H 2100 5280 30  0001 C CNN
 	1    2100 5350
 	1    0    0    -1  
 $EndComp
-$Comp
-L +3.3V #PWR042
-U 1 1 50CDE1C3
-P 2100 4300
-F 0 "#PWR042" H 2100 4260 30  0001 C CNN
-F 1 "+3.3V" H 2100 4410 30  0000 C CNN
-	1    2100 4300
-	1    0    0    -1  
-$EndComp
 Text Label 3600 4900 0    60   ~ 0
 MIDIIN2+
 Text Label 3600 5200 0    60   ~ 0
@@ -412,15 +415,6 @@ P 9450 4500
 F 0 "R10" V 9530 4500 50  0000 C CNN
 F 1 "0" V 9450 4500 50  0000 C CNN
 	1    9450 4500
-	1    0    0    -1  
-$EndComp
-$Comp
-L +3.3V #PWR043
-U 1 1 4F8985F8
-P 2050 750
-F 0 "#PWR043" H 2050 710 30  0001 C CNN
-F 1 "+3.3V" H 2050 860 30  0000 C CNN
-	1    2050 750 
 	1    0    0    -1  
 $EndComp
 $Comp
