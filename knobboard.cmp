@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2012-apr-16-27)-stable date = Sun 26 May 2013 03:29:57 PM CEST
+Cmp-Mod V01 Created by CvPcb (2012-apr-16-27)-stable date = Sat 01 Jun 2013 11:25:40 AM CEST
 
 BeginCmp
 TimeStamp = /50CC8305/50CC832F;
@@ -1419,6 +1419,20 @@ TimeStamp = /4F7EF61F/51988F8A;
 Reference = TP17;
 ValeurCmp = TST;
 IdModule  = TP;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F7EF61F/51A9BCCE;
+Reference = TP18;
+ValeurCmp = TST;
+IdModule  = EDGEPAD;
+EndCmp
+
+BeginCmp
+TimeStamp = /4F7EF61F/51A9BDFC;
+Reference = TP19;
+ValeurCmp = TST;
+IdModule  = EDGEPAD;
 EndCmp
 
 BeginCmp

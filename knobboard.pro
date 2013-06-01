@@ -1,4 +1,4 @@
-update=Sun 26 May 2013 03:25:17 PM CEST
+update=Sat 01 Jun 2013 10:34:17 AM CEST
 last_client=pcbnew
 [general]
 version=1
@@ -108,4 +108,19 @@ LibName7=display
 LibName8=valves
 LibName9=led
 LibName10=dip_sockets
-LibName11=/home/jonas/projekt/electronics/kicad/knobboard-round/resistor
+LibName11=/home/jonas/projekt/electronics/kicad/knobboard-round/bc817
+LibName12=/home/jonas/projekt/electronics/kicad/knobboard-round/crystal
+LibName13=/home/jonas/projekt/electronics/kicad/knobboard-round/din
+LibName14=/home/jonas/projekt/electronics/kicad/knobboard-round/DOGS102-6
+LibName15=/home/jonas/projekt/electronics/kicad/knobboard-round/encoder
+LibName16=/home/jonas/projekt/electronics/kicad/knobboard-round/hole
+LibName17=/home/jonas/projekt/electronics/kicad/knobboard-round/lqfp
+LibName18=/home/jonas/projekt/electronics/kicad/knobboard-round/micro-usb
+LibName19=/home/jonas/projekt/electronics/kicad/knobboard-round/nhd-lcd
+LibName20=/home/jonas/projekt/electronics/kicad/knobboard-round/oaa_smd_discret
+LibName21=/home/jonas/projekt/electronics/kicad/knobboard-round/pin-array-50mil
+LibName22=/home/jonas/projekt/electronics/kicad/knobboard-round/resistor
+LibName23=/home/jonas/projekt/electronics/kicad/knobboard-round/SO8-hybrid
+LibName24=/home/jonas/projekt/electronics/kicad/knobboard-round/SOP-4L
+LibName25=/home/jonas/projekt/electronics/kicad/knobboard-round/tactswitch
+LibName26=/home/jonas/projekt/electronics/kicad/knobboard-round/tp

@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sun 26 May 2013 03:42:57 PM CEST
+EESchema Schematic File Version 2  date Sat 01 Jun 2013 11:43:44 AM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -46,7 +46,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 1 10
 Title ""
-Date "26 may 2013"
+Date "1 jun 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -577,10 +577,10 @@ F23 "BTNSHIFT_OUT1" O R 10200 5000 60
 F24 "BTNSHIFT_IN1" I L 8800 6000 60 
 $EndSheet
 $Comp
-L GND #PWR01
+L GND #PWR1
 U 1 1 4F8DA5D4
 P 6650 6400
-F 0 "#PWR01" H 6650 6400 30  0001 C CNN
+F 0 "#PWR1" H 6650 6400 30  0001 C CNN
 F 1 "GND" H 6650 6330 30  0001 C CNN
 	1    6650 6400
 	1    0    0    -1  
