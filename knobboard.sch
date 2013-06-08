@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sat 01 Jun 2013 11:43:44 AM CEST
+EESchema Schematic File Version 2  date Sat 08 Jun 2013 11:15:40 AM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -46,7 +46,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 1 10
 Title ""
-Date "1 jun 2013"
+Date "8 jun 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -436,24 +436,6 @@ F12 "SW3" O R 8200 4400 60
 F13 "SW2" O R 8200 4300 60 
 F14 "SW1" O R 8200 4200 60 
 $EndSheet
-$Comp
-L CONN_1 H10
-U 1 1 4F90F9F5
-P 3600 1000
-F 0 "H10" H 3680 1000 40  0000 L CNN
-F 1 "CONN_1" H 3600 1055 30  0001 C CNN
-	1    3600 1000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CONN_1 H9
-U 1 1 4F90F9F3
-P 3500 1000
-F 0 "H9" H 3580 1000 40  0000 L CNN
-F 1 "CONN_1" H 3500 1055 30  0001 C CNN
-	1    3500 1000
-	0    -1   -1   0   
-$EndComp
 Text Notes 3400 760  2    60   ~ 0
 Mounting holes
 $Comp
@@ -577,10 +559,10 @@ F23 "BTNSHIFT_OUT1" O R 10200 5000 60
 F24 "BTNSHIFT_IN1" I L 8800 6000 60 
 $EndSheet
 $Comp
-L GND #PWR1
+L GND #PWR01
 U 1 1 4F8DA5D4
 P 6650 6400
-F 0 "#PWR1" H 6650 6400 30  0001 C CNN
+F 0 "#PWR01" H 6650 6400 30  0001 C CNN
 F 1 "GND" H 6650 6330 30  0001 C CNN
 	1    6650 6400
 	1    0    0    -1  
