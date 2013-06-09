@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sat 08 Jun 2013 06:16:56 PM CEST
+EESchema Schematic File Version 2  date Sun 09 Jun 2013 01:05:06 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -46,7 +46,7 @@ $Descr A4 11700 8267
 encoding utf-8
 Sheet 3 10
 Title ""
-Date "8 jun 2013"
+Date "9 jun 2013"
 Rev ""
 Comp ""
 Comment1 ""
@@ -92,10 +92,10 @@ Wire Wire Line
 Wire Wire Line
 	4350 2650 5050 2650
 $Comp
-L +3.3V #PWR?
+L +3.3V #PWR014
 U 1 1 51B358E6
 P 4950 2550
-F 0 "#PWR?" H 4950 2510 30  0001 C CNN
+F 0 "#PWR014" H 4950 2510 30  0001 C CNN
 F 1 "+3.3V" H 4950 2660 30  0000 C CNN
 	1    4950 2550
 	1    0    0    -1  
@@ -117,19 +117,19 @@ SPI_MISO
 Text HLabel 7300 2650 2    60   Output ~ 0
 FLASH_SPI_MISO
 $Comp
-L GND #PWR?
+L GND #PWR015
 U 1 1 51B35829
 P 6400 3100
-F 0 "#PWR?" H 6400 3100 30  0001 C CNN
+F 0 "#PWR015" H 6400 3100 30  0001 C CNN
 F 1 "GND" H 6400 3030 30  0001 C CNN
 	1    6400 3100
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR?
+L +3.3V #PWR016
 U 1 1 51B35823
 P 6500 2550
-F 0 "#PWR?" H 6500 2510 30  0001 C CNN
+F 0 "#PWR016" H 6500 2510 30  0001 C CNN
 F 1 "+3.3V" H 6500 2660 30  0000 C CNN
 	1    6500 2550
 	1    0    0    -1  
@@ -153,19 +153,19 @@ F 1 "100n" H 5600 4500 50  0000 L CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR019
+L +3.3V #PWR017
 U 1 1 50CC8329
 P 5550 4300
-F 0 "#PWR019" H 5550 4260 30  0001 C CNN
+F 0 "#PWR017" H 5550 4260 30  0001 C CNN
 F 1 "+3.3V" H 5550 4410 30  0000 C CNN
 	1    5550 4300
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR020
+L GND #PWR018
 U 1 1 50CC8328
 P 5550 4950
-F 0 "#PWR020" H 5550 4950 30  0001 C CNN
+F 0 "#PWR018" H 5550 4950 30  0001 C CNN
 F 1 "GND" H 5550 4880 30  0001 C CNN
 	1    5550 4950
 	1    0    0    -1  
