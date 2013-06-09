@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sat 08 Jun 2013 11:15:40 AM CEST
+EESchema Schematic File Version 2  date Sat 08 Jun 2013 06:16:56 PM CEST
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -44,7 +44,7 @@ EELAYER 25  0
 EELAYER END
 $Descr A4 11700 8267
 encoding utf-8
-Sheet 2 10
+Sheet 3 10
 Title ""
 Date "8 jun 2013"
 Rev ""
@@ -54,139 +54,129 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text HLabel 6700 3900 2    60   Input ~ 0
+Wire Wire Line
+	5050 2850 4950 2850
+Wire Wire Line
+	4950 2850 4950 2550
+Wire Wire Line
+	4350 2750 5050 2750
+Wire Wire Line
+	6200 2650 7300 2650
+Connection ~ 6500 2850
+Wire Wire Line
+	6500 2550 6500 2950
+Wire Wire Line
+	6500 2950 6200 2950
+Wire Wire Line
+	6500 2850 6200 2850
+Connection ~ 5550 4350
+Wire Wire Line
+	5550 4350 5800 4350
+Wire Wire Line
+	5800 4350 5800 4400
+Wire Wire Line
+	5550 4400 5550 4300
+Wire Wire Line
+	5550 4950 5550 4800
+Wire Wire Line
+	5800 4800 5800 4850
+Wire Wire Line
+	5800 4850 5550 4850
+Connection ~ 5550 4850
+Wire Wire Line
+	6200 2750 6400 2750
+Wire Wire Line
+	6400 2750 6400 3100
+Wire Wire Line
+	4350 2950 5050 2950
+Wire Wire Line
+	4350 2650 5050 2650
+$Comp
+L +3.3V #PWR?
+U 1 1 51B358E6
+P 4950 2550
+F 0 "#PWR?" H 4950 2510 30  0001 C CNN
+F 1 "+3.3V" H 4950 2660 30  0000 C CNN
+	1    4950 2550
+	1    0    0    -1  
+$EndComp
+Text Label 4400 2650 0    60   ~ 0
+SPI_MOSI
+Text HLabel 4350 2650 0    60   Input ~ 0
 FLASH_SPI_MOSI
-Text HLabel 6700 3800 2    60   Input ~ 0
+Text Label 4400 2750 0    60   ~ 0
+SPI_SCK
+Text HLabel 4350 2750 0    60   Input ~ 0
 FLASH_SPI_SCK
-Text HLabel 4500 3700 0    60   Output ~ 0
-FLASH_SPI_MISO
-Text HLabel 4500 3600 0    60   Input ~ 0
+Text Label 4400 2950 0    60   ~ 0
+CS_FLASH
+Text HLabel 4350 2950 0    60   Input ~ 0
 FLASH_CS
+Text Label 6850 2650 0    60   ~ 0
+SPI_MISO
+Text HLabel 7300 2650 2    60   Output ~ 0
+FLASH_SPI_MISO
+$Comp
+L GND #PWR?
+U 1 1 51B35829
+P 6400 3100
+F 0 "#PWR?" H 6400 3100 30  0001 C CNN
+F 1 "GND" H 6400 3030 30  0001 C CNN
+	1    6400 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L +3.3V #PWR?
+U 1 1 51B35823
+P 6500 2550
+F 0 "#PWR?" H 6500 2510 30  0001 C CNN
+F 1 "+3.3V" H 6500 2660 30  0000 C CNN
+	1    6500 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L AT45DB U1
+U 1 1 51B35808
+P 5650 2800
+F 0 "U1" H 5450 3100 60  0000 C CNN
+F 1 "AT45DB" H 5650 2550 60  0000 C CNN
+	1    5650 2800
+	1    0    0    -1  
+$EndComp
 $Comp
 L C C1
 U 1 1 50CC832F
-P 5600 4850
-F 0 "C1" H 5650 4950 50  0000 L CNN
-F 1 "100n" H 5650 4750 50  0000 L CNN
-	1    5600 4850
-	1    0    0    -1  
-$EndComp
-$Comp
-L SPI-FLASH U1
-U 1 1 50CC832E
-P 5650 3750
-F 0 "U1" H 5450 4050 60  0000 C CNN
-F 1 "AT25DF081A-SH" H 5650 3500 60  0000 C CNN
-	1    5650 3750
-	1    0    0    -1  
-$EndComp
-Text Label 4500 3600 0    60   ~ 0
-CS_FLASH
-Text Label 4500 3700 0    60   ~ 0
-SPI_MISO
-Text Label 6700 3800 2    60   ~ 0
-SPI_SCK
-Text Label 6700 3900 2    60   ~ 0
-SPI_MOSI
-$Comp
-L GND #PWR015
-U 1 1 50CC832D
-P 4850 4050
-F 0 "#PWR015" H 4850 4050 30  0001 C CNN
-F 1 "GND" H 4850 3980 30  0001 C CNN
-	1    4850 4050
-	1    0    0    -1  
-$EndComp
-$Comp
-L +3.3V #PWR016
-U 1 1 50CC832C
-P 6300 3400
-F 0 "#PWR016" H 6300 3360 30  0001 C CNN
-F 1 "+3.3V" H 6300 3510 30  0000 C CNN
-	1    6300 3400
-	1    0    0    -1  
-$EndComp
-$Comp
-L +3.3V #PWR017
-U 1 1 50CC832B
-P 5000 3400
-F 0 "#PWR017" H 5000 3360 30  0001 C CNN
-F 1 "+3.3V" H 5000 3510 30  0000 C CNN
-	1    5000 3400
-	1    0    0    -1  
-$EndComp
-$Comp
-L +3.3V #PWR018
-U 1 1 50CC832A
-P 6450 3400
-F 0 "#PWR018" H 6450 3360 30  0001 C CNN
-F 1 "+3.3V" H 6450 3510 30  0000 C CNN
-	1    6450 3400
+P 5550 4600
+F 0 "C1" H 5600 4700 50  0000 L CNN
+F 1 "100n" H 5600 4500 50  0000 L CNN
+	1    5550 4600
 	1    0    0    -1  
 $EndComp
 $Comp
 L +3.3V #PWR019
 U 1 1 50CC8329
-P 5600 4550
-F 0 "#PWR019" H 5600 4510 30  0001 C CNN
-F 1 "+3.3V" H 5600 4660 30  0000 C CNN
-	1    5600 4550
+P 5550 4300
+F 0 "#PWR019" H 5550 4260 30  0001 C CNN
+F 1 "+3.3V" H 5550 4410 30  0000 C CNN
+	1    5550 4300
 	1    0    0    -1  
 $EndComp
 $Comp
 L GND #PWR020
 U 1 1 50CC8328
-P 5600 5200
-F 0 "#PWR020" H 5600 5200 30  0001 C CNN
-F 1 "GND" H 5600 5130 30  0001 C CNN
-	1    5600 5200
+P 5550 4950
+F 0 "#PWR020" H 5550 4950 30  0001 C CNN
+F 1 "GND" H 5550 4880 30  0001 C CNN
+	1    5550 4950
 	1    0    0    -1  
 $EndComp
 $Comp
 L C C8
 U 1 1 50CC8327
-P 5850 4850
-F 0 "C8" H 5900 4950 50  0000 L CNN
-F 1 "DNP" H 5900 4750 50  0000 L CNN
-	1    5850 4850
+P 5800 4600
+F 0 "C8" H 5850 4700 50  0000 L CNN
+F 1 "DNP" H 5850 4500 50  0000 L CNN
+	1    5800 4600
 	1    0    0    -1  
 $EndComp
-Connection ~ 5600 5100
-Wire Wire Line
-	5600 5100 5850 5100
-Wire Wire Line
-	5850 5100 5850 5050
-Wire Wire Line
-	5600 5200 5600 5050
-Wire Wire Line
-	6300 3400 6300 3600
-Wire Wire Line
-	4850 4050 4850 3900
-Wire Wire Line
-	4850 3900 5050 3900
-Wire Wire Line
-	5050 3700 4500 3700
-Wire Wire Line
-	5050 3600 4500 3600
-Wire Wire Line
-	6300 3600 6200 3600
-Wire Wire Line
-	6200 3800 6700 3800
-Wire Wire Line
-	6200 3900 6700 3900
-Wire Wire Line
-	5050 3800 5000 3800
-Wire Wire Line
-	5000 3800 5000 3400
-Wire Wire Line
-	6200 3700 6450 3700
-Wire Wire Line
-	6450 3700 6450 3400
-Wire Wire Line
-	5600 4650 5600 4550
-Wire Wire Line
-	5850 4650 5850 4600
-Wire Wire Line
-	5850 4600 5600 4600
-Connection ~ 5600 4600
 $EndSCHEMATC

@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPcb (2012-apr-16-27)-stable date = Sat 08 Jun 2013 02:00:04 PM CEST
+Cmp-Mod V01 Created by CvPcb (2012-apr-16-27)-stable date = Sat 08 Jun 2013 06:43:18 PM CEST
 
 BeginCmp
 TimeStamp = /50CC8305/50CC832F;
@@ -10,7 +10,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F7EF61F/4F8046B1;
 Reference = C2;
-ValeurCmp = 16pF;
+ValeurCmp = 15p;
 IdModule  = SMC0805;
 EndCmp
 
@@ -53,7 +53,7 @@ BeginCmp
 TimeStamp = /50CC8305/50CC8327;
 Reference = C8;
 ValeurCmp = DNP;
-IdModule  = SMC0805;
+IdModule  = SMC1206;
 EndCmp
 
 BeginCmp
@@ -80,7 +80,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F7EF61F/4F8046B9;
 Reference = C12;
-ValeurCmp = 16pF;
+ValeurCmp = 15p;
 IdModule  = SMC0805;
 EndCmp
 
@@ -612,7 +612,7 @@ EndCmp
 BeginCmp
 TimeStamp = /50CC7DE6/50CC7FBC;
 Reference = R6;
-ValeurCmp = 35;
+ValeurCmp = 36;
 IdModule  = SM1206;
 EndCmp
 
@@ -808,7 +808,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F7E05A5/4F905A63;
 Reference = RK13;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -822,7 +822,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F7E05A5/4F7E0973;
 Reference = RK23;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -836,7 +836,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F7E05A5/4F7E096A;
 Reference = RK33;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -850,7 +850,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F7E05A5/4F905A42;
 Reference = RK43;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -864,7 +864,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F905A24/4F7E098A;
 Reference = RK53;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -878,7 +878,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F905A24/4F92B24D;
 Reference = RK63;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -892,7 +892,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F905A24/4F92B243;
 Reference = RK73;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -906,7 +906,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F905A24/4F92B1FB;
 Reference = RK83;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -920,7 +920,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F92A9C4/4F92B215;
 Reference = RK93;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -934,7 +934,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F92A9C4/4F905A56;
 Reference = RK103;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -948,7 +948,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F92A9C4/4F92B244;
 Reference = RK113;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -962,7 +962,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F92A9C4/4F92B1FC;
 Reference = RK123;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -976,7 +976,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F92B0F3/4F92B216;
 Reference = RK133;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -990,7 +990,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F92B0F3/4F92B24E;
 Reference = RK143;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -1004,7 +1004,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F92B0F3/4F905A4F;
 Reference = RK153;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -1018,7 +1018,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4F92B0F3/4F7E0953;
 Reference = RK163;
-ValeurCmp = 240;
+ValeurCmp = 390;
 IdModule  = SM0805-silkfix;
 EndCmp
 
@@ -1534,9 +1534,9 @@ IdModule  = EDGEPAD;
 EndCmp
 
 BeginCmp
-TimeStamp = /50CC8305/50CC832E;
+TimeStamp = /50CC8305/51B35808;
 Reference = U1;
-ValeurCmp = AT25DF081A-SH;
+ValeurCmp = AT45DB;
 IdModule  = SO8-hybrid;
 EndCmp
 
