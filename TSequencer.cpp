@@ -54,7 +54,7 @@ void TSequencer::Load()
         Scenes[scene].Flags = scene == 0 ? TSequencerScene::FLAG_ENABLED : 0;
         Scenes[scene].Channel = 0;
         Scenes[scene].StepLength = 4; // quarter note
-        Scenes[scene].Steps = 4;
+        Scenes[scene].Steps = 16;
 
         for (int s = 0; s < SEQLEN; s++) {
             Scenes[scene].Data[s].Flags = Scenes[scene].Data[s].FLAG_ON;
@@ -62,6 +62,7 @@ void TSequencer::Load()
             Scenes[scene].Data[s].Velocity = 0x40;
             Scenes[scene].Data[s].Len = 24;
             Scenes[scene].Data[s].Offset = 0;
+            Scenes[scene].Data[s].Action = TActionField().Encode();
         }
         CalculateSchedule(scene);
     }
@@ -133,7 +134,7 @@ void TSequencer::ConfigureTimer()
     // 12 BPM --> 1 250 000, 240 BPM --> 62 500
     /// \todo: Calculate an error that we can correct when running
     const uint32_t prescale = 50;
-    const uint32_t counts = (rcc_ppre2_frequency * 60 / TicksPerBeat / prescale) / Tempo;
+    const uint32_t counts = ((rcc_ppre2_frequency / TicksPerBeat) * 60 / prescale) / Tempo;
 
     timer_set_prescaler(TIM2, prescale - 1);
     timer_set_period(TIM2, counts - 1);
@@ -296,7 +297,10 @@ void TSequencer::UpdateKnobs()
         const int scene = CurrentScene;
 
         for (int knob = 0; knob < TKnobs::Knobs; knob++) {
-            if (Position[scene].Step == knob) {
+            if (!(Scenes[scene].Flags & TSequencerScene::FLAG_ENABLED)) {
+                Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 0;
+            }
+            else if (Position[scene].Step == knob) {
                 Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 0xff;
             }
             else if (StepIsEnabled(scene, knob)) {
@@ -428,6 +432,18 @@ void TSequencer::ToggleRunning()
     }
 }
 
+void TSequencer::Resync()
+{
+    GlobalPosition = TPosition();
+    for (int s = 0; s < SceneCount; s++) {
+        Position[s] = TPosition();
+        CalculateSchedule(s);
+        // FIXME: Should probably kill sounding notes here and perhaps start new ones.
+        // FIXME: Need to update LastPosition to something clever.
+    }
+    UpdateKnobs();
+}
+
 void TSequencer::ChangeStepLength(int8_t v)
 {
     Scenes[CurrentScene].StepLength = clamp(Scenes[CurrentScene].StepLength + v, 0, 96);
@@ -447,6 +463,27 @@ void TSequencer::NoteOn(TSequencerScene& scene, uint8_t step)
     TMidiEvent event = {{ (uint8_t)(TMidiEvent::MIDI_NOTE_ON | scene.Channel), data.Note, data.Velocity }};
     MidiOutput.SendEvent(event);
     data.Flags |= TSequencerScene::TData::FLAG_SOUNDING;
+}
+
+void TSequencer::MidiEvent(const TMidiEvent& event)
+{
+    if (event.GetType() == TMidiEvent::MIDI_CC) {
+    }
+}
+
+void TSequencer::MidiRealtimeMessage(uint8_t m)
+{
+    switch (m) {
+    case TMidiEvent::MIDI_SEQ_START:
+        if (!Running) Start();
+        break;
+    case TMidiEvent::MIDI_SEQ_CONTINUE:
+        if (!Running) Start();
+        break;
+    case TMidiEvent::MIDI_SEQ_STOP:
+        if (Running) Stop();
+        break;
+    }
 }
 
 /*
@@ -506,4 +543,10 @@ void TSequencer::TEventSchedule::Dump()
     }
     LOG("   end.\n");
 #endif
+}
+
+
+uint16_t TActionField::Encode() const
+{
+    return *((uint16_t*)this);
 }

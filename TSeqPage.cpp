@@ -9,10 +9,9 @@ const TSeqPage::eventhandler_t TSeqPage::EventHandler[FOCUS_LAST + 1] = {
         0,
         &TSeqPage::EventHandlerScene,
         &TSeqPage::EventHandlerSetup,
-        0,
         &TSeqPage::EventHandlerStep,
         0,
-        0,
+        &TSeqPage::EventHandlerAction,
         &TSeqPage::EventHandlerVelo,
         &TSeqPage::EventHandlerLen,
         &TSeqPage::EventHandlerOffset,
@@ -84,6 +83,11 @@ void TSeqPage::Show()
             Sequencer.ToggleRunning();
             break;
 
+        case KEY_LONGPRESS_BACK:
+            Sequencer.Stop();
+            Sequencer.Resync();
+            break;
+
         case BLINK_TIMER:
             if (Selected) {
                 Blink = !Blink;
@@ -143,8 +147,6 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
     }
     else if (n == 2) {
         pos = line->DrawText("setup\022", pos, Focus == FOCUS_SETUPMENU);
-        pos = line->Advance(pos);
-        pos = line->DrawText("actions\022", pos, Focus == FOCUS_ACTIONMENU);
     }
     else if (n == 3) {
         char text[9];
@@ -157,7 +159,7 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
                 pos, Focus == FOCUS_NOTE);
     }
     else if (n == 4) {
-        line->DrawText("action: start S2", LeftMargin, Focus == FOCUS_ACTION);
+        line->DrawText("act: start S2", LeftMargin, Focus == FOCUS_ACTION);
     }
     else if (n == 5) {
         char text[9];
@@ -224,39 +226,7 @@ bool TSeqPage::EventHandlerSetup(TEvent event)
 {
     switch (event_code(event)) {
     case KEY_OK:
-        // FIXME: Measure and reduce stack usage
-        int selection = -1;
-        {
-            TSetupMenuPopup popup;
-            selection = popup.Show();
-            Gui.UpdateAll();
-        }
-        if (selection == 7 || selection == 8) {
-            int slot = -1;
-            {
-                TMemorySlotPopup slotPopup("Select slot\022");
-                slot = slotPopup.Show();
-            }
-            if (selection == 7 && slot != -1) { // LOAD...
-                const uint8_t sceneno = Sequencer.GetCurrentScene();
-                Sequencer.LoadFromMemory(sceneno, slot);
-            }
-            else if (selection == 8 && slot != -1) { // STORE...
-                TNamePopup namePopup;
-
-                // Slot names will have been cached by the name list that is currently displaying
-                const TNameList* l = reinterpret_cast<TNameList*>(Memory.GetCachedBlock());
-                if (l->Magic == TNameList::MAGIC && slot < l->FetchedCount) {
-                    namePopup.SetName(l->Names[slot]);
-                } else {
-                    namePopup.SetName("no name");
-                }
-                if (namePopup.Show()) {
-                    const uint8_t sceneno = Sequencer.GetCurrentScene();
-                    Sequencer.StoreInMemory(sceneno, slot);
-                }
-            }
-        }
+        TSetupMenuPopup::Popup();
         return true;
     }
     return false;
@@ -273,6 +243,16 @@ bool TSeqPage::EventHandlerStep(TEvent event)
             CurrentStep++;
             return true;
         }
+    }
+    return false;
+}
+
+bool TSeqPage::EventHandlerAction(TEvent event)
+{
+    switch (event_code(event)) {
+    case KEY_OK:
+        TActionMenuPopup::Popup();
+        return true;
     }
     return false;
 }
@@ -414,6 +394,9 @@ void TSeqOverviewPage::Show()
                 TopMenu.Event(event);
                 return;
             }
+            else if (Focus >= FOCUS_SCENE_1 && Focus <= FOCUS_SCENE_4){
+                TSetupMenuPopup::Popup();
+            }
             break;
 
         case KEY_BACK:
@@ -426,6 +409,11 @@ void TSeqOverviewPage::Show()
                 return;
             }
             Sequencer.ToggleRunning();
+            break;
+
+        case KEY_LONGPRESS_BACK:
+            Sequencer.Stop();
+            Sequencer.Resync();
             break;
 
         case KNOB_RIGHT:
@@ -476,22 +464,46 @@ void TSeqOverviewPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
         line->Invert(shadeend, line->GetLength());
     }
     else if (n >= 2 && n <= 5) {
-        const int scene = n - 2;
+        // Display a line with the scene's steps
+        const int sceneno = n - 2;
         pos = 1;
+        const TSequencerScene& scene = Sequencer.Scenes[sceneno];
 
-        for (int step = 0; step < Sequencer.Scenes[scene].Steps; step++) {
+        for (int step = 0; step < scene.Steps; step++) {
             if ((step % 4) == 0 && step != 0) {
+                // A single pixel space between every fourth step
                 line->Data[pos] = 0x7e;
                 pos++;
             }
-            if (Sequencer.Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON) {
-                pos = line->DrawText("o", pos);
+            if (scene.Data[step].Flags & TSequencerScene::TData::FLAG_ON) {
+                // This step is on
+                if (scene.Data[step].Action != 0) {
+                    pos = line->DrawText("0", pos);
+                } else {
+                    pos = line->DrawText("o", pos);
+                }
             }
             else {
-                pos = line->DrawText("-", pos);
+                // This step is off
+                if (scene.Data[step].Action != 0) {
+                    pos = line->DrawText("=", pos);
+                }
+                else {
+                    pos = line->DrawText("-", pos);
+                }
+            }
+
+            if (Sequencer.GetPosition(sceneno).Step == step) {
+                // This is the currently playing step for this scene
+                if (scene.Flags & TSequencerScene::FLAG_ENABLED) {
+                    line->Invert(pos - TDisplay::GlyphWidth, pos);
+                }
+                else {
+                    line->Invert(pos - TDisplay::GlyphWidth, pos, 0x40);
+                }
             }
         }
-        if (Focus == FOCUS_SCENE_1 + scene) {
+        if (Focus == FOCUS_SCENE_1 + sceneno) {
             line->Invert(0, line->GetLength());
         }
     }
@@ -505,6 +517,43 @@ void TSeqOverviewPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 /*
  * ******************************************
  */
+
+void TSetupMenuPopup::Popup()
+{
+    // FIXME: Measure and reduce stack usage
+    int selection = -1;
+    {
+        TSetupMenuPopup popup;
+        selection = popup.Show();
+        Gui.UpdateAll();
+    }
+    if (selection == 7 || selection == 8) {
+        int slot = -1;
+        {
+            TMemorySlotPopup slotPopup("Select slot\022");
+            slot = slotPopup.Show();
+        }
+        if (selection == 7 && slot != -1) { // LOAD...
+            const uint8_t sceneno = Sequencer.GetCurrentScene();
+            Sequencer.LoadFromMemory(sceneno, slot);
+        }
+        else if (selection == 8 && slot != -1) { // STORE...
+            TNamePopup namePopup;
+
+            // Slot names will have been cached by the name list that is currently displaying
+            const TNameList* l = reinterpret_cast<TNameList*>(Memory.GetCachedBlock());
+            if (l->Magic == TNameList::MAGIC && slot < l->FetchedCount) {
+                namePopup.SetName(l->Names[slot]);
+            } else {
+                namePopup.SetName("no name");
+            }
+            if (namePopup.Show()) {
+                const uint8_t sceneno = Sequencer.GetCurrentScene();
+                Sequencer.StoreInMemory(sceneno, slot);
+            }
+        }
+    }
+}
 
 void TSetupMenuPopup::GetMenuTitle(char text[MenuTextLen])
 {
@@ -592,6 +641,38 @@ bool TSetupMenuPopup::ItemSelected(uint8_t n)
     }
     return false;
 }
+
+
+
+void TActionMenuPopup::Popup()
+{
+    int selection = -1;
+    {
+        TActionMenuPopup popup;
+        selection = popup.Show();
+        Gui.UpdateAll();
+    }
+    switch (selection) {
+    case 0:
+        break;
+    }
+}
+
+void TActionMenuPopup::GetMenuTitle(char text[MenuTextLen])
+{
+    cheap_strcpy(text, "Action");
+}
+
+void TActionMenuPopup::GetMenuItem(uint8_t n, char text[MenuTextLen])
+{
+    switch (n) {
+    case 0:
+        cheap_strcpy(text, "Enable scene");
+        break;
+    }
+}
+
+
 
 TMemorySlotPopup::TMemorySlotPopup(const char* title) :
                         Title(title)

@@ -2,16 +2,19 @@
 #pragma once
 
 const uint8_t NO_EVENT      = 0x00;
-const uint8_t KEY_UP        = 0x10;
-const uint8_t KEY_DOWN      = 0x20;
-const uint8_t KEY_OK        = 0x30;
-const uint8_t KEY_BACK      = 0x40;
-//const uint8_t RECEIVE_FOCUS = 0x50;
-const uint8_t BLINK_TIMER   = 0x60;
-const uint8_t KNOB_RIGHT    = 0x70;
-const uint8_t KNOB_LEFT     = 0x80;
-const uint8_t KNOB_PUSH     = 0x90;
-const uint8_t RENDER_LINE   = 0xa0;
+const uint8_t KEY_OK        = 0x10; // Note that value is hard-coded in main.cpp
+const uint8_t KEY_UP        = 0x20; // Note that value is hard-coded in main.cpp
+const uint8_t KEY_DOWN      = 0x30; // Note that value is hard-coded in main.cpp
+const uint8_t KEY_BACK      = 0x40; // Note that value is hard-coded in main.cpp
+const uint8_t KEY_LONGPRESS_OK   = 0x50; // Note that value is hard-coded in main.cpp
+const uint8_t KEY_LONGPRESS_UP   = 0x60; // Note that value is hard-coded in main.cpp
+const uint8_t KEY_LONGPRESS_DOWN = 0x70; // Note that value is hard-coded in main.cpp
+const uint8_t KEY_LONGPRESS_BACK = 0x80; // Note that value is hard-coded in main.cpp
+const uint8_t BLINK_TIMER   = 0x90;
+const uint8_t KNOB_RIGHT    = 0xa0; // Value: knob number
+const uint8_t KNOB_LEFT     = 0xb0; // Value: knob number
+const uint8_t KNOB_PUSH     = 0xc0; // Value: knob number
+const uint8_t RENDER_LINE   = 0xd0; // Value: line number
 
 typedef uint8_t TEvent;
 

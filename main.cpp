@@ -16,37 +16,17 @@
  * \file main.cpp
  * \verbatim
  *
- * This code expects to run on a STM32F102C8. 64k flash, 10k RAM.
+ * This code expects to run on a STM32F103RC. 256k flash, 48k RAM.
  * Resources:
- * USART1 - Shift registers for encoders and LEDs, programming
- * USART2 - MIDI in/out
- * USART3 - (unused)
- * SPI1 - LCD and Flash
- * SPI2 - (unused)
- * I2C1 - (unused)
- * I2C1 - (unused)
+ * USART1 - Shift registers for encoders and LEDs
+ * USART2 - MIDI 1 in/out
+ * USART3 - MIDI 2 in/out
+ * SPI1 - AT45 Flash
+ * SPI2 - LCD
  * TIM2 - Sequencer event timing, at 48 strikes per quarter note
  * TIM3 -
  * TIM4 -
  * SysTick timer - 1ms master timer
- *
- * Pin connections (specified in device.h):
- *
- * PB15: Vpullup - LCD backlight, encoder pullup voltage
- * BOOT1 (PB2): pulled high
- * BOOT0: connected to SW2, default low
- * LCD display:
- *   SPI1_MOSI (PA7), SPI1_SCK (PA5), PB14: A0, PA4: CS, PA0: RST
- * Atmel SPI flash:
- *   SPI1_MOSI (PA7), SPI1_MISO (PA6), SPI1_SCK (PA5), PB0: CS
- * Buttons:
- *   PB5: SW1, PB4: SW2, PB13: SW3, PB12: SW4
- * MIDI:
- *   USART2_TX (PA2), USART2_RX (PA3)
- * Output shift registers (LED drive):
- *   USART1_TX (PA9): data, USART1_CK (PA8): clock, PB8: load, PB9: OE
- * Input shift registers (Encoder and push button read)
- *   USART1_RX (PA10): data, UART1_CK (PA8): clock, PB6: load, PB7: CE
  *
  * \endverbatim
  */
@@ -64,7 +44,7 @@ TControllers Controllers(Midi);
 TUsb Usb;
 
 static void gui_task(void) __attribute__((noreturn));
-static uint8_t __attribute__((aligned(8))) gui_task_stack[300];
+static uint8_t __attribute__((aligned(8))) gui_task_stack[320];
 TScheduler::TTaskControlBlock TScheduler::Tcbs[SCHEDULER_NUM_TASKS];
 uint8_t TScheduler::CurrentTask;
 const TScheduler::TTask TScheduler::Tasks[SCHEDULER_NUM_TASKS] = {
@@ -117,13 +97,13 @@ void usage_fault_handler(void)
     while (1);
 }
 
-/** DMA channel 1:2 -- SPI1_RX (display and flash) */
+/** DMA channel 1:2 -- SPI1_RX (flash) */
 void dma1_channel2_isr(void)
 {
 #ifndef HOST
-    dma_disable_transfer_complete_interrupt(DMA1, DMA_CHANNEL2);
-    dma_disable_channel(DMA1, DMA_CHANNEL3);
-    spi_disable_tx_dma(SPI1);
+    dma_disable_transfer_complete_interrupt(DMA1, FLASH_DMA_RX_CHANNEL);
+    dma_disable_channel(DMA1, FLASH_DMA_TX_CHANNEL);
+    spi_disable_tx_dma(FLASH_SPI_CHANNEL);
 
     // Note: we have to wait until TXE=1 and BSY=0 before changing CS lines.
 #endif
@@ -132,12 +112,19 @@ void dma1_channel2_isr(void)
     SpiDmaState = SPI_DMA_STATE_FINISHED;
 }
 
-/** DMA channel 1:5 -- USART1_RX (shift registers) */
-void dma1_channel5_isr(void)
+/** DMA channel 1:4 -- SPI2_RX (display) */
+void dma1_channel4_isr(void)
 {
-    /// \todo Once we get the latency in the main loop down, perhaps
-    /// this could be moved to a bottom-half?
-    Knobs.StartShifting();
+#ifndef HOST
+    dma_disable_transfer_complete_interrupt(DMA1, LCD_DMA_RX_CHANNEL);
+    dma_disable_channel(DMA1, LCD_DMA_TX_CHANNEL);
+    spi_disable_tx_dma(LCD_SPI_CHANNEL);
+
+    // Note: we have to wait until TXE=1 and BSY=0 before changing CS lines.
+#endif
+    assert(SpiDmaState == SPI_DMA_STATE_RUNNING);
+
+    SpiDmaState = SPI_DMA_STATE_FINISHED;
 }
 
 void usart2_isr(void)
@@ -163,6 +150,7 @@ void tim2_isr(void)
 #ifndef HOST
     TIM_SR(TIM2) &= ~TIM_SR_UIF; // Clear interrupt
 #endif
+    Pin_led_tp16.Toggle();
     Sequencer.Step();
 }
 
@@ -205,8 +193,10 @@ int main(void)
 
     deviceInit();
 
+    Pin_lcd_backlight.Clear();
+    Pin_led_tp9.Set(); // Turn on LED
+    Pin_led_tp16.Set(); // Turn on LED
     Pin_vpullup.Clear();
-    Pin_lcd_rst.Clear();
     // Chip selects are active-low.
     Pin_flash_cs.Set();
     Pin_lcd_cs.Set();
@@ -241,7 +231,6 @@ int main(void)
     Sequencer.Load();
     Display.Init();
 
-    Knobs.InitDma();
     Knobs.StartShifting();
     Pin_shift_out_en.Clear(); // Turn on LED driver
     Pin_shift_in_en.Clear();
@@ -251,12 +240,23 @@ int main(void)
 
     Midi.EnableRxInterrupt();
 
+    Pin_led_tp9.Clear(); // Turn off LED
+    Pin_led_tp16.Clear(); // Turn off LED
+    Pin_led_enc1.Clear();
+    Pin_led_enc1.Set();
+    Pin_led_1.Set();
+    Pin_led_2.Set();
+    Pin_led_3.Clear();
+    Pin_led_4.Clear();
+    Pin_lcd_backlight.Set();
+
     while (true) {
         /* Interrupt "bottom half" processing */
 #ifndef HOST
         /* We disable the interrupt here to protect SpiDmaState, but also
          * because it doesn't work otherwise (which is a bit scary). */
         nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
+        nvic_disable_irq(NVIC_DMA1_CHANNEL4_IRQ);
         switch (SpiDmaState) {
         case SPI_DMA_STATE_RUNNING:
             break;
@@ -271,6 +271,7 @@ int main(void)
             break;
         }
         nvic_enable_irq(NVIC_DMA1_CHANNEL2_IRQ);
+        nvic_enable_irq(NVIC_DMA1_CHANNEL4_IRQ);
 #endif
 
         /* Poll switches */
@@ -278,21 +279,40 @@ int main(void)
             Actions &= ~ACTION_POLL_BUTTONS;
 
             // Tact switches
-            static uint16_t lastState = 0;
-            const uint16_t state = gpio_port_read(Pin_sw_1.Port);
-            const uint16_t pinMask = Pin_sw_1.Pin | Pin_sw_2.Pin | Pin_sw_3.Pin | Pin_sw_4.Pin;
-            if ((state ^ lastState) & pinMask) {
-                if (state & Pin_sw_1.Pin) {
-                    Gui.Event(KEY_OK);
-                } else if (state & Pin_sw_2.Pin) {
-                    Gui.Event(KEY_UP);
-                } else if (state & Pin_sw_3.Pin) {
-                    Gui.Event(KEY_DOWN);
-                } else if (state & Pin_sw_4.Pin) {
-                    Gui.Event(KEY_BACK);
+            static uint8_t lastState = 0;
+            static uint32_t pressTime[4] = { 0 };
+            const uint16_t port = gpio_port_read(Pin_sw_1.Port);
+            const uint8_t state =
+                    ((port & Pin_sw_1.Pin) ? 0x01 : 0x00) |
+                    ((port & Pin_sw_2.Pin) ? 0x02 : 0x00) |
+                    ((port & Pin_sw_3.Pin) ? 0x04 : 0x00) |
+                    ((port & Pin_sw_4.Pin) ? 0x08 : 0x00);
+
+            if (state ^ lastState) {
+                // At least one button has changed state
+
+                const uint16_t pressed = state & ~lastState;
+                const uint16_t released = lastState & ~state;
+
+                for (int i = 0; i < 4; i++) {
+                    if (pressed & (1 << i)) {
+                        pressTime[i] = SystemTime;
+                        Gui.Event(KEY_OK + 0x10 * i);
+                    }
+                    if (released & (1 << i)) {
+                        pressTime[i] = 0;
+                    }
                 }
             }
             lastState = state;
+
+            const int LONG_PRESS_DELAY_MS = 1000;
+            for (int i = 0; i < 4; i++) {
+                if (pressTime[i] != 0 && SystemTime > (pressTime[i] + LONG_PRESS_DELAY_MS)) {
+                    Gui.Event(KEY_LONGPRESS_OK + 0x10 * i);
+                    pressTime[i] = 0;
+                }
+            }
 
             // Encoders and encoder push buttons
             Knobs.Poll();
@@ -300,6 +320,9 @@ int main(void)
         else if (Actions & ACTION_BLINK_TIMER) {
             Actions &= ~ACTION_BLINK_TIMER;
             Gui.Event(BLINK_TIMER);
+            //Pin_led_tp9.Toggle(); // Blink LED
+            //Pin_led_tp16.Toggle(); // Blink LED
+            Pin_led_4.Toggle(); // Blink LED
         }
 
         /* Poll I/O */
@@ -311,10 +334,18 @@ int main(void)
             // Feed through MIDI data
             Midi.EnqueueByte(b);
 
-            if (MidiParser.Feed(b)) {
-                if (Mode == MODE_CONTROLLER) {
-                    Controllers.MidiEvent(MidiParser.GetEvent());
+            TMidiParser::ParseResult res = MidiParser.Feed(b);
+            if (res == TMidiParser::GOT_EVENT) {
+                const TMidiEvent& event = MidiParser.GetEvent();
+                if (event.GetType() == TMidiEvent::MIDI_CC) {
+                    Controllers.MidiEvent(event);
                 }
+                else {
+                    Sequencer.MidiEvent(event);
+                }
+            }
+            else if (res == TMidiParser::GOT_REALTIME) {
+                Sequencer.MidiRealtimeMessage(MidiParser.GetRealtimeMessage());
             }
         }
 

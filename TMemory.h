@@ -102,8 +102,7 @@ struct TSequencerScene
         uint8_t Velocity;
         int8_t Offset; ///< In 48'ths of a step (+48 delays one step)
         uint8_t Cc;
-        uint8_t Action;
-        uint8_t Reserved1;
+        uint16_t Action;
     } Data[SEQLEN];
 };
 

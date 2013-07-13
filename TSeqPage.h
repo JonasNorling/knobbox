@@ -11,14 +11,14 @@ class TSeqPage : public TDisplayPageBase
 public:
     enum TFocus {
         // Currently focused field
-        FOCUS_TOP_MENU, FOCUS_SCENE_MENU, FOCUS_SETUPMENU, FOCUS_ACTIONMENU,
+        FOCUS_TOP_MENU, FOCUS_SCENE_MENU, FOCUS_SETUPMENU,
         FOCUS_STEP, FOCUS_NOTE, FOCUS_ACTION,
         FOCUS_VELO, FOCUS_LEN, FOCUS_OFFSET, FOCUS_CC,
         FOCUS_TEMPO,
         FOCUS_LAST = FOCUS_TEMPO
     };
 
-    TSeqPage() : Focus(FOCUS_TOP_MENU), CurrentStep(0),
+    TSeqPage(TFocus focus = FOCUS_TOP_MENU) : Focus(focus), CurrentStep(0),
             Selected(false), Blink(false) { }
     void Show();
     void Render(uint8_t n, TDisplay::TPageBuffer* line);
@@ -43,6 +43,7 @@ private:
     bool EventHandlerScene(TEvent event);
     bool EventHandlerSetup(TEvent event);
     bool EventHandlerStep(TEvent event);
+    bool EventHandlerAction(TEvent event);
     bool EventHandlerVelo(TEvent event);
     bool EventHandlerLen(TEvent event);
     bool EventHandlerOffset(TEvent event);
@@ -64,7 +65,7 @@ public:
         FOCUS_LAST = FOCUS_RESET
     };
 
-    TSeqOverviewPage() : Focus(FOCUS_TOP_MENU) { }
+    TSeqOverviewPage(TFocus focus = FOCUS_TOP_MENU) : Focus(focus) { }
     void Show();
     void Render(uint8_t n, TDisplay::TPageBuffer* line);
 
@@ -77,10 +78,19 @@ private:
 class TSetupMenuPopup : public TSettingsPopup
 {
 public:
+    static void Popup();
     virtual void ItemChanged(uint8_t n, int8_t value);
-virtual bool ItemSelected(uint8_t n);
-virtual void GetMenuTitle(char text[MenuTextLen]);
-virtual void GetMenuItem(uint8_t n, char text[MenuTextLen]);
+    virtual bool ItemSelected(uint8_t n);
+    virtual void GetMenuTitle(char text[MenuTextLen]);
+    virtual void GetMenuItem(uint8_t n, char text[MenuTextLen]);
+};
+
+class TActionMenuPopup : public TSelectPopup
+{
+public:
+    static void Popup();
+    virtual void GetMenuTitle(char text[MenuTextLen]);
+    virtual void GetMenuItem(uint8_t n, char text[MenuTextLen]);
 };
 
 class TMemorySlotPopup : public TSelectPopup

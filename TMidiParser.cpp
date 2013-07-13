@@ -6,18 +6,19 @@
  */
 #include "TMidiParser.h"
 
-bool TMidiParser::Feed(uint8_t data)
+TMidiParser::ParseResult TMidiParser::Feed(uint8_t data)
 {
-    if ((data & 0xf8) == TMidiEvent::MIDI_REALTIME) {
+    if ((data & TMidiEvent::MIDI_REALTIME_MASK) == TMidiEvent::MIDI_REALTIME_MASK) {
         // Realtime event can interrupt the data stream, ignore them.
-        return false;
+        RealtimeMessage = data;
+        return GOT_REALTIME;
     }
 
     Event.Data[State] = data;
     State++;
     if (State == 3) {
         State = 0;
-        return true;
+        return GOT_EVENT;
     }
-    return false;
+    return NEED_MORE_FOOD;
 }

@@ -8,7 +8,8 @@ void clockInit()
 {
     /// \todo Want to run at 48 MHz.
     //rcc_clock_setup_in_hse_8mhz_out_24mhz();
-    rcc_clock_setup_in_hsi_out_48mhz();
+    //rcc_clock_setup_in_hsi_out_48mhz();
+    rcc_clock_setup_in_hse_8mhz_out_72mhz();
 
     /*
      * Systick timer striking every 1ms (1kHz):
@@ -25,9 +26,11 @@ void clockInit()
     rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPCEN); // GPIOC
 
     rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_SPI1EN); // SPI1
+    rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_SPI2EN); // SPI2
     rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_DMA1EN); // DMA1
     rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_USART1EN); // USART1
     rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_USART2EN); // USART2
+    rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_USART3EN); // USART3
     rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN); // TIM2
     rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_OTGFSEN); // USB
 }
@@ -42,16 +45,21 @@ void deviceInit()
 
     Pin_lcd_a0.SetOutput();
     Pin_lcd_cs.SetOutput();
-    Pin_lcd_rst.SetOutput();
     Pin_flash_cs.SetOutput();
     Pin_shift_out_load.SetOutput();
     Pin_shift_out_en.SetOutput();
     Pin_shift_in_load.SetOutput();
     Pin_shift_in_en.SetOutput();
 
-    // Discovery: LEDs on PC8 and PC9
-    //Pin_led_b.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
-    //Pin_led_g.SetOutput(GPIO_MODE_OUTPUT_50_MHZ);
+    Pin_led_1.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+    Pin_led_2.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+    Pin_led_3.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+    Pin_led_4.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+    Pin_led_tp9.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+    Pin_led_tp16.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+    Pin_lcd_backlight.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+    Pin_led_enc1.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
+    Pin_led_enc2.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
 
     // Switches
     Pin_sw_1.SetInput(GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN);
@@ -60,9 +68,13 @@ void deviceInit()
     Pin_sw_4.SetInput(GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN);
 
     // SPI
-    Pin_spi_mosi.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
+    Pin_spi1_mosi.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
-    Pin_spi_sck.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
+    Pin_spi1_sck.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
+            GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
+    Pin_spi2_mosi.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
+            GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
+    Pin_spi2_sck.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
 
     // USART1
@@ -72,7 +84,11 @@ void deviceInit()
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
 
     // USART2
-    Pin_midi_out.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
+    Pin_midi1_out.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
+            GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
+
+    // USART3
+    Pin_midi2_out.SetOutput(GPIO_MODE_OUTPUT_50_MHZ,
             GPIO_CNF_OUTPUT_ALTFN_PUSHPULL);
 
     Pin_vpullup.SetOutput(GPIO_MODE_OUTPUT_2_MHZ);
@@ -82,17 +98,29 @@ void deviceInit()
      * SPI
      */
 
-    spi_set_unidirectional_mode(SPI1);
-    spi_disable_crc(SPI1);
-    spi_set_dff_8bit(SPI1);
-    spi_set_full_duplex_mode(SPI1);
-    spi_enable_software_slave_management(SPI1);
-    spi_set_nss_high(SPI1);
-    spi_set_baudrate_prescaler(SPI1, SPI_CR1_BR_FPCLK_DIV_32);
-    spi_set_master_mode(SPI1);
-    spi_set_clock_polarity_1(SPI1);
-    spi_set_clock_phase_1(SPI1);
-    spi_enable(SPI1);
+    spi_set_unidirectional_mode(LCD_SPI_CHANNEL);
+    spi_disable_crc(LCD_SPI_CHANNEL);
+    spi_set_dff_8bit(LCD_SPI_CHANNEL);
+    spi_set_full_duplex_mode(LCD_SPI_CHANNEL);
+    spi_enable_software_slave_management(LCD_SPI_CHANNEL);
+    spi_set_nss_high(LCD_SPI_CHANNEL);
+    spi_set_baudrate_prescaler(LCD_SPI_CHANNEL, SPI_CR1_BR_FPCLK_DIV_32);
+    spi_set_master_mode(LCD_SPI_CHANNEL);
+    spi_set_clock_polarity_1(LCD_SPI_CHANNEL);
+    spi_set_clock_phase_1(LCD_SPI_CHANNEL);
+    spi_enable(LCD_SPI_CHANNEL);
+
+    spi_set_unidirectional_mode(FLASH_SPI_CHANNEL);
+    spi_disable_crc(FLASH_SPI_CHANNEL);
+    spi_set_dff_8bit(FLASH_SPI_CHANNEL);
+    spi_set_full_duplex_mode(FLASH_SPI_CHANNEL);
+    spi_enable_software_slave_management(FLASH_SPI_CHANNEL);
+    spi_set_nss_high(FLASH_SPI_CHANNEL);
+    spi_set_baudrate_prescaler(FLASH_SPI_CHANNEL, SPI_CR1_BR_FPCLK_DIV_32);
+    spi_set_master_mode(FLASH_SPI_CHANNEL);
+    spi_set_clock_polarity_1(FLASH_SPI_CHANNEL);
+    spi_set_clock_phase_1(FLASH_SPI_CHANNEL);
+    spi_enable(FLASH_SPI_CHANNEL);
 
     /*
      * *********************************************************** *
@@ -143,28 +171,26 @@ void deviceInit()
     nvic_enable_irq(NVIC_BUS_FAULT_IRQ);
     nvic_enable_irq(NVIC_USAGE_FAULT_IRQ);
 
-    // SPI DMA transmission done interrupt
-    nvic_set_priority(NVIC_DMA1_CHANNEL3_IRQ, 4);
-    nvic_enable_irq(NVIC_DMA1_CHANNEL3_IRQ);
-
-    // SPI DMA reception done interrupt
-    nvic_set_priority(NVIC_DMA1_CHANNEL2_IRQ, 4);
+    // SPI1 DMA transmission and reception done interrupt
+    nvic_set_priority(NVIC_DMA1_CHANNEL2_IRQ, 0xff);
     nvic_enable_irq(NVIC_DMA1_CHANNEL2_IRQ);
 
-    // Shift register USART DMA transmission done interrupt
-    nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 4);
+    // SPI2 DMA transmission and reception done interrupt
+    nvic_set_priority(NVIC_DMA1_CHANNEL4_IRQ, 0xff);
     nvic_enable_irq(NVIC_DMA1_CHANNEL4_IRQ);
-    nvic_set_priority(NVIC_DMA1_CHANNEL5_IRQ, 4);
-    nvic_enable_irq(NVIC_DMA1_CHANNEL5_IRQ);
 
     // Sequencer timer
     nvic_enable_irq(NVIC_TIM2_IRQ);
-    nvic_set_priority(NVIC_TIM2_IRQ, 2);
+    nvic_set_priority(NVIC_TIM2_IRQ, 0xff);
 
     // Millisecond timer
-    nvic_set_priority(NVIC_SYSTICK_IRQ, 2);
+    nvic_set_priority(NVIC_SYSTICK_IRQ, 0xff);
+
+    // Knobs USART
+    nvic_enable_irq(NVIC_USART1_IRQ);
+    nvic_set_priority(NVIC_USART1_IRQ, 0x00);
 
     // MIDI USART
     nvic_enable_irq(NVIC_USART2_IRQ);
-    nvic_set_priority(NVIC_USART2_IRQ, 2);
+    nvic_set_priority(NVIC_USART2_IRQ, 0xff);
 }

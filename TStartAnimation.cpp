@@ -37,7 +37,7 @@ void TStartAnimation::Show()
                 Gui.UpdateAll();
 
                 for (int knob = 0; knob < TKnobs::Knobs; knob++) {
-                  Knobs.LedIntensity[Knobs.COLOR_RED][knob] = (State >> 6) >= knob ? 0xff : 0;
+                  Knobs.LedIntensity[Knobs.COLOR_RED][knob] = (State >> 4) >= knob ? 0xff : 0;
                   Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = 256 - State;
                 }
             }

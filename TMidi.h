@@ -13,8 +13,18 @@ struct TMidiEvent
     static const uint8_t MIDI_NOTE_OFF = 0x80;
     static const uint8_t MIDI_NOTE_ON = 0x90;
     static const uint8_t MIDI_CC = 0xb0;
-    static const uint8_t MIDI_REALTIME = 0xf8;
+
+    static const uint8_t MIDI_SYSEX = 0xf0;
+    static const uint8_t MIDI_END_SYSEX = 0xf7;
+
     static const uint8_t MIDI_CLOCK_TICK = 0xf8;
+    static const uint8_t MIDI_SEQ_START = 0xfa;
+    static const uint8_t MIDI_SEQ_CONTINUE = 0xfb;
+    static const uint8_t MIDI_SEQ_STOP = 0xfc;
+    static const uint8_t MIDI_ACTIVE_SENSE = 0xfe;
+    static const uint8_t MIDI_RESET = 0xff;
+
+    static const uint8_t MIDI_REALTIME_MASK = 0xf8;
     static const uint8_t MIDI_NOTE_C0 = 12;
     static const uint8_t MIDI_NOTE_MIN = MIDI_NOTE_C0;
     static const uint8_t MIDI_NOTE_MAX = 127;
@@ -109,7 +119,7 @@ private:
 #ifndef HOST
     void usart_send(uint32_t usart, uint8_t data)
     {
-        USART_DR(usart) = (data & USART_DR_MASK);
+        USART_DR(usart) = data;
     }
 
     uint8_t usart_receive(uint32_t usart)

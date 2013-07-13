@@ -14,16 +14,24 @@
 class TMidiParser
 {
 public:
-    TMidiParser() : State(0) {}
+    enum ParseResult {
+        NEED_MORE_FOOD,
+        GOT_REALTIME,
+        GOT_EVENT
+    };
+
+    TMidiParser() : State(0), RealtimeMessage(0) {}
 
     /** Parse another byte. Return true if an event is ready to be read. */
-    bool Feed(uint8_t data);
+    ParseResult Feed(uint8_t data);
 
     const TMidiEvent& GetEvent() const { return Event; }
+    uint8_t GetRealtimeMessage() const { return RealtimeMessage; }
 
 private:
     TMidiEvent Event;
     uint8_t State;
+    uint8_t RealtimeMessage;
 };
 
 #endif /* TMIDIPARSER_H_ */

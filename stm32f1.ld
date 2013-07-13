@@ -20,9 +20,9 @@
 /* Define memory regions. */
 MEMORY
 {
-	/* STM32F102C8T6: 64k flash, 10k RAM */
-	rom (rx) : ORIGIN = 0x08000000, LENGTH = 64K
-	ram (rwx) : ORIGIN = 0x20000000, LENGTH = 10K
+	/* STM32F103RC: 256k flash, 48k RAM */
+	rom (rx) : ORIGIN = 0x08000000, LENGTH = 256K
+	ram (rwx) : ORIGIN = 0x20000000, LENGTH = 48K
 }
 
 /* Include the common ld script. */

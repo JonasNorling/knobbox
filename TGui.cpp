@@ -87,27 +87,33 @@ void TGui::Show()
         TStartAnimation anim;
         anim.Show();
     }
+
+    int lastMode = -1;
     while (true) {
+
         switch (Mode) {
         case MODE_CONTROLLER: {
             TControllerPage page;
             page.Show();
+            lastMode = MODE_CONTROLLER;
             break;
         }
         case MODE_SEQ: {
             if (TSeqPage::LastSubpageWasOverview()) {
-                TSeqOverviewPage page;
+                TSeqOverviewPage page(lastMode == MODE_SEQ ? TSeqOverviewPage::FOCUS_SCENE_MENU : TSeqOverviewPage::FOCUS_TOP_MENU);
                 page.Show();
             }
             else {
-                TSeqPage page;
+                TSeqPage page(lastMode == MODE_SEQ ? TSeqPage::FOCUS_SCENE_MENU : TSeqPage::FOCUS_TOP_MENU);
                 page.Show();
             }
+            lastMode = MODE_SEQ;
             break;
         }
         case MODE_SETTINGS: {
             TSettingsPage page;
             page.Show();
+            lastMode = MODE_SETTINGS;
             break;
         }
         }

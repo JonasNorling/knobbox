@@ -110,11 +110,15 @@ public:
     uint8_t GetTempo() const { return Tempo; }
     void ChangeTempo(int8_t v);
     void ToggleRunning();
+    void Resync(); ///< Reset positions to 0
 
     const TPosition& GetGlobalPosition() const { return GlobalPosition; }
     const TPosition& GetPosition(uint8_t scene) const { return Position[scene]; }
     uint8_t GetCurrentScene() const { return CurrentScene; }
     void SetCurrentScene(uint8_t s) { CurrentScene = s; UpdateKnobs(); }
+
+    void MidiEvent(const TMidiEvent& event);
+    void MidiRealtimeMessage(uint8_t m);
 
     /// \todo Hide!
     TSequencerScene Scenes[SceneCount];
@@ -164,12 +168,39 @@ private:
     void ConfigureTimer();
     bool StepIsEnabled(int scene, int step) {
         return step < Scenes[scene].Steps &&
-                Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON;
+                (Scenes[scene].Data[step].Flags & TSequencerScene::TData::FLAG_ON);
     }
     void DoNextEvent(int sceneno);
     void PlayEvent(int sceneno, const TEventSchedule::TEntry& event);
     void NoteOff(TSequencerScene& scene, uint8_t step);
     void NoteOn(TSequencerScene& scene, uint8_t step);
+};
+
+class TActionField
+{
+public:
+    TActionField() : Type(ACTION_NONE) {}
+    uint16_t Encode() const;
+    void Decode(uint16_t);
+
+   enum TType {
+        ACTION_NONE,
+        ACTION_ENABLE_SCENE,    // Valid fields: Scene
+        ACTION_DISABLE_SCENE,   // Valid fields: Scene
+        ACTION_TOGGLE_SCENE,    // Valid fields: Scene
+        ACTION_ENABLE_STEP,     // Valid fields: Step (in this scene)
+        ACTION_DISABLE_STEP,    // Valid fields: Step (in this scene)
+        ACTION_TOGGLE_STEP,     // Valid fields: Step (in this scene)
+        ACTION_SET_POSITION,    // Valid fields: Scene, Step
+        ACTION_SET_STEPLENGTH,  // Valid fields: Scene, Value
+        ACTION_SET_DIRECTION    // Valid fields: Scene, Value
+    };
+
+    TType Type : 4;
+    uint8_t Reserved : 1;
+    uint8_t Scene : 3; // 0..3, 4=this
+    uint8_t Step : 4; // 0..15 (will there be space for minor position?)
+    uint8_t Value : 4;
 };
 
 extern TSequencer Sequencer;

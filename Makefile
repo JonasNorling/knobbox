@@ -129,6 +129,9 @@ $(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS) $(LIBOPENCM3)/lib/stm32/f1/libopencm3_st
 	@echo disassembling $@
 	@$(ARMOBJDUMP) -d -S $< > $@
 
+program: $(BUILDDIR) $(BUILDDIR)/$(PROJECT).bin
+	st-flash write $(BUILDDIR)/$(PROJECT).bin 0x08000000
+
 # -------------------------------------
 # ARM test program rules
 
@@ -186,4 +189,4 @@ clean:
 	rm -rf $(BUILDDIR) $(HOSTBUILDDIR) libopencm3-$(LIBOPENCM3_V)
 	rm -rf liquid-2.0 libopencm3
 
-.PHONY: clean all tests doc
+.PHONY: clean all tests doc program

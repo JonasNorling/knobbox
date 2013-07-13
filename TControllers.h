@@ -26,6 +26,11 @@ public:
         Load();
     }
 
+    void SetKnobColor(uint8_t knob, uint8_t value) {
+        Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 255 - value;
+        Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = (value * value) / 256;
+    }
+
     /// Load the controller scene from flash.
     void Load();
     const TParamScene& GetScene() const { return Scene; }
@@ -35,26 +40,15 @@ public:
     void IncreaseValue(int knob, uint8_t v) {
         uint8_t value = Values[knob] + v;
         if (value > MAX) value = MAX;
-        SetValue(knob, value);
+        SetValueFromUI(knob, value);
     }
     void DecreaseValue(int knob, uint8_t v) {
         uint8_t value = Values[knob] - v;
         if (value > MAX) value = MIN;
-        SetValue(knob, value);
+        SetValueFromUI(knob, value);
     }
-    void SetValue(int knob, uint8_t v) {
-        Values[knob] = v;
-        ActiveKnob = knob;
-        if (Mode == MODE_CONTROLLER) {
-            Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 255-2*Values[knob];
-            Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = 2*Values[knob];
-            Gui.UpdateLine(3);
-            Gui.UpdateLine(4);
-            Gui.UpdateLine(5);
-            Gui.UpdateLine(6);
-        }
-        SendMidi(knob);
-    }
+    void SetValueFromUI(int knob, uint8_t v);
+    void SetValue(int knob, uint8_t v);
 
     /**
      * Output the current PWM values to knob LEDs
@@ -62,8 +56,7 @@ public:
     void UpdateKnobs() {
         if (Mode == MODE_CONTROLLER) {
             for (int knob = 0; knob < TKnobs::Knobs; knob++) {
-                Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 255-2*Values[knob];
-                Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = 2*Values[knob];
+                SetKnobColor(knob, 2 * Values[knob]);
             }
         }
     }

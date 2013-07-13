@@ -18,37 +18,37 @@
 class TKnobs
 {
 public:
-  /// Number of knobs really on this board
-  static const uint8_t Knobs = 4;
-  /// Number of bytes we need to shift for LEDs and encoders
-  static const uint8_t ShiftLength = 2;
-  enum Color {
-    COLOR_RED = 0,
-    COLOR_GREEN = 1
-  };
+    /// Number of knobs really on this board
+    static const uint8_t Knobs = 16;
+    /// Number of bytes we need to shift for LEDs and encoders
+    static const uint8_t ShiftLength = 6;
+    enum Color {
+        COLOR_RED = 0,
+        COLOR_GREEN = 1
+    };
 
-  TKnobs();
-  void InitDma();
-  /// Called from an ISR when the DMA job has finished.
-  void StartShifting();
-  void Poll();
+    TKnobs();
+    void InitDma();
+    /// Called from an ISR when the DMA job has finished.
+    void StartShifting();
+    void Poll();
 
-  /// Intensity for each LED, 0..255
-  uint8_t LedIntensity[2][Knobs];
+    /// Intensity for each LED, 0..255
+    volatile uint8_t LedIntensity[2][Knobs];
 
-private:
-  uint8_t CurrentPwmStep;
+    //private:
+    uint8_t CurrentPwmStep;
 
-  uint8_t LedControl[ShiftLength]; ///< Data to shift out
-  uint8_t SwitchData[ShiftLength]; ///< Data to shift in
+    uint8_t LedControl[ShiftLength]; ///< Data to shift out
+    uint8_t SwitchData[ShiftLength]; ///< Data to shift in
 
-  /// Input shift data transformed for simpler computations.
-  struct TEncoderBits {
-    uint16_t EncoderA;
-    uint16_t EncoderB;
-    uint16_t Button;
-  };
-  TEncoderBits LastEncoderData;
+    /// Input shift data transformed for simpler computations.
+    struct TEncoderBits {
+        uint16_t EncoderA;
+        uint16_t EncoderB;
+        uint16_t Button;
+    };
+    TEncoderBits LastEncoderData;
 };
 
 extern TKnobs Knobs;

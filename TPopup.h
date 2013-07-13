@@ -12,7 +12,8 @@ public:
     TPopup() :
         Scroll(0),
         Focus(0),
-        ItemCount(255)
+        ItemCount(255),
+        Selected(false)
     {}
 
     void Render(uint8_t n, TDisplay::TPageBuffer* line);
@@ -37,7 +38,6 @@ protected:
 class TSettingsPopup : public TPopup
 {
 public:
-    TSettingsPopup() {}
     /** Show menu blockingly. Return selected item or -1. */
     int Show();
     /** Callback on item change (value is +1 or -1) */
@@ -53,7 +53,6 @@ public:
 class TSelectPopup : public TPopup
 {
 public:
-    TSelectPopup() {}
     int Show(int initFocus = 0);
 };
 
