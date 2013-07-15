@@ -7,6 +7,7 @@
 
 #include "device.h"
 #include "TScheduler.h"
+#include "utils.h"
 
 void TScheduler::Init()
 {
@@ -43,6 +44,7 @@ void TScheduler::Init()
         }
 
         Tcbs[i].StackPointer = sp;
+        Tcbs[i].Runnable = true;
     }
     CurrentTask = 0;
 }
@@ -50,16 +52,15 @@ void TScheduler::Init()
 void TScheduler::Switch()
 {
     if (Tasks[CurrentTask].Stack != 0) {
-        if (Tcbs[CurrentTask].StackPointer < Tasks[CurrentTask].Stack) {
-            while (true);
-        }
-
-        if (((uint8_t*)Tasks[CurrentTask].Stack)[0] != StackFill) {
-            while (true);
-        }
+        // Current task is not the "main" task (which runs on the MSP stack)
+        assert(Tcbs[CurrentTask].StackPointer >= Tasks[CurrentTask].Stack);
+        assert(((uint8_t*)Tasks[CurrentTask].Stack)[0] == StackFill);
     }
 
-    CurrentTask = (CurrentTask + 1) % SCHEDULER_NUM_TASKS;
+    // Find the next runnable task
+    do {
+        CurrentTask = (CurrentTask + 1) % SCHEDULER_NUM_TASKS;
+    } while (!Tcbs[CurrentTask].Runnable);
 }
 
 /**
@@ -74,7 +75,7 @@ void __attribute__((naked)) pend_sv_handler(void)
 {
         const uint32_t RETURN_ON_PSP = 0xfffffffd;
         const uint32_t RETURN_ON_MSP = 0xfffffff9; // Documentation tells us to use this, but it hardfaults.
-        const uint32_t RETURN_ON_MSP_HANDLER = 0xfffffff1;
+        //const uint32_t RETURN_ON_MSP_HANDLER = 0xfffffff1;
 
         // 0. NVIC has already pushed some registers on the program/main stack.
         // We are free to modify R0..R3 and R12 without saving them again, and additionally the compiler

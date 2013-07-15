@@ -1,7 +1,9 @@
 /* -*- c++ -*- */
 #pragma once
+
 #include "logging.h"
 #include "utils.h"
+#include "device.h"
 #include <cstdint>
 
 /**

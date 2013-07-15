@@ -21,6 +21,7 @@ void clockInit()
     systick_interrupt_enable();
     systick_counter_enable();
 
+    rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_AFIOEN);
     rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPAEN); // GPIOA
     rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPBEN); // GPIOB
     rcc_peripheral_enable_clock(&RCC_APB2ENR, RCC_APB2ENR_IOPCEN); // GPIOC
@@ -45,6 +46,7 @@ void deviceInit()
 
     Pin_lcd_a0.SetOutput();
     Pin_lcd_cs.SetOutput();
+    AFIO_MAPR |= AFIO_MAPR_SWJ_CFG_JTAG_OFF_SW_ON; // Free up flash CS
     Pin_flash_cs.SetOutput();
     Pin_shift_out_load.SetOutput();
     Pin_shift_out_en.SetOutput();
@@ -116,7 +118,8 @@ void deviceInit()
     spi_set_full_duplex_mode(FLASH_SPI_CHANNEL);
     spi_enable_software_slave_management(FLASH_SPI_CHANNEL);
     spi_set_nss_high(FLASH_SPI_CHANNEL);
-    spi_set_baudrate_prescaler(FLASH_SPI_CHANNEL, SPI_CR1_BR_FPCLK_DIV_32);
+    // div 4 --> about 18 MHz
+    spi_set_baudrate_prescaler(FLASH_SPI_CHANNEL, SPI_CR1_BR_FPCLK_DIV_4);
     spi_set_master_mode(FLASH_SPI_CHANNEL);
     spi_set_clock_polarity_1(FLASH_SPI_CHANNEL);
     spi_set_clock_phase_1(FLASH_SPI_CHANNEL);

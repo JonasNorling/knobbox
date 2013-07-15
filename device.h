@@ -67,6 +67,9 @@ static const TPin Pin_sw_2 =           {GPIOC, GPIO1};
 static const TPin Pin_sw_3 =           {GPIOC, GPIO2};
 static const TPin Pin_sw_4 =           {GPIOC, GPIO3};
 static const TPin Pin_sw_5 =           {GPIOC, GPIO4};
+static const TPin Pin_enc_1 =          {GPIOB, GPIO4};
+static const TPin Pin_enc_2 =          {GPIOB, GPIO5};
+static const TPin Pin_enc_btn =        {GPIOA, GPIO0};
 
 static const TPin Pin_led_1 =          {GPIOC, GPIO6};
 static const TPin Pin_led_2 =          {GPIOC, GPIO7};
@@ -82,6 +85,7 @@ static const TPin Pin_vpullup =        {GPIOC, GPIO5};
 
 void clockInit();
 void deviceInit();
+void pollSpiDma();
 
 static inline void delay_ms(unsigned n) {
     for (unsigned i=0; i < n*10000; i++) __asm__("nop");
@@ -98,6 +102,13 @@ enum TMode {
 };
 extern int Mode;
 
+extern volatile uint32_t SystemTime;
+
 #ifndef SCHEDULER_NUM_TASKS
-#define SCHEDULER_NUM_TASKS 2
+enum SchedulerTasks {
+    SCHEDULER_TASK_MAIN = 0,
+    SCHEDULER_TASK_GUI = 1,
+    SCHEDULER_TASK_FLASH = 2,
+    SCHEDULER_NUM_TASKS = 3
+};
 #endif

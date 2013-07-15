@@ -6,10 +6,16 @@
 void TSettingsPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 {
     if (n == 1) {
-        line->DrawText("Start flash read", 0, Focus == FOCUS_FLASHREAD);
+        line->DrawText("Flash read", 0, Focus == FOCUS_FLASHREAD);
     }
     else if (n == 2) {
-        line->DrawText("Start flash write", 0, Focus == FOCUS_FLASHWRITE);
+        line->DrawText("Flash write", 0, Focus == FOCUS_FLASHWRITE);
+    }
+    else if (n == 3) {
+        char text[10];
+        cheap_strcpy(text, "state xxx");
+        render_uint(text + 6, FlashTester.State, 3);
+        line->DrawText(text, 0);
     }
 }
 

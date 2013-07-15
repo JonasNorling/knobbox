@@ -2,6 +2,7 @@
 #include "TGui.h"
 #include "TControllers.h"
 #include "TSequencer.h"
+#include "TLeds.h"
 #include "device.h"
 
 static const uint32_t USART = USART1;
@@ -29,7 +30,7 @@ static uint8_t txbyteno = 0;
 void usart1_isr(void)
 {
 #ifndef HOST
-    Pin_led_tp9.Set();
+    TLeds::Set(TLeds::LED_TP9, true);
     //assert(!(USART_SR(USART) & USART_SR_ORE));
     //assert(USART_SR(USART) & USART_SR_TC);
     //assert(USART_SR(USART) & USART_SR_RXNE);
@@ -67,13 +68,13 @@ void usart1_isr(void)
             }
             Knobs.LedControl[5 - byte] = value;
         }
-        Knobs.CurrentPwmStep++;
+        Knobs.CurrentPwmStep += 127;
     }
     else {
         USART_DR(USART) = Knobs.LedControl[txbyteno++];
     }
 
-    Pin_led_tp9.Clear();
+    TLeds::Set(TLeds::LED_TP9, false);
 #endif
 }
 

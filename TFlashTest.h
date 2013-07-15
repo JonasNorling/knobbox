@@ -1,9 +1,9 @@
 /* -*- c++ -*- */
 #pragma once
 
-#include "TMemory.h"
+#include "TFlash.h"
 
-class TFlashTest : public IMemoryCallback
+class TFlashTest : public IFlashCallback
 {
 public:
   TFlashTest() : State(0) {}
@@ -11,9 +11,7 @@ public:
   void RunRead();
   void RunWrite();
 
-  // Interface IMemoryCallback
-  void MemoryOperationFinished(TMemory::OperationType type, uint8_t block);
+  void FlashJobFinished(TFlashJob& job);
 
-private:
   int State;
 };

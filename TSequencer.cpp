@@ -4,6 +4,7 @@
 #include "device.h"
 #include "utils.h"
 #include "logging.h"
+#include "TLeds.h"
 #include <algorithm>
 #include <cstring>
 
@@ -175,7 +176,15 @@ void TSequencer::Step()
             position.Minor -= TPosition::MinorsPerStep;
             position.Step = (position.Step + 1) % Scenes[scene].Steps;
         }
+
         DoNextEvent(scene);
+
+        if ((Scenes[scene].Flags & TSequencerScene::FLAG_ENABLED) && position.Step == 0) {
+            TLeds::Set(static_cast<TLeds::Led>(TLeds::LED_1 + scene), true);
+        }
+        else {
+            TLeds::Set(static_cast<TLeds::Led>(TLeds::LED_1 + scene), false);
+        }
     }
 
     UpdateKnobs();

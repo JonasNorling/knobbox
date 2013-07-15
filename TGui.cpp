@@ -8,6 +8,7 @@
 #include "TSequencer.h"
 #include "TScheduler.h"
 #include "TStartAnimation.h"
+#include "TLeds.h"
 
 /*
 void TGui::DrawCharmap()
@@ -83,6 +84,8 @@ TGui::TGui() :
 
 void TGui::Show()
 {
+    // This method is the main loop in the GUI thread.
+
     {
         TStartAnimation anim;
         anim.Show();
@@ -128,7 +131,17 @@ TEvent TGui::WaitForEvent()
         return event;
     }
 
-    TScheduler::Yield();
+    TLeds::Set(TLeds::LED_TP16, false);
+
+    if (HaveDirtyLines()) {
+        // If we have things to output, return here to poll Display.GetBuffer() insanely often
+        TScheduler::Yield();
+    }
+    else {
+        TScheduler::Block();
+    }
+
+    TLeds::Set(TLeds::LED_TP16, true);
 
     event = PendingEvent;
     if (event == NO_EVENT) {

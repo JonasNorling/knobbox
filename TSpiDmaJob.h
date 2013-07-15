@@ -5,8 +5,28 @@
 #include "device.h"
 #include "TCircularBuffer.h"
 #include "TBuffer.h"
+#include "TScheduler.h"
 
 class TBuffer;
+
+class TBlockingSpiDmaJob
+{
+public:
+    TBlockingSpiDmaJob(const TBuffer& buffer);
+    void Run();
+    static void FinishedFromIsr() {
+        assert(CurrentJob);
+        CurrentJob->Finished = true;
+        TScheduler::Wake(CurrentJob->TaskId);
+        CurrentJob = 0;
+    }
+
+private:
+    TBuffer Buffer;
+    int TaskId;
+    volatile bool Finished;
+    static TBlockingSpiDmaJob* CurrentJob;
+};
 
 class IDmaCallback
 {
@@ -67,12 +87,7 @@ public:
     TSpiDmaJob job = Jobs.First();
     Jobs.Remove();
 
-    if (job.GetChip() != TSpiDmaJob::CS_FLASH_START) {
-      // Deassert CS lines if no more transactions are planned.
-      // CS needs to be deasserted between each memory access.
-      Pin_flash_cs.Set();
-      Pin_lcd_cs.Set();
-    }
+    Pin_lcd_cs.Set();
 
     job.Finished();
   }

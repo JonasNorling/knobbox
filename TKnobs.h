@@ -11,9 +11,6 @@
  *
  * This class handles shift registers that output red/green LED
  * current and read encoders and push buttons.
- *
- * Status: Looks ok on the scope. Shift register CS and CE and reset
- * lines are not implemented yet.
  */
 class TKnobs
 {
@@ -28,7 +25,6 @@ public:
     };
 
     TKnobs();
-    void InitDma();
     /// Called from an ISR when the DMA job has finished.
     void StartShifting();
     void Poll();

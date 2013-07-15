@@ -2,68 +2,51 @@
 #include "TMemory.h"
 #include "TDisplay.h"
 #include "utils.h"
+#include "TFlash.h"
+#include "TGui.h"
 
 #include <cstring>
 
-static const int Blockno = 65;
+const int len = 64;
+static uint8_t data[len];
+const int address = 0;
 
 void TFlashTest::RunRead()
 {
-  State = 0;
-  uint8_t data = '?';
-  ::memset(Memory.GetCachedBlock(), data, TMemory::BlockSize);
-  Memory.FetchBlock(Blockno, this);
+    ::memset(data, 0, len);
+    Flash.Read(address, TBuffer(data, len), this);
 }
 
 void TFlashTest::RunWrite()
 {
-  State = 1;
-  uint8_t data = 'Q';
-  ::memset(Memory.GetCachedBlock(), data, TMemory::BlockSize);
-  Memory.WriteBlock(Blockno, this);
+    for (int i = 0; i < len; i++) {
+        data[i] = i;
+    }
+    Flash.Write(address, TBuffer(data, len), this);
 }
 
-void TFlashTest::MemoryOperationFinished(TMemory::OperationType type, uint8_t block)
+void TFlashTest::FlashJobFinished(TFlashJob& job)
 {
-  switch (State) {
-  case 0: {
-    int len = 0;
-    TDisplay::TPageBuffer* line = 0;
+    State = 1;
+    if (job.Operation == TFlashJob::OP_READ) {
+        State = 2;
+        if (job.Buffer.GetLength() == 64) {
+            State = 3;
 
-    line = Display.GetBuffer();
-    if (line) {
-        line->Clear();
-        len = line->DrawText("Finished", 0);
-        Display.OutputBuffer(line, len, 4, 0);
+            int i = 0;
+            for (; i < job.Buffer.GetLength(); i++) {
+                if (job.Buffer.GetData()[i] != i) {
+                    break;
+                }
+            }
+
+            if (i == job.Buffer.GetLength()) {
+                State = 4;
+            }
+        }
     }
-
-    int right = 0;
-    for (unsigned i = 0; i < TMemory::BlockSize; i++) {
-        if (Memory.GetCachedBlock()[i] == 'Q') right++;
+    else if (job.Operation == TFlashJob::OP_WRITE) {
+        State = 0xff;
     }
-
-    char text[20];
-    cheap_strcpy(text, "Correct: xxxx");
-    render_uint(text+9, right, 4);
-
-    line = Display.GetBuffer();
-    if (line) {
-        line->Clear();
-        len = line->DrawText(text, 0);
-        Display.OutputBuffer(line, len, 5, 0);
-    }
-    break;
-  }
-  case 1: {
-    int len = 0;
-    TDisplay::TPageBuffer* line = 0;
-
-    line = Display.GetBuffer();
-    if (line) {
-        line->Clear();
-        len = line->DrawText("Wrote.", 0);
-        Display.OutputBuffer(line, len, 4, 0);
-    }
-  }
-  }
+    Gui.UpdateAll();
 }

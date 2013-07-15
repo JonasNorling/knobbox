@@ -2,6 +2,7 @@
 #include "TBitmask.h"
 #include "device.h"
 #include "logging.h"
+#include "TScheduler.h"
 
 static const uint8_t DOGM_SYSTEM_RESET =          0xe2;
 static const uint8_t DOGM_POWER_CONTROL =         0x28;
@@ -37,7 +38,7 @@ void TDisplay::Init()
         buffer->Data[4] = DOGM_SET_ELECTRONIC_VOLUME;
         buffer->Data[5] = 20;
         buffer->Data[6] = DOGM_ENABLE_DISPLAY;
-        buffer->Data[7] = DOGM_INVERSE_ON;
+        buffer->Data[7] = DOGM_INVERSE_OFF;
 
         uint8_t bufferid = buffer - Buffers;
         SpiDmaQueue.Enqueue(TSpiDmaJob(TBuffer(buffer->Data, len),
@@ -104,6 +105,7 @@ void TDisplay::DmaFinished(void* context)
 {
     const uint8_t bufferid = reinterpret_cast<intptr_t>(context);
     TBitmask::Release(BufferAllocMask, bufferid);
+    TScheduler::Wake(SCHEDULER_TASK_GUI);
 }
 
 /// \todo Probably not correctly implemented.

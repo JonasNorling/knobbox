@@ -49,6 +49,7 @@ public:
   void Toggle() const { }
   void Set() const { }
   void Clear() const { }
+  bool Read() const { return false; }
 };
 
 static inline uint16_t gpio_port_read(uint32_t) { return 0; }

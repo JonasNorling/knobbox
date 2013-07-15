@@ -5,11 +5,10 @@
 #include <cstdint>
 
 /*
- * Thoughts about a memory map for Atmel AT25DF081A.
+ * Thoughts about a memory map for Atmel AT45DB081D.
  *
- * The Flash ROM is 8Mbits (1MiB). Erase block size is
- * 4KiB. Individual bytes can be programmed, max page size is 256
- * bytes. There are 256 erase blocks on the chip.
+ * The Flash ROM is 8Mbits (1MiB). Erase block size is 256 or 264 bytes.
+ * Individual bytes can be programmed, up to one page at a time.
  */
 
 const uint32_t NAMELEN = 12;
@@ -125,7 +124,7 @@ static_assert(sizeof(TNameList) <= FLASH_BLOCK_SIZE,
 class IMemoryCallback;
 
 /**
- * This class talks to the SPI flash memory (Atmel AT25DF081A).
+ * This class talks to the SPI flash memory (Atmel AT45DB081D).
  *
  * TMemory has space for an entire cached 4k block. Reads and writes
  * can be made against this cache. The SPI memory chip allows reads of
@@ -138,13 +137,11 @@ class TMemory : public IDmaCallback
 public:
     enum OperationType {
         OP_NONE = 0,
+        OP_IDENTIFY,
         OP_READ,
         OP_WRITE,
         OP_READ_NAMELIST
     };
-
-    void GetVariable();
-    void GetIntSetting();
 
     bool FetchBlock(uint8_t n, IMemoryCallback* cb);
     /// Fetch names scattered in flash. A TNameList will be available in

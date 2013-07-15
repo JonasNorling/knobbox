@@ -45,6 +45,9 @@ class TScheduler
 private:
     /**
      * Constant information about the system's tasks.
+     * The system can contain a number of tasks with their own stacks, plus a main
+     * task that runs on the MSP (interrupt) stack. The main task always has to be
+     * runnable (it can't block) and in that sense looks like an idle task.
      */
     struct TTask
     {
@@ -60,6 +63,7 @@ private:
     struct TTaskControlBlock
     {
         void* StackPointer;
+        bool Runnable; ///< Task is runnable, i.e. not blocked waiting for something
     };
 
     /**
@@ -98,11 +102,18 @@ public:
     /**
      * Initialize the scheduler data structures. All tasks with stacks have
      * their stacks cleared and their stack pointers initialized.
-     * Task number 0 is marked as currently executing.
+     * Task number 0 is marked as currently executing, all others as runnable.
      */
     static void Init();
     static void Switch();
 
+    static uint8_t GetCurrentTaskId() {
+        return CurrentTask;
+    }
+
+    /**
+     * Switch out the current task, letting other tasks run.
+     */
     static inline void Yield()
     {
 #ifndef HOST
@@ -110,6 +121,41 @@ public:
         SCB_ICSR |= SCB_ICSR_PENDSVSET;
         __asm__("nop");
         __asm__("nop");
+        __asm__("nop");
+        __asm__("nop");
 #endif
+    }
+
+    /**
+     * Switch out the current task, marking it as not runnable.
+     */
+    static inline void Block()
+    {
+        Tcbs[CurrentTask].Runnable = false;
+        Yield();
+    }
+
+    /**
+     * Wait until a condition turns true. We need to do this in an atomic manner,
+     * because the condition may be changed by an ISR after it has been checked but
+     * before setting Runnable to false.
+     */
+    static inline void BlockUntil(volatile bool* condition)
+    {
+        critical_section();
+        while (*condition == false) {
+            Tcbs[CurrentTask].Runnable = false;
+            end_critical_section();
+            Yield();
+        }
+        end_critical_section();
+    }
+
+    /**
+     * Mark a task as runnable.
+     */
+    static inline void Wake(uint8_t taskId)
+    {
+        Tcbs[taskId].Runnable = true;
     }
 };
