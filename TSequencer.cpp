@@ -69,43 +69,33 @@ void TSequencer::Load()
     }
 }
 
-void TSequencer::LoadFromMemory(uint8_t /*scene*/, uint8_t patchno)
+void TSequencer::LoadFromMemory(uint8_t scene, uint8_t patchno)
 {
     // Suck in the block from memory. When that's done, a
-    // MemoryOperationFinished() will be triggered.
-    //
-    // \todo How is the GUI indicating that a load is in progress? What
-    // happens on failure? Magic number must be verified.
-    Memory.FetchBlock(TMemory::BLOCK_FIRST_SEQ_SCENE + patchno, this);
+    // FlashJobFinished() will be triggered.
+
+    uint32_t address = TMemory::BlockSize * (TMemory::BLOCK_FIRST_SEQ_SCENE + patchno);
+    Flash.Read(address, TBuffer(reinterpret_cast<uint8_t*>(&Scenes[scene]), sizeof(TSequencerScene)), this);
 }
 
 void TSequencer::StoreInMemory(uint8_t scene, uint8_t patchno)
 {
-    ::memset(Memory.GetCachedBlock(), 0, TMemory::BlockSize);
-    ::memcpy(Memory.GetCachedBlock(), &Scenes[scene], sizeof(TSequencerScene));
-
-    TSequencerScene& sceneCopy(*reinterpret_cast<TSequencerScene*>(Memory.GetCachedBlock()));
-    for (int step = 0; step < SEQLEN; step++) {
-        TSequencerScene::TData& data = sceneCopy.Data[step];
-        data.Flags &= TSequencerScene::TData::FLAG_SAVE_MASK;
-    }
-
-    Memory.WriteBlock(TMemory::BLOCK_FIRST_SEQ_SCENE + patchno, this);
+    uint32_t address = TMemory::BlockSize * (TMemory::BLOCK_FIRST_SEQ_SCENE + patchno);
+    Flash.Write(address, TBuffer(reinterpret_cast<uint8_t*>(&Scenes[scene]), sizeof(TSequencerScene)), this);
 }
 
-void TSequencer::MemoryOperationFinished(TMemory::OperationType type,
-        uint8_t /*block*/)
+void TSequencer::FlashJobFinished(TFlashJob& job)
 {
-    if (type == TMemory::OP_READ) {
-        const TSequencerScene* s =
-                reinterpret_cast<TSequencerScene*>(Memory.GetCachedBlock());
+    if (job.Operation == TFlashJob::OP_READ) {
+        TSequencerScene* s = &Scenes[CurrentScene];
         if (s->Magic == TSequencerScene::MAGIC) {
-            ::memcpy(&Scenes[CurrentScene], s, sizeof(TSequencerScene));
             CalculateSchedule(CurrentScene);
         }
+        else {
+            // Fuckup!
+            ::memset(s, 0, sizeof(TSequencerScene));
+        }
         Gui.UpdateAll();
-    }
-    else if (type == TMemory::OP_WRITE) {
     }
 }
 

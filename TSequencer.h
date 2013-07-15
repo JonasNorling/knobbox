@@ -68,7 +68,7 @@ public:
  * 32'th    0   32   64   96  128  160  192 wrap ...................  192 wrap
  *
  */
-class TSequencer : public IMemoryCallback
+class TSequencer : public IFlashCallback
 {
 public:
     static const uint8_t SceneCount = 4;
@@ -123,8 +123,7 @@ public:
     /// \todo Hide!
     TSequencerScene Scenes[SceneCount];
 
-    // Interface IMemoryCallback
-    void MemoryOperationFinished(TMemory::OperationType type, uint8_t block);
+    void FlashJobFinished(TFlashJob& job);
 
 private:
     class TEventSchedule {

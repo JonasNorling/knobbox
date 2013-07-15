@@ -520,7 +520,6 @@ void TSeqOverviewPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
 
 void TSetupMenuPopup::Popup()
 {
-    // FIXME: Measure and reduce stack usage
     int selection = -1;
     {
         TSetupMenuPopup popup;
@@ -540,13 +539,17 @@ void TSetupMenuPopup::Popup()
         else if (selection == 8 && slot != -1) { // STORE...
             TNamePopup namePopup;
 
-            // Slot names will have been cached by the name list that is currently displaying
-            const TNameList* l = reinterpret_cast<TNameList*>(Memory.GetCachedBlock());
-            if (l->Magic == TNameList::MAGIC && slot < l->FetchedCount) {
-                namePopup.SetName(l->Names[slot]);
+            char name[NAMELEN + 1];
+            ::memset(name, 0, sizeof(name));
+            uint32_t address = TMemory::BlockSize * (TMemory::BLOCK_FIRST_SEQ_SCENE + slot) + offsetof(TSequencerScene, Name);
+            Memory.ReadBlocking(address, TBuffer(reinterpret_cast<uint8_t*>(name), NAMELEN));
+
+            if (name[0]) {
+                namePopup.SetName(name);
             } else {
                 namePopup.SetName("no name");
             }
+
             if (namePopup.Show()) {
                 const uint8_t sceneno = Sequencer.GetCurrentScene();
                 Sequencer.StoreInMemory(sceneno, slot);
@@ -677,12 +680,6 @@ void TActionMenuPopup::GetMenuItem(uint8_t n, char text[MenuTextLen])
 TMemorySlotPopup::TMemorySlotPopup(const char* title) :
                         Title(title)
 {
-    // FIXME: Stack usage?
-    Memory.FetchNames((TMemory::BlockSize * TMemory::BLOCK_FIRST_SEQ_SCENE + offsetof(TSequencerScene, Name)),
-            NAMELEN,
-            TMemory::SEQ_SCENE_COUNT,
-            TMemory::BlockSize,
-            0);
 }
 
 void TMemorySlotPopup::GetMenuTitle(char text[MenuTextLen])
@@ -693,15 +690,17 @@ void TMemorySlotPopup::GetMenuTitle(char text[MenuTextLen])
 void TMemorySlotPopup::GetMenuItem(uint8_t n, char text[MenuTextLen])
 {
     if (n < TMemory::SEQ_SCENE_COUNT) {
-        const TNameList* l = reinterpret_cast<TNameList*>(Memory.GetCachedBlock());
-        if (l->Magic == TNameList::MAGIC) {
-            if (n < l->FetchedCount) {
-                render_uint(text, n, 2);
-                cheap_strncpy(text+2, l->Names[n], MenuTextLen-1);
-                return;
-            }
+        char name[NAMELEN + 1];
+        ::memset(name, 0, sizeof(name));
+        uint32_t address = TMemory::BlockSize * (TMemory::BLOCK_FIRST_SEQ_SCENE + n) + offsetof(TSequencerScene, Name);
+        Memory.ReadBlocking(address, TBuffer(reinterpret_cast<uint8_t*>(name), NAMELEN));
+
+        render_uint(text, n, 2);
+        if (name[0]) {
+            cheap_strncpy(text+2, name, MenuTextLen-1);
         }
-        cheap_strcpy(text, "Slot xxx");
-        render_uint(text+5, n, 3);
+        else {
+            cheap_strcpy(text+2, "<empty>");
+        }
     }
 }

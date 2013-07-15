@@ -127,16 +127,6 @@ void TControllerPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
         line->DrawText(text, LeftMargin);
     }
     else if (n == 7) {
-        char text[20];
-        cheap_strcpy(text, "Flash=");
-        render_hexbyte(text + 6, Memory.GetCachedBlock()[0]);
-        render_hexbyte(text + 8, Memory.GetCachedBlock()[1]);
-        render_hexbyte(text +10, Memory.GetCachedBlock()[2]);
-        render_hexbyte(text +12, Memory.GetCachedBlock()[3]);
-        render_hexbyte(text +14, Memory.GetCachedBlock()[4]);
-        text[16] = '\0';
-
-        line->DrawText(text, LeftMargin);
         line->Invert(0, line->GetLength());
     }
 }

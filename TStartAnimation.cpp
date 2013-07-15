@@ -7,8 +7,8 @@ void TStartAnimation::Show()
     Gui.UpdateAll();
 
     for (int knob = 0; knob < TKnobs::Knobs; knob++) {
-      Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 0x00;
-      Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = 0x00;
+        Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 256 - knob * 16;
+        Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = knob * 16;
     }
 
     while (true) {
@@ -37,8 +37,8 @@ void TStartAnimation::Show()
                 Gui.UpdateAll();
 
                 for (int knob = 0; knob < TKnobs::Knobs; knob++) {
-                  Knobs.LedIntensity[Knobs.COLOR_RED][knob] = (State >> 4) >= knob ? 0xff : 0;
-                  Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = 256 - State;
+                    Knobs.LedIntensity[Knobs.COLOR_RED][knob] = 256 - knob * 16 + State;
+                    Knobs.LedIntensity[Knobs.COLOR_GREEN][knob] = knob * 16 - State;
                 }
             }
             break;

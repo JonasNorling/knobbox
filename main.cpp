@@ -50,7 +50,7 @@ TUsb Usb;
 
 static void gui_task(void) __attribute__((noreturn));
 static void flash_task(void) __attribute__((noreturn));
-static uint8_t __attribute__((aligned(8))) gui_task_stack[320];
+static uint8_t __attribute__((aligned(8))) gui_task_stack[512];
 static uint8_t __attribute__((aligned(8))) flash_task_stack[320];
 TScheduler::TTaskControlBlock TScheduler::Tcbs[SCHEDULER_NUM_TASKS];
 uint8_t TScheduler::CurrentTask;
