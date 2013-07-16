@@ -3,9 +3,13 @@
 
 TBlockingSpiDmaJob* TBlockingSpiDmaJob::CurrentJob = 0;
 
-TBlockingSpiDmaJob::TBlockingSpiDmaJob(const TBuffer& buffer)
-: Buffer(buffer), TaskId(0), Finished(false)
+static uint32_t DummyPosition = 0;
+
+TBlockingSpiDmaJob::TBlockingSpiDmaJob(const uint8_t* out, uint8_t* in, int len)
+: Out(out), In(in), Len(len), TaskId(0), Finished(false)
 {
+    assert(Len > 0);
+    assert(Out);
 }
 
 void TBlockingSpiDmaJob::Run()
@@ -19,20 +23,19 @@ void TBlockingSpiDmaJob::Run()
     assert(SPI_SR(spi) & SPI_SR_TXE);
     assert(~SPI_SR(spi) & SPI_SR_BSY);
     assert(!(SPI_SR(spi) & SPI_SR_RXNE));
-    assert(Buffer.GetLength() > 0);
 
     {
         const uint32_t channel = FLASH_DMA_TX_CHANNEL;
         dma_channel_reset(dma, channel);
         dma_set_peripheral_address(dma, channel, reinterpret_cast<uint32_t>(&SPI_DR(spi)));
-        dma_set_memory_address(dma, channel, reinterpret_cast<uint32_t>(Buffer.GetData()));
-        dma_set_number_of_data(dma, channel, Buffer.GetLength());
+        dma_set_memory_address(dma, channel, reinterpret_cast<uint32_t>(Out));
+        dma_set_number_of_data(dma, channel, Len);
         dma_set_read_from_memory(dma, channel);
         dma_enable_memory_increment_mode(dma, channel);
         dma_set_peripheral_size(dma, channel, DMA_CCR_PSIZE_8BIT);
         dma_set_memory_size(dma, channel, DMA_CCR_MSIZE_8BIT);
         dma_set_priority(dma, channel, DMA_CCR_PL_LOW);
-        //dma_enable_transfer_complete_interrupt(dma, channel);
+        // dma_enable_transfer_complete_interrupt(dma, channel);
         dma_enable_channel(dma, channel);
     }
 
@@ -40,9 +43,14 @@ void TBlockingSpiDmaJob::Run()
         const uint32_t channel = FLASH_DMA_RX_CHANNEL;
         dma_channel_reset(dma, channel);
         dma_set_peripheral_address(dma, channel, reinterpret_cast<uint32_t>(&SPI_DR(spi)));
-        dma_set_memory_address(dma, channel, reinterpret_cast<uint32_t>(Buffer.GetData()));
-        dma_set_number_of_data(dma, channel, Buffer.GetLength());
-        dma_enable_memory_increment_mode(dma, channel);
+        dma_set_number_of_data(dma, channel, Len);
+        if (In != 0) {
+            dma_set_memory_address(dma, channel, reinterpret_cast<uint32_t>(In));
+            dma_enable_memory_increment_mode(dma, channel);
+        }
+        else {
+            dma_set_memory_address(dma, channel, reinterpret_cast<uint32_t>(&DummyPosition));
+        }
         dma_set_peripheral_size(dma, channel, DMA_CCR_PSIZE_8BIT);
         dma_set_memory_size(dma, channel, DMA_CCR_MSIZE_8BIT);
         dma_set_priority(dma, channel, DMA_CCR_PL_LOW);

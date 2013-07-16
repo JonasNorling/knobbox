@@ -3,6 +3,7 @@
 
 bool TMemory::ReadBlocking(uint32_t address, const TBuffer& buffer)
 {
+    JobFinished = false;
     bool res = Flash.Read(address, buffer, this);
     if (res) {
         TaskId = TScheduler::GetCurrentTaskId();

@@ -13,7 +13,8 @@
 #ifdef HOST
 #include <cassert>
 #else
-#define assert(x) if (!(x)) while (true);
+void assertFail();
+#define assert(x) if (!(x)) assertFail();
 #endif
 
 /**

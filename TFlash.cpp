@@ -98,7 +98,7 @@ void TFlash::Init()
     ::memset(buffer, 0, sizeof(buffer));
     buffer[0] = COMMAND_DEVICE_ID;
     SetCS(true);
-    TBlockingSpiDmaJob spijob(TBuffer(buffer, sizeof(buffer)));
+    TBlockingSpiDmaJob spijob(buffer, buffer, sizeof(buffer));
     spijob.Run();
     SetCS(false);
 
@@ -113,7 +113,7 @@ uint8_t TFlash::ReadStatus()
     ::memset(buffer, 0, sizeof(buffer));
     buffer[0] = COMMAND_READ_STATUS;
     SetCS(true);
-    TBlockingSpiDmaJob spijob(TBuffer(buffer, sizeof(buffer)));
+    TBlockingSpiDmaJob spijob(buffer, buffer, sizeof(buffer));
     spijob.Run();
     SetCS(false);
     return buffer[1];
@@ -140,11 +140,11 @@ void TFlash::DoRead(TFlashJob& job)
 
         SetCS(true);
         {
-            TBlockingSpiDmaJob spijob(TBuffer(buffer, 4));
+            TBlockingSpiDmaJob spijob(buffer, buffer, 4);
             spijob.Run();
         }
         {
-            TBlockingSpiDmaJob spijob(TBuffer(data, readlen));
+            TBlockingSpiDmaJob spijob(data, data, readlen);
             spijob.Run();
         }
         SetCS(false);
@@ -179,7 +179,7 @@ void TFlash::DoWrite(TFlashJob& job)
 
         SetCS(true);
         {
-            TBlockingSpiDmaJob spijob(TBuffer(buffer, 4));
+            TBlockingSpiDmaJob spijob(buffer, buffer, 4);
             spijob.Run();
         }
         SetCS(false);
@@ -194,11 +194,11 @@ void TFlash::DoWrite(TFlashJob& job)
 
         SetCS(true);
         {
-            TBlockingSpiDmaJob spijob(TBuffer(buffer, 4));
+            TBlockingSpiDmaJob spijob(buffer, buffer, 4);
             spijob.Run();
         }
         {
-            TBlockingSpiDmaJob spijob(TBuffer(data, writelen));
+            TBlockingSpiDmaJob spijob(data, 0, writelen);
             spijob.Run();
         }
         SetCS(false);
@@ -212,7 +212,7 @@ void TFlash::DoWrite(TFlashJob& job)
 
         SetCS(true);
         {
-            TBlockingSpiDmaJob spijob(TBuffer(buffer, 4));
+            TBlockingSpiDmaJob spijob(buffer, buffer, 4);
             spijob.Run();
         }
         SetCS(false);

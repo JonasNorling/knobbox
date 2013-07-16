@@ -10,6 +10,11 @@
 #include "../device.h"
 #include "../TScheduler.h"
 
+void assertFail()
+{
+    while (1);
+}
+
 void hard_fault_handler(void)
 {
 	while (1);

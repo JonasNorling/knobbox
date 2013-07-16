@@ -12,7 +12,7 @@ class TBuffer;
 class TBlockingSpiDmaJob
 {
 public:
-    TBlockingSpiDmaJob(const TBuffer& buffer);
+    TBlockingSpiDmaJob(const uint8_t* out, uint8_t* in, int len);
     void Run();
     static void FinishedFromIsr() {
         assert(CurrentJob);
@@ -22,7 +22,9 @@ public:
     }
 
 private:
-    TBuffer Buffer;
+    const uint8_t* Out;
+    uint8_t* In;
+    int Len;
     int TaskId;
     volatile bool Finished;
     static TBlockingSpiDmaJob* CurrentJob;

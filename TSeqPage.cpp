@@ -692,11 +692,13 @@ void TMemorySlotPopup::GetMenuItem(uint8_t n, char text[MenuTextLen])
     if (n < TMemory::SEQ_SCENE_COUNT) {
         char name[NAMELEN + 1];
         ::memset(name, 0, sizeof(name));
+        name[0] = 'Q';
         uint32_t address = TMemory::BlockSize * (TMemory::BLOCK_FIRST_SEQ_SCENE + n) + offsetof(TSequencerScene, Name);
-        Memory.ReadBlocking(address, TBuffer(reinterpret_cast<uint8_t*>(name), NAMELEN));
+        bool res = Memory.ReadBlocking(address, TBuffer(reinterpret_cast<uint8_t*>(name), NAMELEN));
+        assert(res);
 
         render_uint(text, n, 2);
-        if (name[0]) {
+        if (name[0] != '\0' && static_cast<uint8_t>(name[0]) != 0xff) {
             cheap_strncpy(text+2, name, MenuTextLen-1);
         }
         else {

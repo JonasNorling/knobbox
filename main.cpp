@@ -74,6 +74,19 @@ static const uint8_t ACTION_BLINK_TIMER = 0x02;
 
 /* Spinning fault handlers, so gdb tells us what we got. */
 
+void assertFail()
+{
+    while (true) {
+        TLeds::Set(TLeds::LED_ENC_GREEN, true);
+        TLeds::Set(TLeds::LED_ENC_RED, false);
+        delay_ms(200);
+
+        TLeds::Set(TLeds::LED_ENC_GREEN, false);
+        TLeds::Set(TLeds::LED_ENC_RED, true);
+        delay_ms(200);
+    }
+}
+
 #ifndef HOST
 #include "libopencm3/include/libopencm3/stm32/f1/scb.h"
 void hard_fault_handler(void)
@@ -86,12 +99,12 @@ void hard_fault_handler(void)
         TLeds::Set(TLeds::LED_TP9, false);
         TLeds::Set(TLeds::LED_TP16, false);
         TLeds::Set(TLeds::LED_ENC_RED, false);
-        delay_ms(1000);
+        delay_ms(200);
 
         TLeds::Set(TLeds::LED_TP9, true);
         TLeds::Set(TLeds::LED_TP16, true);
         TLeds::Set(TLeds::LED_ENC_RED, true);
-        delay_ms(1000);
+        delay_ms(200);
     }
 }
 #endif
