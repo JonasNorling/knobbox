@@ -11,7 +11,6 @@ SRCS += TMemory.cpp
 SRCS += TMidi.cpp
 SRCS += TMidiParser.cpp
 SRCS += TPopup.cpp
-SRCS += TScheduler.cpp
 SRCS += TSequencer.cpp
 SRCS += TSeqPage.cpp
 SRCS += TSettingsPage.cpp
@@ -22,9 +21,12 @@ SRCS += TUsb.cpp
 ARM_C_SRCS += usbmidi.c
 ARM_SRCS += main.cpp
 ARM_SRCS += stm32.cpp
+ARM_SRCS += TSchedulerArm.cpp
 HOST_SRCS += main.cpp
 HOST_SRCS += host.cpp
+HOST_SRCS += TSchedulerHost.cpp
 TEST_SRCS += tests/testmain.cpp
+TEST_SRCS += TSchedulerHost.cpp
 TEST_SRCS += host.cpp
 
 # -------------------------------------
@@ -47,12 +49,15 @@ ARM_LDFLAGS += -L$(LIBOPENCM3)/lib/stm32/f1/ -lopencm3_stm32f1
 ARM_LDFLAGS += -lc -lnosys -nostartfiles -Wl,--gc-sections -lstdc++
 ARM_LDFLAGS += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
 ARM_LDFLAGS += -Tstm32f1.ld
+HOST_LDFLAGS += -pthread -lrt
+HOST_LDFLAGS += `wx-config --libs`
 
 ARM_COMMONFLAGS += -I. -O1 -fno-common -g -fconserve-stack
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
 ARM_COMMONFLAGS += -Wall -Wextra
 ARM_COMMONFLAGS += -I$(LIBOPENCM3)/include/
-HOST_COMMONFLAGS += -I. -O0 -fno-common -g -Wall -Wextra -DHOST
+HOST_COMMONFLAGS += -I. -O0 -fno-common -g -Wall -Wextra -DHOST -pthread
+HOST_COMMONFLAGS += `wx-config --cflags`
 
 CFLAGS += -std=c99 -Werror-implicit-function-declaration
 
@@ -146,7 +151,7 @@ $(BUILDDIR)/knobtest.elf: $(BUILDDIR)/knobtest/knobtest.o $(BUILDDIR)/stm32.o
 	@echo ARMLD $@
 	$(ARMLD) -o $@ $^ $(ARM_LDFLAGS)
 
-$(BUILDDIR)/tasktest.elf: $(BUILDDIR)/tasktest/tasktest.o $(BUILDDIR)/TScheduler.o
+$(BUILDDIR)/tasktest.elf: $(BUILDDIR)/tasktest/tasktest.o $(BUILDDIR)/TSchedulerArm.o
 	@echo ARMLD $@
 	$(ARMLD) -o $@ $^ $(ARM_LDFLAGS)
 

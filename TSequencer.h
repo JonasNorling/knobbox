@@ -33,7 +33,7 @@ public:
 
     /// p1 < *this <= p2, with circular wrapping
     inline bool isBetween(const TPosition& p1, const TPosition& p2) const;
-    inline void AddMinorsAndWrap(int m, uint8_t wrapstep);
+    void AddMinorsAndWrap(int m, uint8_t wrapstep);
 };
 
 

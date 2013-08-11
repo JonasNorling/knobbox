@@ -217,36 +217,6 @@ void pollSpiDma()
 
 int main(void)
 {
-    clockInit();
-
-#ifndef HOST
-    // Reset some peripherals, this helps when reloading software
-    // without issuing a hard reset.
-    nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
-    nvic_disable_irq(NVIC_DMA1_CHANNEL3_IRQ);
-    nvic_disable_irq(NVIC_DMA1_CHANNEL4_IRQ);
-    nvic_disable_irq(NVIC_DMA1_CHANNEL5_IRQ);
-    nvic_disable_irq(NVIC_TIM2_IRQ);
-    const uint32_t resets2 =
-            RCC_APB2RSTR_USART1RST |
-            RCC_APB2RSTR_SPI1RST;
-    const uint32_t resets1 =
-            RCC_APB1RSTR_USART2RST;
-    rcc_peripheral_reset(&RCC_APB2RSTR, resets2);
-    rcc_peripheral_reset(&RCC_APB1RSTR, resets1);
-    rcc_peripheral_clear_reset(&RCC_APB2RSTR, resets2);
-    rcc_peripheral_clear_reset(&RCC_APB1RSTR, resets1);
-    DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
-
-    nvic_clear_pending_irq(NVIC_DMA1_CHANNEL2_IRQ);
-    nvic_clear_pending_irq(NVIC_DMA1_CHANNEL3_IRQ);
-    nvic_clear_pending_irq(NVIC_DMA1_CHANNEL4_IRQ);
-    nvic_clear_pending_irq(NVIC_DMA1_CHANNEL5_IRQ);
-
-    assert(!(USART_SR(USART1) & USART_SR_RXNE));
-    assert(!nvic_get_pending_irq(NVIC_DMA1_CHANNEL5_IRQ));
-#endif
-
     deviceInit();
 
     TLeds::Set(TLeds::LED_TP9, false);

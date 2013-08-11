@@ -1,4 +1,5 @@
 #include "device.h"
+#include "utils.h"
 
 /**
  * \file stm32.cpp STM32 initialization functions.
@@ -6,9 +7,6 @@
 
 void clockInit()
 {
-    /// \todo Want to run at 48 MHz.
-    //rcc_clock_setup_in_hse_8mhz_out_24mhz();
-    //rcc_clock_setup_in_hsi_out_48mhz();
     rcc_clock_setup_in_hse_8mhz_out_72mhz();
 
     /*
@@ -36,9 +34,33 @@ void clockInit()
     rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_OTGFSEN); // USB
 }
 
-
 void deviceInit()
 {
+    clockInit();
+
+    // Reset some peripherals, this helps when reloading software
+    // without issuing a hard reset.
+    nvic_disable_irq(NVIC_DMA1_CHANNEL2_IRQ);
+    nvic_disable_irq(NVIC_DMA1_CHANNEL3_IRQ);
+    nvic_disable_irq(NVIC_DMA1_CHANNEL4_IRQ);
+    nvic_disable_irq(NVIC_DMA1_CHANNEL5_IRQ);
+    nvic_disable_irq(NVIC_TIM2_IRQ);
+    const uint32_t resets2 =
+            RCC_APB2RSTR_USART1RST |
+            RCC_APB2RSTR_SPI1RST;
+    const uint32_t resets1 =
+            RCC_APB1RSTR_USART2RST;
+    rcc_peripheral_reset(&RCC_APB2RSTR, resets2);
+    rcc_peripheral_reset(&RCC_APB1RSTR, resets1);
+    rcc_peripheral_clear_reset(&RCC_APB2RSTR, resets2);
+    rcc_peripheral_clear_reset(&RCC_APB1RSTR, resets1);
+    DMA_IFCR(DMA1) = 0x0fffffff; // Clear pending DMA interrupts
+
+    nvic_clear_pending_irq(NVIC_DMA1_CHANNEL2_IRQ);
+    nvic_clear_pending_irq(NVIC_DMA1_CHANNEL3_IRQ);
+    nvic_clear_pending_irq(NVIC_DMA1_CHANNEL4_IRQ);
+    nvic_clear_pending_irq(NVIC_DMA1_CHANNEL5_IRQ);
+
     /*
      * *********************************************************** *
      * GPIO

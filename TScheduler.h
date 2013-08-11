@@ -37,6 +37,8 @@
 
 #ifndef HOST
 #include <libopencm3/stm32/f1/scb.h>
+#else
+#include <pthread.h>
 #endif
 #include <cstring>
 
@@ -91,8 +93,13 @@ private:
     static const TTask Tasks[SCHEDULER_NUM_TASKS];
     static const uint8_t StackFill = 0xa5;
 
+#ifdef HOST
+    static pthread_mutex_t Mutex;
+#endif
+
 public:
     friend void pend_sv_handler(void);
+    friend void* createThread(void*);
 
     static void ReturnFromTask()
     {
@@ -114,17 +121,19 @@ public:
     /**
      * Switch out the current task, letting other tasks run.
      */
+#ifndef HOST
     static inline void Yield()
     {
-#ifndef HOST
         // Trigger PendSV
         SCB_ICSR |= SCB_ICSR_PENDSVSET;
         __asm__("nop");
         __asm__("nop");
         __asm__("nop");
         __asm__("nop");
-#endif
     }
+#else
+    static void Yield();
+#endif
 
     /**
      * Switch out the current task, marking it as not runnable.

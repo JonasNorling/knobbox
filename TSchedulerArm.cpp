@@ -69,7 +69,6 @@ void TScheduler::Switch()
  * be affected. In the former case, we need to take some care with which registers (R4..R11) the
  * compiler pushes for its own use.
  */
-#ifndef HOST
 extern "C" {
 void __attribute__((naked)) pend_sv_handler(void)
 {
@@ -136,4 +135,3 @@ void __attribute__((naked)) pend_sv_handler(void)
         }
 }
 }
-#endif // HOST
