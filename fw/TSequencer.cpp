@@ -480,7 +480,9 @@ void TSequencer::NoteOn(TSequencerScene& scene, uint8_t step)
 void TSequencer::MidiEvent(const TMidiEvent& event)
 {
     if (event.GetType() == TMidiEvent::MIDI_NOTE_ON && event.GetVelocity() != 0) {
-        Gui.Event(construct_event(MIDI_EVENT, event.GetNote()));
+        TEvent e(MIDI_EVENT);
+        e.Value.midi = event;
+        Gui.Event(e);
     }
 }
 

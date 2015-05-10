@@ -260,8 +260,11 @@ bool TSeqPage::EventHandlerNote(TEvent event)
             Sequencer.ChangeNote(CurrentStep, -1);
             return true;
         case MIDI_EVENT:
-            Sequencer.SetNote(CurrentStep, event_value(event));
-            CurrentStep = (CurrentStep + 1) % KNOBS;
+            if (event.Value.midi.GetType() == TMidiEvent::MIDI_NOTE_ON) {
+                Sequencer.SetNote(CurrentStep, event.Value.midi.GetNote());
+                Sequencer.SetVelocity(CurrentStep, event.Value.midi.GetVelocity());
+                CurrentStep = (CurrentStep + 1) % KNOBS;
+            }
             return true;
         }
     }

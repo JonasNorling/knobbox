@@ -32,7 +32,7 @@ void TSwitches::PollTacts()
         for (int i = 0; i < SWITCH_COUNT; i++) {
             if (pressed & (1 << i)) {
                 PressTime[i] = SystemTime;
-                Gui.Event(construct_event(1 + i, 0)); // Must match key ids in TEvent.h
+                Gui.Event(construct_event((EEventCode)(1 + i), 0)); // Must match key ids in TEvent.h
             }
             if (released & (1 << i)) {
                 PressTime[i] = 0;
@@ -44,7 +44,7 @@ void TSwitches::PollTacts()
     const int LONG_PRESS_DELAY_MS = 1000;
     for (int i = 0; i < SWITCH_COUNT; i++) {
         if (PressTime[i] != 0 && SystemTime > (PressTime[i] + LONG_PRESS_DELAY_MS)) {
-            Gui.Event(construct_event(6 + i, 0)); // Must match key ids in TEvent.h
+            Gui.Event(construct_event((EEventCode)(6 + i), 0)); // Must match key ids in TEvent.h
             PressTime[i] = 0;
         }
     }

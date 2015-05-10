@@ -49,7 +49,7 @@ public:
 
 private:
     uint8_t DirtyLines;
-    volatile TEvent PendingEvent;
+    TEvent PendingEvent;
 };
 
 extern TGui Gui;
