@@ -10,7 +10,7 @@ const TSeqPage::eventhandler_t TSeqPage::EventHandler[FOCUS_LAST + 1] = {
         &TSeqPage::EventHandlerScene,
         &TSeqPage::EventHandlerSetup,
         &TSeqPage::EventHandlerStep,
-        0,
+        &TSeqPage::EventHandlerNote,
         &TSeqPage::EventHandlerAction,
         &TSeqPage::EventHandlerVelo,
         &TSeqPage::EventHandlerLen,
@@ -156,7 +156,7 @@ void TSeqPage::Render(uint8_t n, TDisplay::TPageBuffer* line)
         pos = line->Advance(pos);
 
         pos = line->DrawText(TSequencer::NoteName(Sequencer.Scenes[sceneno].Data[CurrentStep].Note),
-                pos, Focus == FOCUS_NOTE);
+                pos, Focus == FOCUS_NOTE && !Blink);
     }
     else if (n == 4) {
         line->DrawText("act: start S2", LeftMargin, Focus == FOCUS_ACTION);
@@ -241,6 +241,21 @@ bool TSeqPage::EventHandlerStep(TEvent event)
             return true;
         case KEY_UP:
             CurrentStep++;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool TSeqPage::EventHandlerNote(TEvent event)
+{
+    if (Selected) {
+        switch (event_code(event)) {
+        case KEY_UP:
+            Sequencer.ChangeNote(CurrentStep, 1);
+            return true;
+        case KEY_DOWN:
+            Sequencer.ChangeNote(CurrentStep, -1);
             return true;
         }
     }

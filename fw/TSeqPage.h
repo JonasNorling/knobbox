@@ -43,6 +43,7 @@ private:
     bool EventHandlerScene(TEvent event);
     bool EventHandlerSetup(TEvent event);
     bool EventHandlerStep(TEvent event);
+    bool EventHandlerNote(TEvent event);
     bool EventHandlerAction(TEvent event);
     bool EventHandlerVelo(TEvent event);
     bool EventHandlerLen(TEvent event);
