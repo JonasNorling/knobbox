@@ -29,8 +29,19 @@ TMidi Midi;
 TSequencer Sequencer(Midi);
 TMemory Memory;
 TControllers Controllers(Midi);
+TFlash Flash;
+
+volatile uint32_t SystemTime = 0; // in ms, wraps at 49.7 days
 
 void dma1_channel2_isr()
+{
+}
+
+void dma1_channel4_isr(void)
+{
+}
+
+void sys_tick_handler(void)
 {
 }
 

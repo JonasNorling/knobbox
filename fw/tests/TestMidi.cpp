@@ -52,9 +52,9 @@ int TestMidi()
 int TestMidiParser()
 {
     TMidiParser p;
-    test_assert(p.Feed(0x90) == false);
-    test_assert(p.Feed(0x45) == false);
-    test_assert(p.Feed(0x40) == true);
+    test_assert(p.Feed(0x90) == TMidiParser::NEED_MORE_FOOD);
+    test_assert(p.Feed(0x45) == TMidiParser::NEED_MORE_FOOD);
+    test_assert(p.Feed(0x40) == TMidiParser::GOT_EVENT);
 
     TMidiEvent e = p.GetEvent();
     test_assert(e.Data[0] == 0x90);
@@ -63,9 +63,9 @@ int TestMidiParser()
     test_assert(e.GetVelocity() == 0x40);
 
 
-    test_assert(p.Feed(0x80) == false);
-    test_assert(p.Feed(0x43) == false);
-    test_assert(p.Feed(0x00) == true);
+    test_assert(p.Feed(0x80) == TMidiParser::NEED_MORE_FOOD);
+    test_assert(p.Feed(0x43) == TMidiParser::NEED_MORE_FOOD);
+    test_assert(p.Feed(0x00) == TMidiParser::GOT_EVENT);
 
     e = p.GetEvent();
     test_assert(e.Data[0] == 0x80);
@@ -74,11 +74,11 @@ int TestMidiParser()
     test_assert(e.GetVelocity() == 0x00);
 
 
-    test_assert(p.Feed(0xb3) == false);
-    test_assert(p.Feed(0xf8) == false);
-    test_assert(p.Feed(  13) == false);
-    test_assert(p.Feed(0xf8) == false);
-    test_assert(p.Feed(  42) == true);
+    test_assert(p.Feed(0xb3) == TMidiParser::NEED_MORE_FOOD);
+    test_assert(p.Feed(0xf8) == TMidiParser::GOT_REALTIME);
+    test_assert(p.Feed(  13) == TMidiParser::NEED_MORE_FOOD);
+    test_assert(p.Feed(0xf8) == TMidiParser::GOT_REALTIME);
+    test_assert(p.Feed(  42) == TMidiParser::GOT_EVENT);
 
     e = p.GetEvent();
     test_assert(e.Data[0] == 0xb3);
@@ -86,5 +86,10 @@ int TestMidiParser()
     test_assert(e.GetChannel() == 3);
     test_assert(e.GetCC() == 13);
     test_assert(e.GetValue() == 42);
+
+    // Running status
+    test_assert(p.Feed(  14) == TMidiParser::NEED_MORE_FOOD);
+    test_assert(p.Feed(  43) == TMidiParser::GOT_EVENT);
+
     return 0;
 }

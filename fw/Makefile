@@ -37,7 +37,7 @@ TEST_SRCS += host.cpp
 BUILDDIR=build
 HOSTBUILDDIR=hostbuild
 
-TOOLCHAIN = $(HOME)/sat
+TOOLCHAIN = /usr
 PREFIX = $(TOOLCHAIN)/bin/arm-none-eabi
 ARMCC = $(PREFIX)-gcc
 ARMLD = $(PREFIX)-gcc
@@ -74,15 +74,15 @@ TEST_OBJS += $(TEST_SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 # -------------------------------------
 
 all: $(HOSTBUILDDIR) $(HOSTBUILDDIR)/$(PROJECT).elf
-all: $(BUILDDIR)/flashtest $(BUILDDIR)/flashtest.elf
-all: $(BUILDDIR)/tasktest $(BUILDDIR)/tasktest.elf
-all: $(BUILDDIR)/knobtest $(BUILDDIR)/knobtest.elf
+all: $(BUILDDIR)/flashtest.elf
+all: $(BUILDDIR)/tasktest.elf
+all: $(BUILDDIR)/knobtest.elf
 all: $(BUILDDIR) $(BUILDDIR)/$(PROJECT).bin $(BUILDDIR)/$(PROJECT).asm
 	@size $(BUILDDIR)/$(PROJECT).elf
 #	@$(ARMOBJDUMP) -t -j .bss -C $(BUILDDIR)/$(PROJECT).elf | \
 		awk '{n = strtonum("0x"$$5); if (n!=0) printf("%20s %5d bytes\n", $$6, n);}'
 
-$(BUILDDIR) $(HOSTBUILDDIR) $(BUILDDIR)/flashtest $(BUILDDIR)/tasktest $(BUILDDIR)/knobtest:
+$(BUILDDIR) $(HOSTBUILDDIR):
 	mkdir $@ $@/tests
 
 liquid-2.0: external/liquid-2.0.tgz external/liquid.patch Makefile
@@ -119,10 +119,12 @@ libopencm3/lib/stm32/f1/libopencm3_stm32f1.a libopencm3/include: libopencm3
 
 $(BUILDDIR)/%.o: %.c Makefile $(LIBOPENCM3)/include
 	@echo ARMCC $< --\> $@
+	@mkdir -p $(dir $@)
 	@$(ARMCC) -MD $(ARM_COMMONFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(BUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc $(LIBOPENCM3)/include
 	@echo ARMCC $< --\> $@
+	@mkdir -p $(dir $@)
 	@$(ARMCC) -MD $(ARM_COMMONFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 $(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS) $(LIBOPENCM3)/lib/stm32/f1/libopencm3_stm32f1.a
