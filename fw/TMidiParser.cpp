@@ -14,6 +14,11 @@ TMidiParser::ParseResult TMidiParser::Feed(uint8_t data)
         return GOT_REALTIME;
     }
 
+    if (State == 0 && !(data & 0x80)) {
+        // Running status -- reuse last status byte
+        State++;
+    }
+
     Event.Data[State] = data;
     State++;
     if (State == 3) {
