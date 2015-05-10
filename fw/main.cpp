@@ -293,7 +293,7 @@ int main(void)
         }
         else if (Actions & ACTION_BLINK_TIMER) {
             Actions &= ~ACTION_BLINK_TIMER;
-            Gui.Event(BLINK_TIMER);
+            Gui.Event(construct_event(BLINK_TIMER, 0));
         }
 
         /* Poll I/O */

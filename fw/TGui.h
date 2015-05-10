@@ -40,7 +40,7 @@ public:
         PendingEvent = event;
     }
 
-    bool EventIsPending() const { return PendingEvent != NO_EVENT; }
+    bool EventIsPending() const { return event_code(PendingEvent) != NO_EVENT; }
     bool HaveDirtyLines() const { return TBitmask::HaveSetBits(DirtyLines); }
 
     TEvent WaitForEvent();

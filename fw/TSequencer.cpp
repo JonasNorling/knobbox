@@ -346,6 +346,14 @@ const char* TSequencer::NoteName(uint8_t n)
 
 void TSequencer::ChangeNote(int step, int8_t v)
 {
+    const TSequencerScene& scene(Scenes[CurrentScene]);
+    const TSequencerScene::TData& data = scene.Data[step];
+    uint8_t note = clamp(data.Note + v, TMidiEvent::MIDI_NOTE_MIN, TMidiEvent::MIDI_NOTE_MAX);
+    SetNote(step, note);
+}
+
+void TSequencer::SetNote(int step, uint8_t note)
+{
     TSequencerScene& scene(Scenes[CurrentScene]);
     TSequencerScene::TData& data = scene.Data[step];
 
@@ -355,7 +363,7 @@ void TSequencer::ChangeNote(int step, int8_t v)
         NoteOff(scene, step);
     }
 
-    data.Note = clamp(data.Note + v, TMidiEvent::MIDI_NOTE_MIN, TMidiEvent::MIDI_NOTE_MAX);
+    data.Note = note;
 
     // If note is sounding, play the new one
     if (sounding) {
@@ -365,7 +373,12 @@ void TSequencer::ChangeNote(int step, int8_t v)
 
 void TSequencer::ChangeVelocity(int step, int8_t v)
 {
-    Scenes[CurrentScene].Data[step].Velocity = clamp(Scenes[CurrentScene].Data[step].Velocity + v, 0, 127);
+    SetVelocity(step, clamp(Scenes[CurrentScene].Data[step].Velocity + v, 0, 127));
+}
+
+void TSequencer::SetVelocity(int step, uint8_t velocity)
+{
+    Scenes[CurrentScene].Data[step].Velocity = velocity;
 }
 
 void TSequencer::ChangeLength(int step, int8_t v)
@@ -466,7 +479,8 @@ void TSequencer::NoteOn(TSequencerScene& scene, uint8_t step)
 
 void TSequencer::MidiEvent(const TMidiEvent& event)
 {
-    if (event.GetType() == TMidiEvent::MIDI_CC) {
+    if (event.GetType() == TMidiEvent::MIDI_NOTE_ON && event.GetVelocity() != 0) {
+        Gui.Event(construct_event(MIDI_EVENT, event.GetNote()));
     }
 }
 

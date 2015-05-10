@@ -61,7 +61,7 @@ void TTopMenu::Render(uint8_t n __attribute__((unused)),
 
 void TTopMenu::Event(TEvent event)
 {
-    switch (event) {
+    switch (event_code(event)) {
     case KEY_OK:
         if (Mode != MODE_LAST) {
             Mode++;
@@ -126,8 +126,8 @@ void TGui::Show()
 TEvent TGui::WaitForEvent()
 {
     TEvent event = PendingEvent;
-    if (event != NO_EVENT) {
-        PendingEvent = NO_EVENT;
+    if (event_code(event) != NO_EVENT) {
+        PendingEvent = construct_event(NO_EVENT, 0);
         return event;
     }
 
@@ -144,12 +144,12 @@ TEvent TGui::WaitForEvent()
     TLeds::Set(TLeds::LED_TP16, true);
 
     event = PendingEvent;
-    if (event == NO_EVENT) {
+    if (event_code(event) == NO_EVENT) {
         int8_t n = TBitmask::FindFree(DirtyLines, Lines);
         if (n >= 0) {
             event = construct_event(RENDER_LINE, n);
         }
     }
-    PendingEvent = NO_EVENT;
+    PendingEvent = construct_event(NO_EVENT, 0);
     return event;
 }

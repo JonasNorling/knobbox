@@ -238,9 +238,11 @@ bool TSeqPage::EventHandlerStep(TEvent event)
         switch (event_code(event)) {
         case KEY_DOWN:
             CurrentStep--;
+            CurrentStep %= KNOBS;
             return true;
         case KEY_UP:
             CurrentStep++;
+            CurrentStep %= KNOBS;
             return true;
         }
     }
@@ -256,6 +258,10 @@ bool TSeqPage::EventHandlerNote(TEvent event)
             return true;
         case KEY_DOWN:
             Sequencer.ChangeNote(CurrentStep, -1);
+            return true;
+        case MIDI_EVENT:
+            Sequencer.SetNote(CurrentStep, event_value(event));
+            CurrentStep = (CurrentStep + 1) % KNOBS;
             return true;
         }
     }

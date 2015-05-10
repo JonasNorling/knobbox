@@ -97,7 +97,9 @@ public:
 
     // Theses methods apply to the active scene
     void ChangeNote(int step, int8_t v);
+    void SetNote(int step, uint8_t note);
     void ChangeVelocity(int step, int8_t v);
+    void SetVelocity(int step, uint8_t velocity);
     void ChangeLength(int step, int8_t v);
     void ChangeOffset(int step, int8_t v);
     void ChangeSteps(int8_t v);
