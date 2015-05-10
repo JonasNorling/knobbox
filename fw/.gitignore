@@ -1,0 +1,5 @@
+.settings/
+build/
+hostbuild/
+libopencm3/
+liquid-2.0/
