@@ -18,12 +18,15 @@ public:
     void Init();
 
     void Poll() {
-        usbd_poll();
+        usbd_poll(Device);
     }
 
     static void DataCallback(uint8_t ep);
 
 private:
+#ifndef HOST
+    static usbd_device* Device;
+#endif
     static void SetConfig(uint16_t value);
 };
 
@@ -32,7 +35,9 @@ private:
 #ifdef __cplusplus
 extern "C" {
 #endif
-void UsbDataCallback(uint8_t ep);
+#ifndef HOST
+void UsbDataCallback(usbd_device *usbd_dev, uint8_t ep);
+#endif
 #ifdef __cplusplus
 };
 #endif

@@ -88,7 +88,6 @@ void assertFail()
 }
 
 #ifndef HOST
-#include "libopencm3/include/libopencm3/stm32/f1/scb.h"
 void hard_fault_handler(void)
 {
     const volatile __attribute__((unused)) uint32_t* cfsr = &SCB_CFSR;

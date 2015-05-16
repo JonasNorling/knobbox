@@ -3,6 +3,7 @@
  * especially Appendix B.
  */
 
+#include <stddef.h>
 #include <libopencm3/usb/usbd.h>
 #include "TUsb.h"
 
@@ -24,11 +25,11 @@ static const struct usb_device_descriptor dev = {
 };
 
 struct usb_midi_endpoint_descriptor {
-    u8 bLength;
-    u8 bDescriptorType;
-    u8 bDescriptorSubType;
-    u8 bNumEmbMIDIJack;
-    u8 BaAssocJackID[1];
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bDescriptorSubType;
+    uint8_t bNumEmbMIDIJack;
+    uint8_t BaAssocJackID[1];
 } __attribute__((packed));
 
 static const struct usb_midi_endpoint_descriptor midi_ep_extra[2] = {{
@@ -67,13 +68,13 @@ static const struct usb_endpoint_descriptor midi_endpoints[] = {{
 }};
 
 struct usb_audio_class_descriptor_header {
-    u8 bLength;
-    u8 bDescriptorType;
-    u8 bDescriptorSubType;
-    u16 bcdADC;
-    u16 wTotalLength;
-    u8 bInCollection;
-    u8 baInterfaceNr;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bDescriptorSubType;
+    uint16_t bcdADC;
+    uint16_t wTotalLength;
+    uint8_t bInCollection;
+    uint8_t baInterfaceNr;
 } __attribute__((packed));
 
 static const struct usb_audio_class_descriptor_header audio_header = {
@@ -87,32 +88,32 @@ static const struct usb_audio_class_descriptor_header audio_header = {
 };
 
 struct usb_midistreaming_descriptor_header {
-    u8 bLength;
-    u8 bDescriptorType;
-    u8 bDescriptorSubType;
-    u16 bcdADC;
-    u16 wTotalLength;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bDescriptorSubType;
+    uint16_t bcdADC;
+    uint16_t wTotalLength;
 } __attribute__((packed));
 
 struct usb_midistreaming_in_jack_descriptor {
-    u8 bLength;
-    u8 bDescriptorType;
-    u8 bDescriptorSubType;
-    u8 bJackType;
-    u8 bJackID;
-    u8 iJack;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bDescriptorSubType;
+    uint8_t bJackType;
+    uint8_t bJackID;
+    uint8_t iJack;
 } __attribute__((packed));
 
 struct usb_midistreaming_out_jack_descriptor {
-    u8 bLength;
-    u8 bDescriptorType;
-    u8 bDescriptorSubType;
-    u8 bJackType;
-    u8 bJackID;
-    u8 bNrInputPins;
-    u8 BaSourceID[1];
-    u8 BaSourcePin[1];
-    u8 iJack;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bDescriptorSubType;
+    uint8_t bJackType;
+    uint8_t bJackID;
+    uint8_t bNrInputPins;
+    uint8_t BaSourceID[1];
+    uint8_t BaSourcePin[1];
+    uint8_t iJack;
 } __attribute__((packed));
 
 struct usb_midistreaming_descriptor {
@@ -205,9 +206,11 @@ static const char *usb_strings[] = {
         "0000000000001",
 };
 
-static int ControlRequest(struct usb_setup_data *req, u8 **buf, u16 *len,
-        void (**complete)(struct usb_setup_data *req))
+static int ControlRequest(usbd_device *usbd_dev, struct usb_setup_data *req,
+        uint8_t **buf, uint16_t *len,
+        void (**complete)(usbd_device *usbd_dev, struct usb_setup_data *req))
 {
+    (void)usbd_dev;
     (void)req;
     (void)buf;
     (void)len;
@@ -215,18 +218,21 @@ static int ControlRequest(struct usb_setup_data *req, u8 **buf, u16 *len,
     return 0;
 }
 
-static void SetConfig(uint16_t value __attribute__((unused)))
+static void SetConfig(usbd_device *usbd_dev, uint16_t value __attribute__((unused)))
 {
-    usbd_ep_setup(0x01, USB_ENDPOINT_ATTR_BULK, MIDI_EP_MAX_SIZE, UsbDataCallback);
-    usbd_ep_setup(0x82, USB_ENDPOINT_ATTR_BULK, MIDI_EP_MAX_SIZE, 0);
+    usbd_ep_setup(usbd_dev, 0x01, USB_ENDPOINT_ATTR_BULK, MIDI_EP_MAX_SIZE, UsbDataCallback);
+    usbd_ep_setup(usbd_dev, 0x82, USB_ENDPOINT_ATTR_BULK, MIDI_EP_MAX_SIZE, 0);
 
-    usbd_register_control_callback(USB_REQ_TYPE_CLASS | USB_REQ_TYPE_INTERFACE,
+    usbd_register_control_callback(usbd_dev, USB_REQ_TYPE_CLASS | USB_REQ_TYPE_INTERFACE,
             USB_REQ_TYPE_TYPE | USB_REQ_TYPE_RECIPIENT,
             ControlRequest);
 }
 
-void UsbMidiInit()
+usbd_device* UsbMidiInit()
 {
-    usbd_init(&stm32f103_usb_driver, &dev, &config, usb_strings);
-    usbd_register_set_config_callback(SetConfig);
+    usbd_device* d = usbd_init(&stm32f103_usb_driver, &dev, &config,
+            usb_strings, sizeof(usb_strings)/sizeof(usb_strings[0]),
+            NULL, 0);
+    usbd_register_set_config_callback(d, SetConfig);
+    return d;
 }

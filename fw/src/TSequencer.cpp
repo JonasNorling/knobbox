@@ -125,7 +125,7 @@ void TSequencer::ConfigureTimer()
     // 12 BPM --> 1 250 000, 240 BPM --> 62 500
     /// \todo: Calculate an error that we can correct when running
     const uint32_t prescale = 50;
-    const uint32_t counts = ((rcc_ppre2_frequency / TicksPerBeat) * 60 / prescale) / Tempo;
+    const uint32_t counts = ((rcc_apb2_frequency / TicksPerBeat) * 60 / prescale) / Tempo;
 
     timer_set_prescaler(TIM2, prescale - 1);
     timer_set_period(TIM2, counts - 1);

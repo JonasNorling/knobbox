@@ -36,7 +36,6 @@
  */
 
 #ifndef HOST
-#include <libopencm3/stm32/f1/scb.h>
 #else
 #include <pthread.h>
 #endif

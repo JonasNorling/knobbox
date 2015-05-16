@@ -14,8 +14,8 @@ void clockInit()
      * div 8 --> 24MHz/8 = 3MHz
      * reload 2999 --> 3000000/(2999+1) --> 1000 overflows/second
      */
-    systick_set_clocksource(STK_CTRL_CLKSOURCE_AHB_DIV8);
-    systick_set_reload(rcc_ppre2_frequency / 8 / 1000 - 1);
+    systick_set_clocksource(STK_CSR_CLKSOURCE_AHB_DIV8);
+    systick_set_reload(rcc_apb2_frequency / 8 / 1000 - 1);
     systick_interrupt_enable();
     systick_counter_enable();
 

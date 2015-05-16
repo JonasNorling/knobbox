@@ -7,14 +7,15 @@
 extern "C" {
 #endif
 
-#include <libopencm3/stm32/spi.h>
-#include <libopencm3/stm32/systick.h>
-#include <libopencm3/stm32/nvic.h>
-#include <libopencm3/stm32/usart.h>
-#include <libopencm3/stm32/f1/rcc.h>
-#include <libopencm3/stm32/f1/gpio.h>
+#include <libopencm3/cm3/scb.h>
+#include <libopencm3/cm3/systick.h>
 #include <libopencm3/stm32/f1/dma.h>
+#include <libopencm3/stm32/f1/gpio.h>
+#include <libopencm3/stm32/f1/nvic.h>
+#include <libopencm3/stm32/f1/rcc.h>
+#include <libopencm3/stm32/spi.h>
 #include <libopencm3/stm32/timer.h>
+#include <libopencm3/stm32/usart.h>
 #include <libopencm3/usb/usbd.h>
 
 #ifdef __cplusplus

@@ -3,13 +3,15 @@
 #include "device.h"
 
 extern "C" {
-void UsbMidiInit();
+usbd_device* UsbMidiInit();
 };
 
 void TUsb::Init()
 {
-    UsbMidiInit();
+    Device = UsbMidiInit();
 }
+
+usbd_device* TUsb::Device;
 
 struct TUsbMidiEvent {
     uint8_t Code : 4;
@@ -23,7 +25,7 @@ void TUsb::DataCallback(uint8_t ep __attribute__((unused)))
     static_assert(sizeof(TUsbMidiEvent) == 4, "Strange");
     static_assert(sizeof(buf) == MIDI_EP_MAX_SIZE, "Buffer size is screwed");
 
-    const int len = usbd_ep_read_packet(1, buf, MIDI_EP_MAX_SIZE);
+    const int len = usbd_ep_read_packet(Device, 1, buf, MIDI_EP_MAX_SIZE);
     const int events = len / sizeof(TUsbMidiEvent);
 
     for (int i = 0; i < events; i++) {
@@ -44,7 +46,7 @@ void TUsb::DataCallback(uint8_t ep __attribute__((unused)))
     }
 }
 
-void UsbDataCallback(uint8_t ep)
+void UsbDataCallback(usbd_device *usbd_dev, uint8_t ep)
 {
     TUsb::DataCallback(ep);
 }

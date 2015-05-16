@@ -46,7 +46,7 @@ ARMOBJCOPY = $(PREFIX)-objcopy
 ARMOBJDUMP = $(PREFIX)-objdump
 LIBOPENCM3 = libopencm3
 
-ARM_LDFLAGS += -L$(LIBOPENCM3)/lib/stm32/f1/ -lopencm3_stm32f1
+ARM_LDFLAGS += -L$(LIBOPENCM3)/lib/ -lopencm3_stm32f1
 ARM_LDFLAGS += -lc -lnosys -nostartfiles -Wl,--gc-sections -lstdc++
 ARM_LDFLAGS += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
 ARM_LDFLAGS += -Tstm32f1.ld
@@ -92,25 +92,24 @@ liquid-2.0: external/liquid-2.0.tgz external/liquid.patch Makefile
 
 liquid-2.0/fontliqsting.inc: liquid-2.0
 
-# libopencm3 from 2012-05-26
-LIBOPENCM3_V=154f67598bb06c0c152bf121979c2292f7f10a84
+# libopencm3 from 2015-04-30
+LIBOPENCM3_V=6d658c2
 
-libopencm3: external/libopencm3-$(LIBOPENCM3_V).zip Makefile
+libopencm3: external/libopencm3-$(LIBOPENCM3_V).tgz Makefile
 	@echo
 	@echo "##### Unpacking libopencm3"
 	@echo
 	rm -rf libopencm3 libopencm3-$(LIBOPENCM3_V)
-	unzip -q $<
+	tar xf $<
 	mv libopencm3-$(LIBOPENCM3_V) $@
-	patch -d $@ -p1 < external/libopencm3.patch
 	@touch $@
 
-libopencm3/lib/stm32/f1/libopencm3_stm32f1.a libopencm3/include: libopencm3
+libopencm3/lib/libopencm3_stm32f1.a libopencm3/include: libopencm3
 	@echo
 	@echo "##### Building libopencm3"
 	@echo
-	cd libopencm3; PREFIX=$(PREFIX) $(MAKE) lib
-	touch libopencm3/lib/stm32/f1/libopencm3_stm32f1.a libopencm3/include
+	cd libopencm3; $(MAKE) TARGETS=stm32/f1
+	touch libopencm3/lib/libopencm3_stm32f1.a libopencm3/include
 
 # -------------------------------------
 # ARM rules
@@ -125,7 +124,7 @@ $(BUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc $(LIBOPENCM3)/includ
 	@mkdir -p $(dir $@)
 	@$(ARMCC) -MD $(ARM_COMMONFLAGS) $(CXXFLAGS) -c -o $@ $<
 
-$(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS) $(LIBOPENCM3)/lib/stm32/f1/libopencm3_stm32f1.a
+$(BUILDDIR)/$(PROJECT).elf: $(ARM_OBJS) $(LIBOPENCM3)/lib/libopencm3_stm32f1.a
 	@echo ARMLD $@
 	@$(ARMLD) -o $@ $(ARM_OBJS) $(ARM_LDFLAGS) -Wl,-Map,$(BUILDDIR)/$(PROJECT).map
 
