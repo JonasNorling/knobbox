@@ -1,4 +1,4 @@
-#include "../stm32.h"
+#include "../target/stm32.h"
 #include <cstring>
 
 static const uint8_t COMMAND_DEVICE_ID = 0x9f;

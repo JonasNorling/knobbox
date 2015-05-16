@@ -1,33 +1,34 @@
 PROJECT = knobbox
-SRCS += TControllerPage.cpp
-SRCS += TControllers.cpp
-SRCS += TDisplay.cpp
-SRCS += TFlashTest.cpp
-SRCS += TFlash.cpp
-SRCS += TGui.cpp
-SRCS += TKnobs.cpp
-SRCS += TLeds.cpp
-SRCS += TMemory.cpp
-SRCS += TMidi.cpp
-SRCS += TMidiParser.cpp
-SRCS += TPopup.cpp
-SRCS += TSequencer.cpp
-SRCS += TSeqPage.cpp
-SRCS += TSettingsPage.cpp
-SRCS += TSpiDmaJob.cpp
-SRCS += TStartAnimation.cpp
-SRCS += TSwitches.cpp
-SRCS += TUsb.cpp
-ARM_C_SRCS += usbmidi.c
-ARM_SRCS += main.cpp
-ARM_SRCS += stm32.cpp
-ARM_SRCS += TSchedulerArm.cpp
-HOST_SRCS += main.cpp
-HOST_SRCS += host.cpp
-HOST_SRCS += TSchedulerHost.cpp
-TEST_SRCS += tests/testmain.cpp
-TEST_SRCS += TSchedulerHost.cpp
-TEST_SRCS += host.cpp
+
+SRCS += src/TControllerPage.cpp
+SRCS += src/TControllers.cpp
+SRCS += src/TDisplay.cpp
+SRCS += src/TFlashTest.cpp
+SRCS += src/TFlash.cpp
+SRCS += src/TGui.cpp
+SRCS += src/TKnobs.cpp
+SRCS += src/TLeds.cpp
+SRCS += src/TMemory.cpp
+SRCS += src/TMidi.cpp
+SRCS += src/TMidiParser.cpp
+SRCS += src/TPopup.cpp
+SRCS += src/TSequencer.cpp
+SRCS += src/TSeqPage.cpp
+SRCS += src/TSettingsPage.cpp
+SRCS += src/TSpiDmaJob.cpp
+SRCS += src/TStartAnimation.cpp
+SRCS += src/TSwitches.cpp
+SRCS += src/TUsb.cpp
+ARM_C_SRCS += src/target/usbmidi.c
+ARM_SRCS += src/main.cpp
+ARM_SRCS += src/target/stm32.cpp
+ARM_SRCS += src/target/TSchedulerArm.cpp
+HOST_SRCS += src/main.cpp
+HOST_SRCS += src/host/host.cpp
+HOST_SRCS += src/host/TSchedulerHost.cpp
+TEST_SRCS += src/tests/testmain.cpp
+TEST_SRCS += src/host/TSchedulerHost.cpp
+TEST_SRCS += src/host/host.cpp
 
 # -------------------------------------
 # Assuming a toolchain from summon-arm-toolchain.
@@ -52,11 +53,11 @@ ARM_LDFLAGS += -Tstm32f1.ld
 HOST_LDFLAGS += -pthread -lrt
 HOST_LDFLAGS += `wx-config --libs`
 
-ARM_COMMONFLAGS += -I. -O1 -fno-common -g -fconserve-stack
+ARM_COMMONFLAGS += -I. -Isrc -Isrc/target -O1 -fno-common -g -fconserve-stack
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
 ARM_COMMONFLAGS += -Wall -Wextra
 ARM_COMMONFLAGS += -I$(LIBOPENCM3)/include/
-HOST_COMMONFLAGS += -I. -O0 -fno-common -g -Wall -Wextra -DHOST -pthread
+HOST_COMMONFLAGS += -I. -Isrc -Isrc/host -O0 -fno-common -g -Wall -Wextra -DHOST -pthread
 HOST_COMMONFLAGS += `wx-config --cflags`
 
 CFLAGS += -std=c99 -Werror-implicit-function-declaration
@@ -73,17 +74,14 @@ TEST_OBJS += $(TEST_SRCS:%.cpp=$(HOSTBUILDDIR)/%.o)
 
 # -------------------------------------
 
-all: $(HOSTBUILDDIR) $(HOSTBUILDDIR)/$(PROJECT).elf
+all: $(HOSTBUILDDIR)/$(PROJECT).elf
 all: $(BUILDDIR)/flashtest.elf
 all: $(BUILDDIR)/tasktest.elf
 all: $(BUILDDIR)/knobtest.elf
-all: $(BUILDDIR) $(BUILDDIR)/$(PROJECT).bin $(BUILDDIR)/$(PROJECT).asm
+all: $(BUILDDIR)/$(PROJECT).bin $(BUILDDIR)/$(PROJECT).asm
 	@size $(BUILDDIR)/$(PROJECT).elf
 #	@$(ARMOBJDUMP) -t -j .bss -C $(BUILDDIR)/$(PROJECT).elf | \
 		awk '{n = strtonum("0x"$$5); if (n!=0) printf("%20s %5d bytes\n", $$6, n);}'
-
-$(BUILDDIR) $(HOSTBUILDDIR):
-	mkdir $@ $@/tests
 
 liquid-2.0: external/liquid-2.0.tgz external/liquid.patch Makefile
 	@echo
@@ -145,15 +143,15 @@ program: $(BUILDDIR) $(BUILDDIR)/$(PROJECT).bin
 # -------------------------------------
 # ARM test program rules
 
-$(BUILDDIR)/flashtest.elf: $(BUILDDIR)/flashtest/flashtest.o
+$(BUILDDIR)/flashtest.elf: $(BUILDDIR)/test/flashtest/flashtest.o
 	@echo ARMLD $@
 	$(ARMLD) -o $@ $^ $(ARM_LDFLAGS)
 
-$(BUILDDIR)/knobtest.elf: $(BUILDDIR)/knobtest/knobtest.o $(BUILDDIR)/stm32.o
+$(BUILDDIR)/knobtest.elf: $(BUILDDIR)/test/knobtest/knobtest.o $(BUILDDIR)/src/target/stm32.o
 	@echo ARMLD $@
 	$(ARMLD) -o $@ $^ $(ARM_LDFLAGS)
 
-$(BUILDDIR)/tasktest.elf: $(BUILDDIR)/tasktest/tasktest.o $(BUILDDIR)/TSchedulerArm.o
+$(BUILDDIR)/tasktest.elf: $(BUILDDIR)/test/tasktest/tasktest.o $(BUILDDIR)/src/target/TSchedulerArm.o
 	@echo ARMLD $@
 	$(ARMLD) -o $@ $^ $(ARM_LDFLAGS)
 
@@ -162,21 +160,24 @@ $(BUILDDIR)/tasktest.elf: $(BUILDDIR)/tasktest/tasktest.o $(BUILDDIR)/TScheduler
 
 $(HOSTBUILDDIR)/%.o: %.c Makefile
 	@echo CC $< --\> $@
+	@mkdir -p $(dir $@)
 	@$(CC) -MD $(HOST_COMMONFLAGS) $(CFLAGS) -c -o $@ $<
 
 $(HOSTBUILDDIR)/%.o: %.cpp Makefile liquid-2.0/fontliqsting.inc
 	@echo CC $< --\> $@
+	@mkdir -p $(dir $@)
 	@$(CC) -MD $(HOST_COMMONFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 $(HOSTBUILDDIR)/%.o: tests/%.cpp Makefile
 	@echo CC $< --\> $@
+	@mkdir -p $(dir $@)
 	@$(CC) -MD $(HOST_COMMONFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 $(HOSTBUILDDIR)/$(PROJECT).elf: $(HOST_OBJS)
 	@echo LD $@
 	@$(CXX) -o $@ $(HOST_OBJS) $(HOST_LDFLAGS)
 
-$(TEST_OBJS): tests/*.cpp
+$(TEST_OBJS): src/tests/*.cpp
 
 $(HOSTBUILDDIR)/test: $(TEST_OBJS)
 	@echo LD $@
