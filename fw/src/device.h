@@ -23,7 +23,7 @@ extern "C" {
     void dma1_channel5_isr(void); // USART1_RX, SPI2_TX
     void dma1_channel6_isr(void); // USART2_RX
     void dma1_channel7_isr(void); // USART2_TX
-    void usart1_isr(void) __attribute__((optimize(3)));
+    void usart1_isr(void);
     void usart2_isr(void);
     void sys_tick_handler(void);
     void tim2_isr(void);

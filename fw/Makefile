@@ -38,8 +38,7 @@ TEST_SRCS += src/host/host.cpp
 BUILDDIR=build
 HOSTBUILDDIR=hostbuild
 
-TOOLCHAIN = /usr
-PREFIX = $(TOOLCHAIN)/bin/arm-none-eabi
+PREFIX = arm-none-eabi
 ARMCC = $(PREFIX)-gcc
 ARMLD = $(PREFIX)-gcc
 ARMOBJCOPY = $(PREFIX)-objcopy
@@ -50,19 +49,20 @@ ARM_LDFLAGS += -L$(LIBOPENCM3)/lib/ -lopencm3_stm32f1
 ARM_LDFLAGS += -lc -lnosys -nostartfiles -Wl,--gc-sections -lstdc++
 ARM_LDFLAGS += -mthumb -march=armv7 -mfix-cortex-m3-ldrd -msoft-float
 ARM_LDFLAGS += -Tstm32f1.ld
-HOST_LDFLAGS += -pthread -lrt
+HOST_LDFLAGS += -pthread
 HOST_LDFLAGS += `wx-config --libs`
 
 ARM_COMMONFLAGS += -I. -Isrc -Isrc/target -O1 -fno-common -g -fconserve-stack
 ARM_COMMONFLAGS += -mcpu=cortex-m3 -mthumb -msoft-float -DSTM32F1
 ARM_COMMONFLAGS += -Wall -Wextra
 ARM_COMMONFLAGS += -I$(LIBOPENCM3)/include/
+ARM_COMMONFLAGS +=  -fno-rtti
 HOST_COMMONFLAGS += -I. -Isrc -Isrc/host -O0 -fno-common -g -Wall -Wextra -DHOST -pthread
 HOST_COMMONFLAGS += `wx-config --cflags`
 
 CFLAGS += -std=c99 -Werror-implicit-function-declaration
 
-CXXFLAGS += -std=c++0x -fno-exceptions -fno-rtti
+CXXFLAGS += -std=c++11 -fno-exceptions
 
 ARM_OBJS += $(SRCS:%.cpp=$(BUILDDIR)/%.o)
 ARM_OBJS += $(ARM_SRCS:%.cpp=$(BUILDDIR)/%.o)
@@ -79,7 +79,7 @@ all: $(BUILDDIR)/flashtest.elf
 all: $(BUILDDIR)/tasktest.elf
 all: $(BUILDDIR)/knobtest.elf
 all: $(BUILDDIR)/$(PROJECT).bin $(BUILDDIR)/$(PROJECT).asm
-	@size $(BUILDDIR)/$(PROJECT).elf
+	@arm-none-eabi-size $(BUILDDIR)/$(PROJECT).elf
 #	@$(ARMOBJDUMP) -t -j .bss -C $(BUILDDIR)/$(PROJECT).elf | \
 		awk '{n = strtonum("0x"$$5); if (n!=0) printf("%20s %5d bytes\n", $$6, n);}'
 

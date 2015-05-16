@@ -79,10 +79,13 @@ public:
         Running(false),
         CurrentScene(0),
         GlobalPosition({0, 0}),
-        Position({ {0, 0}, {0, 0}, {0, 0}, {0, 0} }),
-        LastPosition({ {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0} }),
         ScheduleLocked(false)
-    { }
+    {
+        LastPosition[0] = {-1, 0};
+        LastPosition[1] = {-1, 0};
+        LastPosition[2] = {-1, 0};
+        LastPosition[3] = {-1, 0};
+    }
     void Load();
     void LoadFromMemory(uint8_t scene, uint8_t patchno);
     void StoreInMemory(uint8_t scene, uint8_t patchno);
