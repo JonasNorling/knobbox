@@ -246,11 +246,6 @@ void TSequencer::DoNextEvent(int sceneno)
 
         if (next.Position.isBetween(LastPosition[sceneno],
                 Position[sceneno])) {
-            /* LOG("Playing %s %d:%d when pos=%d:%d\n",
-					next.IsOn ? " on" : "off",
-					next.Position.Step, next.Position.Minor,
-					position.Step, position.Minor); */
-
             PlayEvent(sceneno, next);
 
             nextEvent = next.Next;
@@ -276,6 +271,12 @@ void TSequencer::PlayEvent(int sceneno, const TEventSchedule::TEntry& event)
 {
     TSequencerScene& scene(Scenes[sceneno]);
     TSequencerScene::TData& data = scene.Data[event.Step];
+
+    LOG("Playing %s note=%d step=%d:%d when pos=%d:%d\n",
+            event.IsOn ? " on" : "off",
+            data.Note,
+            event.Position.Step, event.Position.Minor,
+            Position[sceneno].Step, Position[sceneno].Minor);
 
     if (data.Flags & TSequencerScene::TData::FLAG_SOUNDING) {
         NoteOff(scene, event.Step);

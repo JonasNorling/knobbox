@@ -72,6 +72,8 @@ public:
 
 int TestSequence()
 {
+  LOG("Running sequence test\n");
+
   TMidiBuffer buffer;
   TSequencer s(buffer);
   s.Load();
@@ -116,6 +118,8 @@ int TestSequence()
 
 int TestSequenceQuick()
 {
+  LOG("Running quick sequence test\n");
+
   TMidiBuffer buffer;
   TSequencer s(buffer);
   s.Load();
@@ -146,7 +150,7 @@ int TestSequenceQuick()
   s.Start();
   for (int i = 0; i < 4 * TicksPerBeat; i++) s.Step();
   test_assert(buffer.Ticks == 4 * MidiTicksPerBeat);
-  test_assert(buffer.Events.size() / 2 == s.Scenes[0].StepLength);
+  test_assert(buffer.Events.size() == s.Scenes[0].StepLength * 2 + 1);
 
   test_assert(buffer.Events.front().Data[0] == 0x90); // Note on
   test_assert(buffer.Events.front().Data[1] == 60);
@@ -185,6 +189,8 @@ int TestSequenceQuick()
 
 int TestSequenceComplex()
 {
+  LOG("Running complex sequence test\n");
+
   TMidiBuffer buffer;
   TSequencer s(buffer);
   s.Load();
@@ -212,16 +218,15 @@ int TestSequenceComplex()
   s.Start();
   for (int i = 0; i < 4 * TicksPerBeat - 1; i++) s.Step();
   test_assert(buffer.Ticks == 4 * MidiTicksPerBeat - 1);
-  test_assert(buffer.Events.size() / 2 == s.Scenes[0].StepLength);
+  // Expect an on and off event per note, but the off for [3] will be suppressed
+  // because it is not sounding.
+  test_assert(buffer.Events.size() == s.Scenes[0].StepLength * 2 - 1);
 
   test_assert(buffer.Events.front().Data[0] == 0x90); // Note on
   test_assert(buffer.Events.front().Data[1] == 60);
   buffer.Events.pop_front(); test_assert(!buffer.Events.empty());
   test_assert(buffer.Events.front().Data[0] == 0x80); // Note off
   test_assert(buffer.Events.front().Data[1] == 60);
-  buffer.Events.pop_front(); test_assert(!buffer.Events.empty());
-  test_assert(buffer.Events.front().Data[0] == 0x80); // Note off
-  test_assert(buffer.Events.front().Data[1] == 63);
   buffer.Events.pop_front(); test_assert(!buffer.Events.empty());
   test_assert(buffer.Events.front().Data[0] == 0x90); // Note on
   test_assert(buffer.Events.front().Data[1] == 61);
