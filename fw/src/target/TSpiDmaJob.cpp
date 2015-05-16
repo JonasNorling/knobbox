@@ -16,7 +16,7 @@ void TBlockingSpiDmaJob::Run()
 {
     TaskId = TScheduler::GetCurrentTaskId();
     CurrentJob = this;
-#ifndef HOST
+
     const uint32_t spi = FLASH_SPI_CHANNEL;
     const uint32_t dma = DMA1;
 
@@ -64,7 +64,6 @@ void TBlockingSpiDmaJob::Run()
 
     // Wait for completion
     TScheduler::BlockUntil(&Finished);
-#endif
 }
 
 /*
@@ -78,11 +77,7 @@ TSpiDmaQueue::TSpiDmaQueue()
 bool TSpiDmaQueue::Enqueue(const TSpiDmaJob& job)
 {
     if (Jobs.Add(job)) {
-#ifdef HOST
-        dma1_channel4_isr();
-#else
         //    TryStartJob();
-#endif
         return true;
     } else {
         return false;
@@ -91,7 +86,6 @@ bool TSpiDmaQueue::Enqueue(const TSpiDmaJob& job)
 
 bool TSpiDmaQueue::TryStartJob()
 {
-#ifndef HOST
     // Start the next DMA job in the queue if the SPI interface is
     // available (TXE=1 and BSY=0)
     // We treat both SPI busses (flash and display) as one, so no concurrent jobs
@@ -154,7 +148,7 @@ bool TSpiDmaQueue::TryStartJob()
 
         return true;
     }
-#endif
+
     return false;
 }
 

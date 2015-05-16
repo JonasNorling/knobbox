@@ -27,9 +27,14 @@
 									<listOptionValue builtIn="false" value="/home/jonas/sat/arm-none-eabi/include/c++/4.5.2/bits"/>
 									<listOptionValue builtIn="false" value="/home/jonas/sat/arm-none-eabi/include/sys"/>
 									<listOptionValue builtIn="false" value="/usr/include/wx-2.8/"/>
+									<listOptionValue builtIn="false" value="/usr/local/Cellar/wxmac/3.0.2/include/wx-3.0"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.470757570" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="STM32F1=1"/>
+									<listOptionValue builtIn="false" value="__WXOSX__"/>
+									<listOptionValue builtIn="false" value="__WXMAC__"/>
+									<listOptionValue builtIn="false" value="__WXOSX_COCOA__"/>
+									<listOptionValue builtIn="false" value="WXUSINGDLL"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1997347018" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>

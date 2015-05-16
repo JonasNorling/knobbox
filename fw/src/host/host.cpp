@@ -1,9 +1,13 @@
 #include "device.h"
+#include <host/WxLcdDisplay.h>
 #include <cstdio>
 #include <pthread.h>
 #include <time.h>
 #include <signal.h>
 #include <wx/wx.h>
+#include <TDisplay.h>
+
+WxLcdDisplay* LcdDisplay;
 
 class WxApp: public wxApp
 {
@@ -11,22 +15,61 @@ public:
     virtual bool OnInit();
 };
 
+enum {
+    ID_BUTTON_SELECT = 1,
+    ID_BUTTON_KNOB_CCW,
+    ID_BUTTON_KNOW_CW
+};
+
 class WxFrame: public wxFrame
 {
 public:
     WxFrame();
+
 private:
-    void OnHello(wxCommandEvent& event);
-    void OnExit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
+    void OnButtonClick(wxCommandEvent& event);
+
+    DECLARE_EVENT_TABLE();
 };
+
+BEGIN_EVENT_TABLE(WxFrame, wxFrame)
+    EVT_BUTTON(ID_BUTTON_SELECT, WxFrame::OnButtonClick)
+    EVT_BUTTON(ID_BUTTON_KNOB_CCW, WxFrame::OnButtonClick)
+    EVT_BUTTON(ID_BUTTON_KNOW_CW, WxFrame::OnButtonClick)
+END_EVENT_TABLE()
 
 WxFrame::WxFrame() :
         wxFrame(NULL, -1, _("Knobbox"))
 {
-    wxPanel* panel = new wxPanel(this, -1);
-    wxButton* b = new wxButton(panel, -1, _("1"), wxPoint(100, 100), wxSize(30, 30));
+    LcdDisplay = new WxLcdDisplay(this);
+
+    wxBoxSizer* vsizer = new wxBoxSizer(wxVERTICAL);
+    vsizer->Add(LcdDisplay, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+
+    wxBoxSizer* hsizer = new wxBoxSizer(wxHORIZONTAL);
+    vsizer->Add(hsizer, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+    hsizer->Add(new wxButton(this, ID_BUTTON_KNOB_CCW, _("^<-")));
+    hsizer->Add(new wxButton(this, ID_BUTTON_SELECT, _("select")));
+    hsizer->Add(new wxButton(this, ID_BUTTON_KNOW_CW, _("+>v")));
+
+    hsizer = new wxBoxSizer(wxHORIZONTAL);
+    vsizer->Add(hsizer, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
+    hsizer->Add(new wxButton(this, -1, _("<")));
+    hsizer->Add(new wxButton(this, -1, _("<<")));
+    hsizer->Add(new wxButton(this, -1, _("P")));
+    hsizer->Add(new wxButton(this, -1, _("-")));
+    hsizer->Add(new wxButton(this, -1, _(">")));
+
+    SetSizerAndFit(vsizer);
+    SetAutoLayout(true);
 }
+
+void WxFrame::OnButtonClick(wxCommandEvent& event)
+{
+    printf("Click %d\n", event.GetId());
+
+}
+
 
 bool WxApp::OnInit()
 {
@@ -36,7 +79,7 @@ bool WxApp::OnInit()
     return true;
 }
 
-static void* gui_thread_main(void*)
+void guiStart(void)
 {
     int argc = 1;
     char* argv[] = { "name" };
@@ -45,8 +88,6 @@ static void* gui_thread_main(void*)
     wxApp::SetInstance(app);
 
     ::wxEntry(argc, argv);
-
-    return NULL;
 }
 
 static void alarm_handler(int)
@@ -56,17 +97,6 @@ static void alarm_handler(int)
 
 void deviceInit()
 {
-    // Spawn a thread and start a wxWidgets instance
-    pthread_t guithread;
-    pthread_create(&guithread, NULL, gui_thread_main, NULL);
-
-    struct sigaction sa;
-    sa.sa_handler = alarm_handler;
-    sigaction(SIGALRM, &sa, NULL);
-    timer_t timerid;
-    timer_create(CLOCK_MONOTONIC, NULL, &timerid);
-    struct itimerspec spec = { { 0, 1000000 }, { 1, 0 } };
-    timer_settime(timerid, 0, &spec, NULL);
 }
 
 void usart_send(uint32_t uart, uint8_t byte)

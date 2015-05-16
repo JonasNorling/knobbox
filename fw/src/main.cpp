@@ -48,6 +48,7 @@ TFlash Flash;
 TControllers Controllers(Midi);
 TUsb Usb;
 
+static void mainloop(void);
 static void gui_task(void) __attribute__((noreturn));
 static void flash_task(void) __attribute__((noreturn));
 static uint8_t __attribute__((aligned(8))) gui_task_stack[512];
@@ -55,7 +56,7 @@ static uint8_t __attribute__((aligned(8))) flash_task_stack[320];
 TScheduler::TTaskControlBlock TScheduler::Tcbs[SCHEDULER_NUM_TASKS];
 uint8_t TScheduler::CurrentTask;
 const TScheduler::TTask TScheduler::Tasks[SCHEDULER_NUM_TASKS] = {
-        { "main", 0, 0, 0 },
+        { "main", mainloop, 0, 0 },
         { "gui", gui_task, gui_task_stack, sizeof(gui_task_stack) },
         { "flash", flash_task, flash_task_stack, sizeof(flash_task_stack) },
 };
@@ -146,8 +147,8 @@ void dma1_channel4_isr(void)
     spi_disable_tx_dma(LCD_SPI_CHANNEL);
 
     // Note: we have to wait until TXE=1 and BSY=0 before changing CS lines.
-#endif
     assert(SpiDmaState == SPI_DMA_STATE_RUNNING);
+#endif
 
     SpiDmaState = SPI_DMA_STATE_FINISHED;
 }
@@ -214,60 +215,8 @@ void pollSpiDma()
 #endif
 }
 
-int main(void)
+void mainloop(void)
 {
-    deviceInit();
-
-    TLeds::Set(TLeds::LED_TP9, false);
-    TLeds::Set(TLeds::LED_TP16, false);
-    TLeds::Set(TLeds::LED_ENC_GREEN, false);
-    TLeds::Set(TLeds::LED_ENC_RED, false);
-    TLeds::Set(TLeds::LED_1, false);
-    TLeds::Set(TLeds::LED_2, false);
-    TLeds::Set(TLeds::LED_3, false);
-    TLeds::Set(TLeds::LED_4, false);
-    TLeds::Set(TLeds::LED_LCD_BL, false);
-
-    Pin_vpullup.Clear();
-    // Chip selects are active-low.
-    Pin_flash_cs.Set();
-    Pin_lcd_cs.Set();
-    Pin_shift_out_load.Set();
-    Pin_shift_out_en.Set();
-    Pin_shift_in_en.Set();
-    Pin_shift_in_load.Set();
-
-    // Use placement new to run the constructors of static objects,
-    // because libopencm3's crt0 and linker scripts aren't made for C++.
-    Mode = MODE_CONTROLLER;
-    new(&Display) TDisplay();
-    new(&SpiDmaQueue) TSpiDmaQueue();
-    new(&Gui) TGui();
-    new(&Knobs) TKnobs();
-    new(&Switches) TSwitches();
-    new(&Midi) TMidi();
-    new(&MidiParser) TMidiParser();
-    new(&Sequencer) TSequencer(Midi);
-    new(&Memory) TMemory();
-    new(&Flash) TFlash();
-    new(&Controllers) TControllers(Midi);
-    new(&Usb) TUsb();
-
-    Usb.Init();
-
-    // Stay quiet for a while to let power stabilise
-    delay_ms(150);
-    Pin_vpullup.Set();
-    delay_ms(150);
-
-    Sequencer.Load();
-    Display.Init();
-
-    Knobs.StartShifting();
-    Pin_shift_out_en.Clear(); // Turn on LED driver
-    Pin_shift_in_en.Clear();
-
-    TScheduler::Init();
     while (!Flash.Inited()) {
         TScheduler::Yield();
     }
@@ -328,15 +277,69 @@ int main(void)
         assert(!(DMA_ISR(DMA1) & DMA_ISR_TEIF3));
         assert(!(DMA_ISR(DMA1) & DMA_ISR_TEIF5));
 #endif
+    }
+}
+
+int main(void)
+{
+    deviceInit();
+
+    TLeds::Set(TLeds::LED_TP9, false);
+    TLeds::Set(TLeds::LED_TP16, false);
+    TLeds::Set(TLeds::LED_ENC_GREEN, false);
+    TLeds::Set(TLeds::LED_ENC_RED, false);
+    TLeds::Set(TLeds::LED_1, false);
+    TLeds::Set(TLeds::LED_2, false);
+    TLeds::Set(TLeds::LED_3, false);
+    TLeds::Set(TLeds::LED_4, false);
+    TLeds::Set(TLeds::LED_LCD_BL, false);
+
+    Pin_vpullup.Clear();
+    // Chip selects are active-low.
+    Pin_flash_cs.Set();
+    Pin_lcd_cs.Set();
+    Pin_shift_out_load.Set();
+    Pin_shift_out_en.Set();
+    Pin_shift_in_en.Set();
+    Pin_shift_in_load.Set();
+
+    // Use placement new to run the constructors of static objects,
+    // because libopencm3's crt0 and linker scripts aren't made for C++.
+    Mode = MODE_CONTROLLER;
+    new(&Display) TDisplay();
+    new(&SpiDmaQueue) TSpiDmaQueue();
+    new(&Gui) TGui();
+    new(&Knobs) TKnobs();
+    new(&Switches) TSwitches();
+    new(&Midi) TMidi();
+    new(&MidiParser) TMidiParser();
+    new(&Sequencer) TSequencer(Midi);
+    new(&Memory) TMemory();
+    new(&Flash) TFlash();
+    new(&Controllers) TControllers(Midi);
+    new(&Usb) TUsb();
+
+    Usb.Init();
+
+    // Stay quiet for a while to let power stabilise
+    delay_ms(150);
+    Pin_vpullup.Set();
+    delay_ms(150);
+
+    Sequencer.Load();
+    Display.Init();
+
+    Knobs.StartShifting();
+    Pin_shift_out_en.Clear(); // Turn on LED driver
+    Pin_shift_in_en.Clear();
+
+    TScheduler::Init();
 
 #ifdef HOST
-        static int counter = 0;
-        if (counter++ > 1000) {
-            Display.DumpPixels();
-            return 0;
-        }
+    guiStart();
+#else
+    mainloop();
 #endif
-    }
 
     return 0;
 }

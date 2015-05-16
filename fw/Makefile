@@ -2,7 +2,6 @@ PROJECT = knobbox
 
 SRCS += src/TControllerPage.cpp
 SRCS += src/TControllers.cpp
-SRCS += src/TDisplay.cpp
 SRCS += src/TFlashTest.cpp
 SRCS += src/TFlash.cpp
 SRCS += src/TGui.cpp
@@ -15,19 +14,28 @@ SRCS += src/TPopup.cpp
 SRCS += src/TSequencer.cpp
 SRCS += src/TSeqPage.cpp
 SRCS += src/TSettingsPage.cpp
-SRCS += src/TSpiDmaJob.cpp
 SRCS += src/TStartAnimation.cpp
 SRCS += src/TSwitches.cpp
+
 ARM_C_SRCS += src/target/usbmidi.c
 ARM_SRCS += src/main.cpp
 ARM_SRCS += src/target/stm32.cpp
+ARM_SRCS += src/target/TDisplay.cpp
 ARM_SRCS += src/target/TSchedulerArm.cpp
+ARM_SRCS += src/target/TSpiDmaJob.cpp
 ARM_SRCS += src/target/TUsb.cpp
+
 HOST_SRCS += src/main.cpp
 HOST_SRCS += src/host/host.cpp
+HOST_SRCS += src/host/TDisplay.cpp
 HOST_SRCS += src/host/TSchedulerHost.cpp
+HOST_SRCS += src/host/TSpiDmaJob.cpp
+HOST_SRCS += src/host/WxLcdDisplay.cpp
+
 TEST_SRCS += src/tests/testmain.cpp
+TEST_SRCS += src/host/TDisplay.cpp
 TEST_SRCS += src/host/TSchedulerHost.cpp
+TEST_SRCS += src/host/TSpiDmaJob.cpp
 TEST_SRCS += src/host/host.cpp
 
 # -------------------------------------

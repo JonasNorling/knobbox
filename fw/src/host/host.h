@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cstdint>
+#include "WxLcdDisplay.h"
 
 #define GPIO_MODE_OUTPUT_50_MHZ 0
 #define GPIO_CNF_OUTPUT_PUSHPULL 0
@@ -29,6 +30,8 @@
 #define USART1 1
 #define USART2 2
 
+void guiStart(void);
+
 static inline void critical_section()
 {
 }
@@ -54,3 +57,5 @@ public:
 
 static inline uint16_t gpio_port_read(uint32_t) { return 0; }
 void usart_send(uint32_t uart, uint8_t byte);
+
+extern WxLcdDisplay* LcdDisplay;

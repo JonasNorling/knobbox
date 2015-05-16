@@ -30,14 +30,12 @@ typedef uint8_t TCharacter[6];
  */
 class TDisplay : public IDmaCallback
 {
-private:
+public:
     static const int Width = 102;
     static const int Height = 64;
     static const int WidthChars = 17;
     static const int HeightChars = 8;
     static const int BufferCount = 2;
-
-public:
     static const int GlyphWidth = 6;
 
     /**
@@ -88,12 +86,7 @@ public:
     void OutputBuffer(TPageBuffer* buffer, uint8_t length,
             uint8_t page, uint8_t col);
 
-#ifdef HOST
-    void DumpPixels();
-#endif
-
     /* IDmaCallback */
-
     virtual void DmaFinished(void* context);
 
 private:
@@ -104,10 +97,6 @@ private:
      sending a little command, but whatever. */
     TPageBuffer Buffers[BufferCount];
     uint8_t BufferAllocMask;
-
-#ifdef HOST
-    uint8_t Framebuffer[Width][Height];
-#endif
 };
 
 extern TDisplay Display;

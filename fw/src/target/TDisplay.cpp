@@ -67,6 +67,7 @@ bool TDisplay::EnqueueDmaJob(TPageBuffer* pageBuffer,
         if (!ret) {
             // A hang here indicates that there aren't enough SPI DMA
             // buffers. That can't happen.
+            LOG("Hang!\n");
             while (true);
         }
         return true;
@@ -88,13 +89,6 @@ TDisplay::TPageBuffer* TDisplay::GetBuffer()
 void TDisplay::OutputBuffer(TPageBuffer* buffer, uint8_t length,
         uint8_t page, uint8_t col)
 {
-#ifdef HOST
-    for (int y = 0; y < 8; y++) {
-        for (int i = 0; i < length; i++) {
-            Framebuffer[col + i][8*page + y] = !!(buffer->Data[i] & (1 << y));
-        }
-    }
-#endif
     buffer->Control[0] = DOGM_SET_PAGE | page;
     buffer->Control[1] = DOGM_SET_COL_HIGH | col >> 4;
     buffer->Control[2] = DOGM_SET_COL_LOW | (col & 0x0f);
@@ -127,30 +121,6 @@ bool TDisplay::Power(bool on)
     EnqueueDmaJob(buffer, 0, 2);
     return true;
 }
-
-#ifdef HOST
-void TDisplay::DumpPixels()
-{
-    FILE* fd = ::fopen("display.pbm", "w");
-    if (fd) {
-        ::fprintf(fd, "P1\n");
-        ::fprintf(fd, "# Display dump\n");
-        ::fprintf(fd, "%d %d\n", Width*5, Height*5);
-        for (int y = 0; y < Height; y++) {
-            for (int repeat = 0; repeat < 5; repeat++) {
-                for (int x = 0; x < Width; x++) {
-                    uint8_t v = (repeat < 4) ? Framebuffer[x][y] : 0;
-                    ::fprintf(fd, "%d %d %d %d %d", v, v, v, v, 0);
-                }
-                ::fprintf(fd, "\n");
-            }
-        }
-        ::fclose(fd);
-    } else {
-        LOG("Failed to open display.pbm");
-    }
-}
-#endif
 
 //#define FONT_LIQUID
 #ifdef FONT_LIQUID
