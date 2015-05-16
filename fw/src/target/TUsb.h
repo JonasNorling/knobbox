@@ -18,9 +18,7 @@ public:
     void Init();
 
     void Poll() {
-#ifndef HOST
         usbd_poll();
-#endif
     }
 
     static void DataCallback(uint8_t ep);

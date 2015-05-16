@@ -8,12 +8,8 @@ void UsbMidiInit();
 
 void TUsb::Init()
 {
-#ifndef HOST
     UsbMidiInit();
-#endif
 }
-
-#ifndef HOST
 
 struct TUsbMidiEvent {
     uint8_t Code : 4;
@@ -52,5 +48,3 @@ void UsbDataCallback(uint8_t ep)
 {
     TUsb::DataCallback(ep);
 }
-
-#endif
