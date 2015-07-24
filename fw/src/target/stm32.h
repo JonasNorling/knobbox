@@ -7,6 +7,7 @@
 extern "C" {
 #endif
 
+#include <libopencm3/cm3/itm.h>
 #include <libopencm3/cm3/scb.h>
 #include <libopencm3/cm3/systick.h>
 #include <libopencm3/stm32/f1/dma.h>

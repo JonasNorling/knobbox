@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include "device.h"
 #include "utils.h"
 
@@ -218,4 +220,21 @@ void deviceInit()
     // MIDI USART
     nvic_enable_irq(NVIC_USART2_IRQ);
     nvic_set_priority(NVIC_USART2_IRQ, 0xff);
+}
+
+extern "C"
+ssize_t _write(int fd __attribute__((unused)), const void* buf, size_t count)
+{
+    if (!(ITM_TER[0] & 1)) {
+        // Tracing not enabled
+        return count;
+    }
+
+    const char* charbuf = static_cast<const char*>(buf);
+    for (size_t i = 0; i < count; i++) {
+        while (!(ITM_STIM8(0) & ITM_STIM_FIFOREADY))
+            ;
+        ITM_STIM8(0) = *charbuf++;
+    }
+    return count;
 }
