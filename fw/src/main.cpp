@@ -34,7 +34,7 @@
  * \endverbatim
  */
 
-int Mode;
+int Mode = MODE_CONTROLLER;
 TDisplay Display;
 TSpiDmaQueue SpiDmaQueue;
 TGui Gui;
@@ -302,22 +302,6 @@ int main(void)
     Pin_shift_out_en.Set();
     Pin_shift_in_en.Set();
     Pin_shift_in_load.Set();
-
-    // Use placement new to run the constructors of static objects,
-    // because libopencm3's crt0 and linker scripts aren't made for C++.
-    Mode = MODE_CONTROLLER;
-    new(&Display) TDisplay();
-    new(&SpiDmaQueue) TSpiDmaQueue();
-    new(&Gui) TGui();
-    new(&Knobs) TKnobs();
-    new(&Switches) TSwitches();
-    new(&Midi) TMidi();
-    new(&MidiParser) TMidiParser();
-    new(&Sequencer) TSequencer(Midi);
-    new(&Memory) TMemory();
-    new(&Flash) TFlash();
-    new(&Controllers) TControllers(Midi);
-    new(&Usb) TUsb();
 
     Usb.Init();
 
