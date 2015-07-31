@@ -305,6 +305,19 @@ int main(void)
 
     Usb.Init();
 
+    // Let the USB device be enumerated before starting scheduler
+    TLeds::Set(TLeds::LED_1, true);
+    TLeds::Set(TLeds::LED_2, true);
+    TLeds::Set(TLeds::LED_3, true);
+    TLeds::Set(TLeds::LED_4, true);
+    while (SystemTime < 1000) {
+        Usb.Poll();
+    }
+    TLeds::Set(TLeds::LED_1, false);
+    TLeds::Set(TLeds::LED_2, false);
+    TLeds::Set(TLeds::LED_3, false);
+    TLeds::Set(TLeds::LED_4, false);
+
     // Stay quiet for a while to let power stabilise
     delay_ms(150);
     Pin_vpullup.Set();

@@ -10,6 +10,7 @@
 void clockInit()
 {
     rcc_clock_setup_in_hse_8mhz_out_72mhz();
+    rcc_set_usbpre(RCC_CFGR_USBPRE_PLL_CLK_DIV1_5);
 
     /*
      * Systick timer striking every 1ms (1kHz):
@@ -33,7 +34,6 @@ void clockInit()
     rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_USART2EN); // USART2
     rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_USART3EN); // USART3
     rcc_peripheral_enable_clock(&RCC_APB1ENR, RCC_APB1ENR_TIM2EN); // TIM2
-    rcc_peripheral_enable_clock(&RCC_AHBENR, RCC_AHBENR_OTGFSEN); // USB
 }
 
 void deviceInit()
