@@ -100,8 +100,8 @@ liquid-2.0: external/liquid-2.0.tgz external/liquid.patch Makefile
 
 liquid-2.0/fontliqsting.inc: liquid-2.0
 
-# libopencm3 from 2015-04-30
-LIBOPENCM3_V=6d658c2
+# libopencm3 from 2015-07-30
+LIBOPENCM3_V=a28ba5c
 
 libopencm3: external/libopencm3-$(LIBOPENCM3_V).tgz Makefile
 	@echo
