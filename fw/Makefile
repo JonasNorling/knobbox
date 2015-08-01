@@ -200,8 +200,8 @@ doc: $(SRCS) $(ARM_SRCS) $(HOST_SRCS) doc/Doxyfile
 
 # -------------------------------------
 
--include $(BUILDDIR)/*.d
--include $(HOSTBUILDDIR)/*.d
+-include $(BUILDDIR)/src/*.d
+-include $(HOSTBUILDDIR)/src/*.d
 
 clean:
 	rm -rf $(BUILDDIR) $(HOSTBUILDDIR) libopencm3-$(LIBOPENCM3_V)
