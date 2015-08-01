@@ -7,6 +7,7 @@
 #include <libopencm3/usb/usbd.h>
 #include <libopencm3/usb/audio.h>
 #include <libopencm3/usb/midi.h>
+#include <libopencm3/stm32/f1/nvic.h>
 #include "TUsb.h"
 #include "logging.h"
 
@@ -226,5 +227,9 @@ usbd_device* UsbMidiInit()
 
     usbd_register_set_config_callback(d, SetConfig);
     usbd_register_reset_callback(d, ResetCallback);
+
+    nvic_enable_irq(NVIC_USB_LP_CAN_RX0_IRQ);
+    nvic_set_priority(NVIC_USB_LP_CAN_RX0_IRQ, 0xff);
+
     return d;
 }

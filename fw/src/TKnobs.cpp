@@ -30,7 +30,6 @@ static uint8_t txbyteno = 0;
 void usart1_isr(void)
 {
 #ifndef HOST
-    TLeds::Set(TLeds::LED_TP9, true);
     //assert(!(USART_SR(USART) & USART_SR_ORE));
     //assert(USART_SR(USART) & USART_SR_TC);
     //assert(USART_SR(USART) & USART_SR_RXNE);
@@ -73,8 +72,6 @@ void usart1_isr(void)
     else {
         USART_DR(USART) = Knobs.LedControl[txbyteno++];
     }
-
-    TLeds::Set(TLeds::LED_TP9, false);
 #endif
 }
 

@@ -1,10 +1,19 @@
 #include "TUsb.h"
 #include "TMidi.h"
+#include "TLeds.h"
 #include "device.h"
 
 extern "C" {
 usbd_device* UsbMidiInit();
 };
+
+// USB low priority interrupt
+void usb_lp_can_rx0_isr(void)
+{
+    TLeds::Set(TLeds::LED_TP9, true);
+    Usb.Poll();
+    TLeds::Set(TLeds::LED_TP9, false);
+}
 
 void TUsb::Init()
 {
@@ -48,5 +57,6 @@ void TUsb::DataCallback(uint8_t ep __attribute__((unused)))
 
 void UsbDataCallback(usbd_device *usbd_dev, uint8_t ep)
 {
+    (void)usbd_dev;
     TUsb::DataCallback(ep);
 }

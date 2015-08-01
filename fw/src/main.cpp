@@ -245,7 +245,6 @@ void mainloop(void)
         }
 
         /* Poll I/O */
-        Usb.Poll();
         if (!Midi.InQueue.Empty()) {
             uint8_t b = Midi.InQueue.First();
             Midi.InQueue.Remove();
@@ -304,19 +303,6 @@ int main(void)
     Pin_shift_in_load.Set();
 
     Usb.Init();
-
-    // Let the USB device be enumerated before starting scheduler
-    TLeds::Set(TLeds::LED_1, true);
-    TLeds::Set(TLeds::LED_2, true);
-    TLeds::Set(TLeds::LED_3, true);
-    TLeds::Set(TLeds::LED_4, true);
-    while (SystemTime < 1000) {
-        Usb.Poll();
-    }
-    TLeds::Set(TLeds::LED_1, false);
-    TLeds::Set(TLeds::LED_2, false);
-    TLeds::Set(TLeds::LED_3, false);
-    TLeds::Set(TLeds::LED_4, false);
 
     // Stay quiet for a while to let power stabilise
     delay_ms(150);

@@ -30,6 +30,8 @@ private:
     static void SetConfig(uint16_t value);
 };
 
+extern TUsb Usb;
+
 #endif
 
 #ifdef __cplusplus
