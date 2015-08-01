@@ -103,21 +103,22 @@ liquid-2.0/fontliqsting.inc: liquid-2.0
 # libopencm3 from 2015-07-30
 LIBOPENCM3_V=a28ba5c
 
-libopencm3: external/libopencm3-$(LIBOPENCM3_V).tgz Makefile
+$(LIBOPENCM3): external/libopencm3-$(LIBOPENCM3_V).tgz
 	@echo
 	@echo "##### Unpacking libopencm3"
 	@echo
-	rm -rf libopencm3 libopencm3-$(LIBOPENCM3_V)
+	rm -rf $@ libopencm3-$(LIBOPENCM3_V)
 	tar xf $<
 	mv libopencm3-$(LIBOPENCM3_V) $@
 	@touch $@
 
-libopencm3/lib/libopencm3_stm32f1.a libopencm3/include: libopencm3
+$(LIBOPENCM3)/lib/libopencm3_stm32f1.a $(LIBOPENCM3)/include: $(LIBOPENCM3)
 	@echo
 	@echo "##### Building libopencm3"
 	@echo
-	cd libopencm3; $(MAKE) TARGETS=stm32/f1
-	touch libopencm3/lib/libopencm3_stm32f1.a libopencm3/include
+	# Disable tail call optimization, for easier USB code debugging
+	cd $(LIBOPENCM3) && $(MAKE) TARGETS=stm32/f1 DEBUG_FLAGS="-fno-optimize-sibling-calls -g"
+	touch $(LIBOPENCM3)/lib/libopencm3_stm32f1.a $(LIBOPENCM3)/include
 
 # -------------------------------------
 # ARM rules
