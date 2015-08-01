@@ -64,7 +64,7 @@ static const struct usb_endpoint_descriptor midi_endpoints[] = {{
 }, {
         .bLength = USB_DT_ENDPOINT_SIZE,
         .bDescriptorType = USB_DT_ENDPOINT,
-        .bEndpointAddress = 0x81,
+        .bEndpointAddress = 0x82,
         .bmAttributes = USB_ENDPOINT_ATTR_BULK,
         .wMaxPacketSize = MIDI_EP_MAX_SIZE,
         .bInterval = 0,
@@ -206,7 +206,7 @@ static void SetConfig(usbd_device *usbd_dev, uint16_t value __attribute__((unuse
 {
     LOG("USB set config\n");
     usbd_ep_setup(usbd_dev, 0x01, USB_ENDPOINT_ATTR_BULK, MIDI_EP_MAX_SIZE, UsbDataCallback);
-    usbd_ep_setup(usbd_dev, 0x81, USB_ENDPOINT_ATTR_BULK, MIDI_EP_MAX_SIZE, NULL);
+    usbd_ep_setup(usbd_dev, 0x82, USB_ENDPOINT_ATTR_BULK, MIDI_EP_MAX_SIZE, NULL);
 
     usbd_register_control_callback(usbd_dev, USB_REQ_TYPE_CLASS | USB_REQ_TYPE_INTERFACE,
             USB_REQ_TYPE_TYPE | USB_REQ_TYPE_RECIPIENT,
